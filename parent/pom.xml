@@ -40,7 +40,11 @@
         <maven_plugin_versions_version>2.3</maven_plugin_versions_version>
 
         <javax_inject_version>1</javax_inject_version>
-        <findbugs_jsr305_verson>3.0.2</findbugs_jsr305_verson>
+        <javax_jsonp_api_version>1.1.2</javax_jsonp_api_version>
+        <javax_jsonp_glassfish_version>1.1.2</javax_jsonp_glassfish_version>
+        <javax_jsonb_api_version>1.0</javax_jsonb_api_version>
+        <javax_jsonb_yasson_version>1.0</javax_jsonb_yasson_version>
+        <javax_jsr305_findbugs_verson>3.0.2</javax_jsr305_findbugs_verson>
 
         <google_guava_version>23.0</google_guava_version>
         <google_guice_version>4.1.0</google_guice_version>
@@ -50,14 +54,15 @@
         <google_autoservice_version>1.0-beta5</google_autoservice_version>
         <google_autocommon_version>0.10</google_autocommon_version>
 
-        <squareup_javapoet_version>1.8.0</squareup_javapoet_version>
-        <squareup_moshi_version>1.6.0</squareup_moshi_version>
-        <nanojson_version>1.2</nanojson_version>
-        <!-- <moshi_auto_value_plugin_version>0.4.3</moshi_auto_value_plugin_version> -->
-
-        <joda_time_version>2.9.9</joda_time_version>
-
         <netty_version>4.1.22.Final</netty_version>
+        <vertx_core_version>3.5.3</vertx_core_version>
+        <vertx_rxjava2_version>3.5.3</vertx_rxjava2_version>
+        <vertx_web_version>3.5.3</vertx_web_version>
+        <vertx_web_client_version>3.5.3</vertx_web_client_version>
+        <vertx_auth_version>3.5.3</vertx_auth_version>
+        <vertx_config_version>3.5.3</vertx_config_version>
+        <vertx_circuit_breaker_version>3.5.3</vertx_circuit_breaker_version>
+        <vertx_test_version>3.5.3</vertx_test_version>
 
         <!--libs: logging-->
         <slf4j_version>1.7.25</slf4j_version>
@@ -72,6 +77,7 @@
         <concurrentunit_version>0.4.2</concurrentunit_version>
         <mockito_version>2.8.9</mockito_version>
         <powermock_version>1.7.1</powermock_version>
+        <rest_assured_version>3.2.0</rest_assured_version>
     </properties>
 
     <dependencyManagement>
@@ -79,13 +85,34 @@
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
-                <version>${findbugs_jsr305_verson}</version>
+                <version>${javax_jsr305_findbugs_verson}</version>
             </dependency>
 
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>${javax_inject_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.json</groupId>
+                <artifactId>javax.json-api</artifactId>
+                <version>${javax_jsonp_api_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>${javax_jsonp_glassfish_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.json.bind</groupId>
+                <artifactId>javax.json.bind-api</artifactId>
+                <version>${javax_jsonb_api_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${javax_jsonb_yasson_version}</version>
             </dependency>
 
             <dependency>
@@ -136,38 +163,56 @@
             </dependency>
 
             <dependency>
-                <groupId>com.squareup</groupId>
-                <artifactId>javapoet</artifactId>
-                <version>${squareup_javapoet_version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.squareup.moshi</groupId>
-                <artifactId>moshi</artifactId>
-                <version>${squareup_moshi_version}</version>
-            </dependency>
-            <!--<dependency>-->
-                <!--<groupId>com.grack</groupId>-->
-                <!--<artifactId>nanojson</artifactId>-->
-                <!--<version>${nanojson_version}</version>-->
-            <!--</dependency>-->
-
-            <!-- <dependency> -->
-            <!--     <groupId>com.ryanharter.auto.value</groupId> -->
-            <!--     <artifactId>auto-value-moshi</artifactId> -->
-            <!--     <version>${moshi_auto_value_plugin_version}</version> -->
-            <!-- </dependency> -->
-
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda_time_version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>${vertx_core_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web</artifactId>
+                <version>${vertx_web_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web-client</artifactId>
+                <version>${vertx_web_client_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-rx-java2</artifactId>
+                <version>${vertx_rxjava2_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-config</artifactId>
+                <version>${vertx_config_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-circuit-breaker</artifactId>
+                <version>${vertx_circuit_breaker_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-auth-common</artifactId>
+                <version>${vertx_auth_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-auth-shiro</artifactId>
+                <version>${vertx_auth_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-unit</artifactId>
+                <version>${vertx_test_version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!--libs: logging-->
@@ -208,18 +253,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-joda-time</artifactId>
-                <version>${assertj_jodatime_version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.jodah</groupId>
-                <artifactId>concurrentunit</artifactId>
-                <version>${concurrentunit_version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito_version}</version>
@@ -235,6 +268,25 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!--Should be placed before junit dependency-->
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${rest_assured_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${rest_assured_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>json-schema-validator</artifactId>
+                <version>${rest_assured_version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
