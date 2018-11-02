@@ -35,13 +35,13 @@ public class WmonitorsTest {
 
         final Random random = new Random();
 
+        testingAttr = random.nextInt(10000000);
+
         final int n = random.nextInt(1000);
         testingAttrs = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
-            testingAttrs.add(random.nextInt(10000000));
+            testingAttrs.add(testingAttr + i * 2);
         }
-
-        testingAttr = random.nextInt(10000000);
 
         value = random.nextInt();
         step = random.nextInt();
