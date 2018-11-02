@@ -6,6 +6,6 @@
  * @author Elvis Wang
  */
 @ParametersAreNonnullByDefault
-package im.wangbo.bj58.incubating.api;
+package im.wangbo.bj58.incubating.wmonitor.api;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.api;
+package im.wangbo.bj58.incubating.wmonitor.api;
 
 /**
  * Wmonitor client stub.
