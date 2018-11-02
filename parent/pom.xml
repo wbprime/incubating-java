@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>im.wangbo.bj58.incubating</groupId>
+    <artifactId>incubating-parent</artifactId>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven_build_timestamp_format>yyyy-MM-dd HH:mm:ssZ</maven_build_timestamp_format>
+        <compiler_source_version>1.8</compiler_source_version>
+        <compiler_target_version>1.8</compiler_target_version>
+        <compiler_testTarget_version>1.8</compiler_testTarget_version>
+        <compiler_testSource_version>1.8</compiler_testSource_version>
+
+        <project_source_encoding>UTF-8</project_source_encoding>
+        <project_resource_encoding>UTF-8</project_resource_encoding>
+        <project_reporting_output_encoding>UTF-8</project_reporting_output_encoding>
+
+        <maven_plugin_source_version>3.0.1</maven_plugin_source_version>
+        <maven_plugin_compiler_version>3.6.1</maven_plugin_compiler_version>
+        <maven_plugin_jar_version>3.0.2</maven_plugin_jar_version>
+        <maven_plugin_assembly_version>3.0.0</maven_plugin_assembly_version>
+        <maven_plugin_dependency_version>3.0.0</maven_plugin_dependency_version>
+        <maven_plugin_resources_version>3.0.2</maven_plugin_resources_version>
+        <maven_plugin_clean_version>3.0.0</maven_plugin_clean_version>
+        <maven_plugin_enforcer_version>1.4.1</maven_plugin_enforcer_version>
+        <maven_plugin_deploy_version>2.8.2</maven_plugin_deploy_version>
+        <maven_plugin_install_version>2.5.2</maven_plugin_install_version>
+        <maven_plugin_release_version>2.5.3</maven_plugin_release_version>
+        <maven_plugin_shade_version>3.0.0</maven_plugin_shade_version>
+        <maven_plugin_surefire_version>2.20.1</maven_plugin_surefire_version>
+        <maven_plugin_failsafe_version>2.20.1</maven_plugin_failsafe_version>
+        <maven_plugin_versions_version>2.3</maven_plugin_versions_version>
+
+        <javax_inject_version>1</javax_inject_version>
+        <findbugs_jsr305_verson>3.0.2</findbugs_jsr305_verson>
+
+        <google_guava_version>23.0</google_guava_version>
+        <google_guice_version>4.1.0</google_guice_version>
+        <google_autovalue_version>1.5</google_autovalue_version>
+        <google_autovalue_redacted_version>1.0.1</google_autovalue_redacted_version>
+        <google_autoservice_version>1.0-rc4</google_autoservice_version>
+        <google_autoservice_version>1.0-beta5</google_autoservice_version>
+        <google_autocommon_version>0.10</google_autocommon_version>
+
+        <squareup_javapoet_version>1.8.0</squareup_javapoet_version>
+        <squareup_moshi_version>1.6.0</squareup_moshi_version>
+        <nanojson_version>1.2</nanojson_version>
+        <!-- <moshi_auto_value_plugin_version>0.4.3</moshi_auto_value_plugin_version> -->
+
+        <joda_time_version>2.9.9</joda_time_version>
+
+        <netty_version>4.1.22.Final</netty_version>
+
+        <!--libs: logging-->
+        <slf4j_version>1.7.25</slf4j_version>
+        <logback_version>1.2.3</logback_version>
+
+        <!-- libs: testing -->
+        <junit_version>4.12</junit_version>
+        <hamcrest_version>1.3</hamcrest_version>
+        <assertj_core_version>3.10.0</assertj_core_version>
+        <assertj_guava_version>3.2.0</assertj_guava_version>
+        <assertj_jodatime_version>2.2.0</assertj_jodatime_version>
+        <concurrentunit_version>0.4.2</concurrentunit_version>
+        <mockito_version>2.8.9</mockito_version>
+        <powermock_version>1.7.1</powermock_version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${findbugs_jsr305_verson}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax_inject_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google_guava_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${google_guice_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-grapher</artifactId>
+                <version>${google_guice_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-multibindings</artifactId>
+                <version>${google_guice_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-assistedinject</artifactId>
+                <version>${google_guice_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.auto.value</groupId>
+                <artifactId>auto-value</artifactId>
+                <version>${google_autovalue_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.auto.value</groupId>
+                <artifactId>auto-value-redacted</artifactId>
+                <version>${google_autovalue_redacted_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${google_autoservice_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto</groupId>
+                <artifactId>auto-common</artifactId>
+                <version>${google_autocommon_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${squareup_javapoet_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.moshi</groupId>
+                <artifactId>moshi</artifactId>
+                <version>${squareup_moshi_version}</version>
+            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.grack</groupId>-->
+                <!--<artifactId>nanojson</artifactId>-->
+                <!--<version>${nanojson_version}</version>-->
+            <!--</dependency>-->
+
+            <!-- <dependency> -->
+            <!--     <groupId>com.ryanharter.auto.value</groupId> -->
+            <!--     <artifactId>auto-value-moshi</artifactId> -->
+            <!--     <version>${moshi_auto_value_plugin_version}</version> -->
+            <!-- </dependency> -->
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda_time_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty_version}</version>
+            </dependency>
+
+            <!--libs: logging-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback_version}</version>
+            </dependency>
+
+            <!-- libs: testing -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>${hamcrest_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj_core_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-guava</artifactId>
+                <version>${assertj_guava_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-joda-time</artifactId>
+                <version>${assertj_jodatime_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.jodah</groupId>
+                <artifactId>concurrentunit</artifactId>
+                <version>${concurrentunit_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito2</artifactId>
+                <version>${powermock_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock_version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven_plugin_jar_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven_plugin_assembly_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven_plugin_clean_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven_plugin_source_version}</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven_plugin_compiler_version}</version>
+                    <configuration>
+                        <source>${compiler_source_version}</source>
+                        <target>${compiler_target_version}</target>
+                        <testSource>${compiler_testSource_version}</testSource>
+                        <testTarget>${compiler_testTarget_version}</testTarget>
+                        <encoding>${project_source_encoding}</encoding>
+                        <optimize>true</optimize>
+                        <!-- Slightly faster builds, see https://issues.apache.org/jira/browse/MCOMPILER-209 -->
+                        <useIncrementalCompilation>false</useIncrementalCompilation>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven_plugin_dependency_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven_plugin_deploy_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven_plugin_install_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven_plugin_release_version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven_plugin_resources_version}</version>
+                    <configuration>
+                        <encoding>${project_resource_encoding}</encoding>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven_plugin_shade_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven_plugin_surefire_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven_plugin_failsafe_version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${maven_plugin_versions_version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
