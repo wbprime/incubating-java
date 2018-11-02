@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.wmonitor.api;
+package im.wangbo.bj58.wmonitor.api;
 
 import org.junit.Before;
 import org.junit.Test;
