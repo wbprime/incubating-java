@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>janus</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>im.wangbo.bj58.incubating</groupId>
+        <artifactId>incubating-parent</artifactId>
+        <version>0.1.0</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+
+    <modules>
+        <module>core</module>
+        <module>transport-websocket</module>
+    </modules>
+
+    <properties>
+        <janus_core_version>0.1.1</janus_core_version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>im.wangbo.bj58.incubating</groupId>
+                <artifactId>janus-core</artifactId>
+                <version>${janus_core_version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

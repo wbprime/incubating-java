@@ -5,6 +5,9 @@
 # Maven related
 target/
 
+# Vertx related
+.vertx/
+
 # Compiled class file
 *.class
 

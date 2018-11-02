@@ -16,5 +16,6 @@
       <module>parent</module>
       <module>wmonitor</module>
       <module>wtable</module>
+      <module>janus</module>
   </modules>
 </project>
