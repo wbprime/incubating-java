@@ -6,6 +6,6 @@
  * @author Elvis Wang
  */
 @ParametersAreNonnullByDefault
-package im.wangbo.bj58.incubating.wtable.repository;
+package im.wangbo.bj58.wtable.core;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.wtable.repository;
+package im.wangbo.bj58.wtable.repository;
 
 import java.util.Optional;
 import java.util.function.Function;

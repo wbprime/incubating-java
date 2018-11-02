@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.wtable.core;
+package im.wangbo.bj58.wtable.core;
 
 import java.time.Duration;
 import java.util.function.Supplier;

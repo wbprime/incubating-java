@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.wtable.core;
+package im.wangbo.bj58.wtable.core;
 
 import com.google.auto.value.AutoValue;
 

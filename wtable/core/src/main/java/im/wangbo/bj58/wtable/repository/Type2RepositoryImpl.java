@@ -1,12 +1,12 @@
-package im.wangbo.bj58.incubating.wtable.repository;
+package im.wangbo.bj58.wtable.repository;
 
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import im.wangbo.bj58.incubating.wtable.core.ColKey;
-import im.wangbo.bj58.incubating.wtable.core.RowKey;
-import im.wangbo.bj58.incubating.wtable.core.Value;
+import im.wangbo.bj58.wtable.core.ColKey;
+import im.wangbo.bj58.wtable.core.RowKey;
+import im.wangbo.bj58.wtable.core.Value;
 
 /**
  * TODO add brief description here

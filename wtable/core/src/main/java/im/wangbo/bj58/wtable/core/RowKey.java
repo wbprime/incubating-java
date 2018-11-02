@@ -1,4 +1,4 @@
-package im.wangbo.bj58.incubating.wtable.core;
+package im.wangbo.bj58.wtable.core;
 
 import java.util.function.Supplier;
 
@@ -9,18 +9,18 @@ import java.util.function.Supplier;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-public interface ColKey extends Supplier<byte[]> {
+public interface RowKey extends Supplier<byte[]> {
     /**
-     * Get bytes for col key.
+     * Get bytes for row key.
      *
      * Do not try to changes the actual bytes returned.
      *
-     * Note that changes in returned result will or will not be reflected in this {@link ColKey} instance.
+     * Note that changes in returned result will or will not be reflected in this {@link RowKey} instance.
      * It is implementation dependent.
      *
-     * @return col key bytes
+     * @return row key bytes
      */
-    default byte[] colKey() {
+    default byte[] rowKey() {
         return get();
     }
 }
