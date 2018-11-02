@@ -1,6 +1,7 @@
 package im.wangbo.bj58.incubating.janus.transport.websocket;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
+@Ignore
 @RunWith(VertxUnitRunner.class)
 public class VertxBasedTransportTest {
 
