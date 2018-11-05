@@ -61,16 +61,6 @@ public final class Repositories {
             return new TypedBuilder1<>(build());
         }
 
-        public <ID, V> TypedBuilder2<ID, V> entityType(final Class<ID> idType, final Class<V> valueType) {
-            return new TypedBuilder2<>(build());
-        }
-
-        public <R, C, V> TypedBuilder3<R, C, V> entityType(
-                final Class<R> rowKeyType, final Class<C> colKeyType, final Class<V> valueType
-        ) {
-            return new TypedBuilder3<>(build());
-        }
-
         public Repository build() {
             checkNotNull(wtableStub, "wtableStub should not be null but was");
             checkNotNull(table, "wtableStub should not be null but was");
@@ -113,90 +103,9 @@ public final class Repositories {
             return this;
         }
 
-        public Type1Repository<E> build() {
-            return new Type1RepositoryImpl<>(
-                    repository, toRowKey, toColKey, toValue, toEntity
-            );
+        public TypedRepository<E> build() {
+            return new TypedRepositoryImpl<>(repository, toRowKey, toColKey, toValue, toEntity);
         }
     }
 
-    public static final class TypedBuilder2<ID, E> {
-        private final Repository repository;
-
-        private Function<ID, RowKey> toRowKey;
-        private Function<ID, ColKey> toColKey;
-
-        private Function<E, Value> toValue;
-        private Function<Value, E> toEntity;
-
-        TypedBuilder2(Repository repository) {
-            this.repository = repository;
-        }
-
-        public TypedBuilder2<ID, E> rowKeyMapper(final Function<ID, RowKey> func) {
-            this.toRowKey = func;
-            return this;
-        }
-
-        public TypedBuilder2<ID, E> colKeyMapper(final Function<ID, ColKey> func) {
-            this.toColKey = func;
-            return this;
-        }
-
-        public TypedBuilder2<ID, E> valueMapper(final Function<E, Value> func) {
-            this.toValue = func;
-            return this;
-        }
-
-        public TypedBuilder2<ID, E> entityMapper(final Function<Value, E> func) {
-            this.toEntity = func;
-            return this;
-        }
-
-        public Type2Repository<ID, E> build() {
-            return new Type2RepositoryImpl<>(
-                    repository, toRowKey, toColKey, toValue, toEntity
-            );
-        }
-    }
-
-    public static final class TypedBuilder3<R, C, E> {
-        private final Repository repository;
-
-        private Function<R, RowKey> toRowKey;
-        private Function<C, ColKey> toColKey;
-
-        private Function<E, Value> toValue;
-        private Function<Value, E> toEntity;
-
-        TypedBuilder3(Repository repository) {
-            this.repository = repository;
-        }
-
-        public TypedBuilder3<R, C, E> rowKeyMapper(final Function<R, RowKey> func) {
-            this.toRowKey = func;
-            return this;
-        }
-
-        public TypedBuilder3<R, C, E> colKeyMapper(final Function<C, ColKey> func) {
-            this.toColKey = func;
-            return this;
-        }
-
-        public TypedBuilder3<R, C, E> valueMapper(final Function<E, Value> func) {
-            this.toValue = func;
-            return this;
-        }
-
-        public TypedBuilder3<R, C, E> entityMapper(final Function<Value, E> func) {
-            this.toEntity = func;
-            return this;
-        }
-
-        public Type3Repository<R, C, E> build() {
-            return new Type3RepositoryImpl<>(
-                    repository, toRowKey, toColKey, toValue, toEntity
-            );
-        }
-    }
 }

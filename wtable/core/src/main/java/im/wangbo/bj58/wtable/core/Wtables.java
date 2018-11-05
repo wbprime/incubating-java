@@ -201,14 +201,13 @@ public final class Wtables {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            StringRowKey that = (StringRowKey) o;
+            StringColKey that = (StringColKey) o;
             return Objects.equals(str, that.str) &&
                     Objects.equals(charset, that.charset);
         }
 
         @Override
         public int hashCode() {
-
             return Objects.hash(str, charset);
         }
 

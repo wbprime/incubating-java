@@ -17,6 +17,13 @@ public class WtableException extends Exception {
 
     public WtableException(
             final String op,
+            final Throwable cause
+    ) {
+        this(op, null, cause);
+    }
+
+    public WtableException(
+            final String op,
             @Nullable final Table table,
             final Throwable cause
     ) {
@@ -42,7 +49,7 @@ public class WtableException extends Exception {
             @Nullable final CasStamp casStamp,
             final Throwable cause
     ) {
-        super("Failed to perform wtable operation \"" + op + "\"", cause);
+        super("Failed to perform operation \"" + op + "\"", cause);
         this.op = op;
         this.table = table;
         this.rowKey = rowKey;

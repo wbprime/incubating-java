@@ -11,7 +11,7 @@ import im.wangbo.bj58.wtable.core.Value;
 import im.wangbo.bj58.wtable.core.WtableException;
 
 /**
- * Wrap general purpose {@link im.wangbo.bj58.wtable.core.WtableStub} operations
+ * Wrap general purpose {@link im.wangbo.bj58.wtable.core.WtableStub} operations.
  *
  * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
  *
@@ -80,7 +80,7 @@ public interface Repository {
      *
      * @param r row key
      * @param c col key
-     * @param updater updater function
+     * @param updater updater function, accept nullable, output nullable
      * @return true if updated, otherwise false
      * @throws WtableException if failed
      */
@@ -99,7 +99,7 @@ public interface Repository {
      *
      * @param r row key
      * @param c col key
-     * @param when test predicate
+     * @param when test predicate, accept nullable
      * @return true if updated, otherwise false
      * @throws WtableException if failed
      */

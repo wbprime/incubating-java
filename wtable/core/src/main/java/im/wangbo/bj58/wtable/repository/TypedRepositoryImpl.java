@@ -3,10 +3,12 @@ package im.wangbo.bj58.wtable.repository;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Value;
+import im.wangbo.bj58.wtable.core.WtableException;
 
 /**
  * TODO add brief description here
@@ -15,7 +17,7 @@ import im.wangbo.bj58.wtable.core.Value;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-final class Type1RepositoryImpl<E> implements Type1Repository<E> {
+final class TypedRepositoryImpl<E> implements TypedRepository<E> {
     private final Repository delegate;
 
     private final Function<E, RowKey> mapperToRowkey;
@@ -24,7 +26,7 @@ final class Type1RepositoryImpl<E> implements Type1Repository<E> {
 
     private final Function3<RowKey, ColKey, Value, E> mapperToEntity;
 
-    Type1RepositoryImpl(
+    TypedRepositoryImpl(
             final Repository delegate,
             final Function<E, RowKey> mapperToRowkey,
             final Function<E, ColKey> mapperToColkey,
@@ -39,7 +41,7 @@ final class Type1RepositoryImpl<E> implements Type1Repository<E> {
     }
 
     @Override
-    public Optional<E> find(E id) {
+    public Optional<E> find(E id) throws WtableException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         final Optional<Value> value = delegate.find(rowKey, colKey);
@@ -48,50 +50,50 @@ final class Type1RepositoryImpl<E> implements Type1Repository<E> {
     }
 
     @Override
-    public void overrideInsert(E e) {
+    public void overrideInsert(E e) throws WtableException {
         delegate.overrideInsert(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public void delete(E id) {
+    public void delete(E id) throws WtableException {
         delegate.delete(
                 mapperToRowkey.apply(id), mapperToColkey.apply(id)
         );
     }
 
     @Override
-    public boolean insertOnNotExists(E e) {
+    public boolean insertOnNotExists(E e) throws WtableException {
         return delegate.insertOnNotExists(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public boolean updateOnExists(E e) {
+    public boolean updateOnExists(E e) throws WtableException {
         return delegate.updateOnExists(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public boolean compareAndUpdate(E id, Function<E, Optional<E>> updater) {
+    public boolean compareAndUpdate(E id, UnaryOperator<E> updater) throws WtableException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         return delegate.compareAndUpdate(
                 rowKey, colKey,
-                v -> updater.apply(mapperToEntity.apply(rowKey, colKey, v)).map(mapperToValue)
+                v -> updater.andThen(mapperToValue).apply(mapperToEntity.apply(rowKey, colKey, v))
         );
     }
 
     @Override
-    public boolean compareAndDelete(E id, Predicate<E> vWhen) {
+    public boolean compareAndDelete(E id, Predicate<E> when) throws WtableException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         return delegate.compareAndDelete(
                 rowKey, colKey,
-                v -> vWhen.test(mapperToEntity.apply(rowKey, colKey, v))
+                v -> when.test(mapperToEntity.apply(rowKey, colKey, v))
         );
     }
 }
