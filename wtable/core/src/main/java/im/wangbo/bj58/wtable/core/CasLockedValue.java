@@ -30,7 +30,7 @@ public abstract class CasLockedValue {
         return create(Optional.of(value), casStamp);
     }
 
-    static CasLockedValue create(Optional<Value> value, CasStamp casStamp) {
+    private static CasLockedValue create(final Optional<Value> value, final CasStamp casStamp) {
         return new AutoValue_CasLockedValue(value, casStamp);
     }
 }
