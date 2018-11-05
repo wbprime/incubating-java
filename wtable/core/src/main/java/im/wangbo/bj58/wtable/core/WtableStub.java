@@ -16,7 +16,7 @@ public interface WtableStub {
      * @param table table
      * @param rowKey row key
      * @param colKey col key
-     * @return value
+     * @return value if found, otherwise {@link Optional#empty()}
      * @throws WtableException if failed
      */
     Optional<Value> getMasterSlave(
@@ -28,7 +28,7 @@ public interface WtableStub {
      * @param table table
      * @param rowKey row key
      * @param colKey col key
-     * @return value
+     * @return value if found, otherwise {@link Optional#empty()}
      * @throws WtableException if failed
      */
     Optional<Value> getMasterOnly(
@@ -49,6 +49,8 @@ public interface WtableStub {
 
     /**
      * Set value without cas lock.
+     *
+     * Set a new value for given row key and col key if no value exists, otherwise override it.
      *
      * @param table table
      * @param rowKey row key
