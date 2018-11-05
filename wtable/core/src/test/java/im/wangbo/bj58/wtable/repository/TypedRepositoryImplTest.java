@@ -19,7 +19,7 @@ import java.util.function.UnaryOperator;
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.Wtables;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -163,11 +163,11 @@ public class TypedRepositoryImplTest {
         final RowKey rowKey = entityToRow(e1);
         final ColKey colKey = entityToCol(e1);
         Mockito.when(delegate.find(rowKey, colKey))
-                .thenThrow(new WtableException("find", new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("find", new RuntimeException("Ex")));
 
         Assertions.assertThatThrownBy(
                 () -> repository.find(e1)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).find(rowKey, colKey);
@@ -182,12 +182,12 @@ public class TypedRepositoryImplTest {
         final ColKey colKey = entityToCol(e1);
         final Value value = entityToValue(e1);
 
-        Mockito.doThrow(new WtableException("find", new RuntimeException("Ex")))
+        Mockito.doThrow(new WtableCheckedException("find", new RuntimeException("Ex")))
                 .when(delegate).overrideInsert(rowKey, colKey, value);
 
         Assertions.assertThatThrownBy(
                 () -> repository.overrideInsert(e1)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).overrideInsert(rowKey, colKey, value);
@@ -217,12 +217,12 @@ public class TypedRepositoryImplTest {
         final RowKey rowKey = entityToRow(e1);
         final ColKey colKey = entityToCol(e1);
 
-        Mockito.doThrow(new WtableException("find", new RuntimeException("Ex")))
+        Mockito.doThrow(new WtableCheckedException("find", new RuntimeException("Ex")))
                 .when(delegate).delete(rowKey, colKey);
 
         Assertions.assertThatThrownBy(
                 () -> repository.delete(e1)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).delete(rowKey, colKey);
@@ -291,11 +291,11 @@ public class TypedRepositoryImplTest {
         final Value value = entityToValue(e1);
 
         Mockito.when(delegate.insertOnNotExists(rowKey, colKey, value))
-                .thenThrow(new WtableException("find", new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("find", new RuntimeException("Ex")));
 
         Assertions.assertThatThrownBy(
                 () -> repository.insertOnNotExists(e1)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).insertOnNotExists(rowKey, colKey, value);
@@ -349,11 +349,11 @@ public class TypedRepositoryImplTest {
         final Value value = entityToValue(e1);
 
         Mockito.when(delegate.updateOnExists(rowKey, colKey, value))
-                .thenThrow(new WtableException("find", new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("find", new RuntimeException("Ex")));
 
         Assertions.assertThatThrownBy(
                 () -> repository.updateOnExists(e1)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).updateOnExists(rowKey, colKey, value);
@@ -475,13 +475,13 @@ public class TypedRepositoryImplTest {
         final UnaryOperator<Entity> mapper2 = e -> entity;
 
         Mockito.when(delegate.compareAndUpdate(any(), any(), any()))
-                .thenThrow(new WtableException("find", new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("find", new RuntimeException("Ex")));
 
         final ArgumentCaptor<UnaryOperator<Value>> mapperArg = ArgumentCaptor.forClass(UnaryOperator.class);
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndUpdate(e1, mapper2)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).compareAndUpdate(eq(rowKey), eq(colKey), mapperArg.capture());
@@ -566,13 +566,13 @@ public class TypedRepositoryImplTest {
         final Predicate<Entity> mapper2 = e -> e.equals(e1);
 
         Mockito.when(delegate.compareAndDelete(any(), any(), any()))
-                .thenThrow(new WtableException("find", new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("find", new RuntimeException("Ex")));
 
         final ArgumentCaptor<Predicate<Value>> mapperArg = ArgumentCaptor.forClass(Predicate.class);
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndDelete(e1, mapper2)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         Mockito.verify(delegate).compareAndDelete(eq(rowKey), eq(colKey), mapperArg.capture());

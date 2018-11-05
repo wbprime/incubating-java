@@ -16,7 +16,7 @@ import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Table;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 import im.wangbo.bj58.wtable.core.Wtables;
 
@@ -56,7 +56,7 @@ public class AbstractRepositoryImplTest {
 
         repository = new AbstractRepositoryImpl(stub, table) {
             @Override
-            Optional<Value> findByKey(WtableStub wtableStub, Table table, RowKey r, ColKey c) throws WtableException {
+            Optional<Value> findByKey(WtableStub wtableStub, Table table, RowKey r, ColKey c) throws WtableCheckedException {
                 throw new UnsupportedOperationException("Not implemented yet");
             }
         };
@@ -84,12 +84,12 @@ public class AbstractRepositoryImplTest {
         final ColKey colKey = Wtables.colKey(String.valueOf(random.nextLong()));
         final Value value = Wtables.value(String.valueOf(random.nextLong()));
 
-        doThrow(new WtableException("set", table, new RuntimeException("Ex"))).when(stub).set(
+        doThrow(new WtableCheckedException("set", table, new RuntimeException("Ex"))).when(stub).set(
                 any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class)
         );
 
         Assertions.assertThatThrownBy(() -> repository.overrideInsert(rowKey, colKey, value))
-                .isInstanceOf(WtableException.class)
+                .isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).set(table, rowKey, colKey, value);
@@ -116,12 +116,12 @@ public class AbstractRepositoryImplTest {
         final RowKey rowKey = Wtables.rowKey(String.valueOf(random.nextLong()));
         final ColKey colKey = Wtables.colKey(String.valueOf(random.nextLong()));
 
-        doThrow(new WtableException("delete", table, new RuntimeException("Ex"))).when(stub).delete(
+        doThrow(new WtableCheckedException("delete", table, new RuntimeException("Ex"))).when(stub).delete(
                 any(Table.class), any(RowKey.class), any(ColKey.class)
         );
 
         Assertions.assertThatThrownBy(() -> repository.delete(rowKey, colKey))
-                .isInstanceOf(WtableException.class)
+                .isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).delete(table, rowKey, colKey);
@@ -181,12 +181,12 @@ public class AbstractRepositoryImplTest {
         final Value value = Wtables.value(String.valueOf(random.nextLong()));
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
-                .thenThrow(new WtableException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
         doNothing().when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class));
 
         Assertions.assertThatThrownBy(
                 () -> repository.insertOnNotExists(rowKey, colKey, value)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);
@@ -204,7 +204,7 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(oldValue, casStamp));
-        doThrow(new WtableException("set", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("set", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         final boolean result = repository.insertOnNotExists(rowKey, colKey, value);
@@ -225,12 +225,12 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(casStamp));
-        doThrow(new WtableException("set", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("set", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         Assertions.assertThatThrownBy(
                 () -> repository.insertOnNotExists(rowKey, colKey, value)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);
@@ -291,12 +291,12 @@ public class AbstractRepositoryImplTest {
         final Value value = Wtables.value(String.valueOf(random.nextLong()));
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
-                .thenThrow(new WtableException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
         doNothing().when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class));
 
         Assertions.assertThatThrownBy(
                 () -> repository.updateOnExists(rowKey, colKey, value)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);
@@ -314,12 +314,12 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(oldValue, casStamp));
-        doThrow(new WtableException("set", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("set", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         Assertions.assertThatThrownBy(
                 () -> repository.updateOnExists(rowKey, colKey, value)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);
@@ -337,7 +337,7 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(casStamp));
-        doThrow(new WtableException("set", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("set", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         final boolean result = repository.updateOnExists(rowKey, colKey, value);
@@ -429,7 +429,7 @@ public class AbstractRepositoryImplTest {
         final Value value = Wtables.value(String.valueOf(random.nextLong()));
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
-                .thenThrow(new WtableException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
         doNothing().when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         final UnaryOperator<Value> updater = mock(UnaryOperator.class);
@@ -437,7 +437,7 @@ public class AbstractRepositoryImplTest {
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndUpdate(rowKey, colKey, updater)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
 
@@ -457,7 +457,7 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(oldValue, casStamp));
-        doThrow(new WtableException("set", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("set", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).set(any(Table.class), any(RowKey.class), any(ColKey.class), any(Value.class), any(CasStamp.class));
 
         final UnaryOperator<Value> updater = mock(UnaryOperator.class);
@@ -465,7 +465,7 @@ public class AbstractRepositoryImplTest {
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndUpdate(rowKey, colKey, updater)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);
@@ -555,7 +555,7 @@ public class AbstractRepositoryImplTest {
         final Value value = Wtables.value(String.valueOf(random.nextLong()));
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
-                .thenThrow(new WtableException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("getCasLocked", table, rowKey, colKey, new RuntimeException("Ex")));
         doNothing().when(stub).delete(any(Table.class), any(RowKey.class), any(ColKey.class), any(CasStamp.class));
 
         final Predicate<Value> predicate = mock(Predicate.class);
@@ -563,7 +563,7 @@ public class AbstractRepositoryImplTest {
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndDelete(rowKey, colKey, predicate)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
 
@@ -583,7 +583,7 @@ public class AbstractRepositoryImplTest {
 
         when(stub.getCasLocked(any(Table.class), any(RowKey.class), any(ColKey.class)))
                 .thenReturn(CasLockedValue.create(oldValue, casStamp));
-        doThrow(new WtableException("delete", table, rowKey, colKey, new RuntimeException("Ex")))
+        doThrow(new WtableCheckedException("delete", table, rowKey, colKey, new RuntimeException("Ex")))
                 .when(stub).delete(any(Table.class), any(RowKey.class), any(ColKey.class), any(CasStamp.class));
 
         final Predicate<Value> predicate = mock(Predicate.class);
@@ -591,7 +591,7 @@ public class AbstractRepositoryImplTest {
 
         Assertions.assertThatThrownBy(
                 () -> repository.compareAndDelete(rowKey, colKey, predicate)
-        ).isInstanceOf(WtableException.class)
+        ).isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getCasLocked(table, rowKey, colKey);

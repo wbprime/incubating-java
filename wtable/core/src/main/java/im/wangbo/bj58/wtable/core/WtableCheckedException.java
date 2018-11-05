@@ -2,8 +2,7 @@ package im.wangbo.bj58.wtable.core;
 
 import javax.annotation.Nullable;
 
-public class WtableException extends Exception {
-    private final String op;
+public class WtableCheckedException extends Exception {
     private Table table;
 
     @Nullable
@@ -15,14 +14,14 @@ public class WtableException extends Exception {
     @Nullable
     private CasStamp casStamp;
 
-    public WtableException(
+    public WtableCheckedException(
             final String op,
             final Throwable cause
     ) {
         this(op, null, cause);
     }
 
-    public WtableException(
+    public WtableCheckedException(
             final String op,
             @Nullable final Table table,
             final Throwable cause
@@ -30,7 +29,7 @@ public class WtableException extends Exception {
         this(op, table, null, null, cause);
     }
 
-    public WtableException(
+    public WtableCheckedException(
             final String op,
             @Nullable final Table table,
             @Nullable final RowKey rowKey,
@@ -40,7 +39,7 @@ public class WtableException extends Exception {
         this(op, table, rowKey, colKey, null, null, cause);
     }
 
-    public WtableException(
+    public WtableCheckedException(
             final String op,
             @Nullable final Table table,
             @Nullable final RowKey rowKey,
@@ -49,8 +48,13 @@ public class WtableException extends Exception {
             @Nullable final CasStamp casStamp,
             final Throwable cause
     ) {
-        super("Failed to perform operation \"" + op + "\"", cause);
-        this.op = op;
+        super(
+                String.format(
+                        "Failed to perform operation \"%s\", in Table(%s), by Row(%s) Col(%s), optionally Value(%s) Cas(%s)",
+                        op, table, rowKey, colKey, value, casStamp
+                ),
+                cause
+        );
         this.table = table;
         this.rowKey = rowKey;
         this.colKey = colKey;

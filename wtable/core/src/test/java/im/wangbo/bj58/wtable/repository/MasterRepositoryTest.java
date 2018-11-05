@@ -12,7 +12,7 @@ import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Table;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 import im.wangbo.bj58.wtable.core.Wtables;
 
@@ -88,10 +88,10 @@ public class MasterRepositoryTest {
         final ColKey colKey = Wtables.colKey(String.valueOf(random.nextLong()));
 
         when(stub.getMasterOnly(any(Table.class), any(RowKey.class), any(ColKey.class)))
-                .thenThrow(new WtableException("get", table, rowKey, colKey, new RuntimeException("Ex")));
+                .thenThrow(new WtableCheckedException("get", table, rowKey, colKey, new RuntimeException("Ex")));
 
         Assertions.assertThatThrownBy(() -> repository.find(rowKey, colKey))
-                .isInstanceOf(WtableException.class)
+                .isInstanceOf(WtableCheckedException.class)
                 .hasCauseInstanceOf(RuntimeException.class);
 
         verify(stub).getMasterOnly(table, rowKey, colKey);

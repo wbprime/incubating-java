@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 
 /**
  * Wrap general purpose {@link im.wangbo.bj58.wtable.core.WtableStub} operations.
@@ -24,9 +24,9 @@ public interface Repository {
      * @param r row key
      * @param c col key
      * @return value if found, otherwise {@link Optional#empty()}
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    Optional<Value> find(final RowKey r, final ColKey c) throws WtableException;
+    Optional<Value> find(final RowKey r, final ColKey c) throws WtableCheckedException;
 
     /**
      * Set a value by row key and col key, override if exists.
@@ -34,18 +34,18 @@ public interface Repository {
      * @param r row key
      * @param c col key
      * @param val value
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    void overrideInsert(final RowKey r, final ColKey c, final Value val) throws WtableException;
+    void overrideInsert(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException;
 
     /**
      * Delete the value by row key and col key.
      *
      * @param r row key
      * @param c col key
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    void delete(final RowKey r, final ColKey c) throws WtableException;
+    void delete(final RowKey r, final ColKey c) throws WtableCheckedException;
 
     /**
      * Set a value by row key and col key, ignore if exists.
@@ -54,9 +54,9 @@ public interface Repository {
      * @param c col key
      * @param val value
      * @return true if not exists and set successfully, false if exists
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) throws WtableException;
+    boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException;
 
     /**
      * Set a value by row key and col key, ignore if not exists.
@@ -65,9 +65,9 @@ public interface Repository {
      * @param c col key
      * @param val value
      * @return true if exists and set successfully, false if not exists
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    boolean updateOnExists(final RowKey r, final ColKey c, final Value val) throws WtableException;
+    boolean updateOnExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException;
 
     /**
      * Set a value by apply a function {@link Function updater} to existed value by row key
@@ -82,11 +82,11 @@ public interface Repository {
      * @param c col key
      * @param updater updater function, accept nullable, output nullable
      * @return true if updated, otherwise false
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     boolean compareAndUpdate(
             final RowKey r, final ColKey c, final UnaryOperator<Value> updater
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     /**
      * Delete a value by apply a predicate {@link Predicate when} to existed value by row key
@@ -101,9 +101,9 @@ public interface Repository {
      * @param c col key
      * @param when test predicate, accept nullable
      * @return true if updated, otherwise false
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     boolean compareAndDelete(
             final RowKey r, final ColKey c, final Predicate<Value> when
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 }
