@@ -9,7 +9,7 @@ import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Table;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 
 /**
@@ -35,25 +35,25 @@ abstract class AbstractRepositoryImpl implements Repository {
     // Master-slave or master-only
     abstract Optional<Value> findByKey(
             final WtableStub wtableStub, final Table table, final RowKey r, final ColKey c
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     @Override
-    public Optional<Value> find(final RowKey r, final ColKey c) throws WtableException {
+    public Optional<Value> find(final RowKey r, final ColKey c) throws WtableCheckedException {
         return findByKey(wtable, table, r, c);
     }
 
     @Override
-    public void overrideInsert(final RowKey r, final ColKey c, final Value val) throws WtableException {
+    public void overrideInsert(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
         wtable.set(table, r, c, val);
     }
 
     @Override
-    public void delete(final RowKey r, final ColKey c) throws WtableException {
+    public void delete(final RowKey r, final ColKey c) throws WtableCheckedException {
         wtable.delete(table, r, c);
     }
 
     @Override
-    public boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) throws WtableException {
+    public boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
         final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
         if (casLocked.value().isPresent()) {
             return false;
@@ -64,7 +64,7 @@ abstract class AbstractRepositoryImpl implements Repository {
     }
 
     @Override
-    public boolean updateOnExists(final RowKey r, final ColKey c, final Value val) throws WtableException {
+    public boolean updateOnExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
         final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
         if (casLocked.value().isPresent()) {
             wtable.set(table, r, c, val, casLocked.casStamp());
@@ -77,7 +77,7 @@ abstract class AbstractRepositoryImpl implements Repository {
     @Override
     public boolean compareAndUpdate(
             final RowKey r, final ColKey c, final UnaryOperator<Value> updater
-    ) throws WtableException {
+    ) throws WtableCheckedException {
         final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
 
         final Optional<Value> newVal = casLocked.value().map(updater);
@@ -92,7 +92,7 @@ abstract class AbstractRepositoryImpl implements Repository {
     @Override
     public boolean compareAndDelete(
             final RowKey r, final ColKey c, final Predicate<Value> when
-    ) throws WtableException {
+    ) throws WtableCheckedException {
         final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
 
         final Optional<Value> newVal = casLocked.value().filter(when);

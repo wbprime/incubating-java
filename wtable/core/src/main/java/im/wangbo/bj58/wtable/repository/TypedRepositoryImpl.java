@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 
 /**
  * TODO add brief description here
@@ -41,7 +41,7 @@ final class TypedRepositoryImpl<E> implements TypedRepository<E> {
     }
 
     @Override
-    public Optional<E> find(E id) throws WtableException {
+    public Optional<E> find(E id) throws WtableCheckedException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         final Optional<Value> value = delegate.find(rowKey, colKey);
@@ -50,35 +50,35 @@ final class TypedRepositoryImpl<E> implements TypedRepository<E> {
     }
 
     @Override
-    public void overrideInsert(E e) throws WtableException {
+    public void overrideInsert(E e) throws WtableCheckedException {
         delegate.overrideInsert(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public void delete(E id) throws WtableException {
+    public void delete(E id) throws WtableCheckedException {
         delegate.delete(
                 mapperToRowkey.apply(id), mapperToColkey.apply(id)
         );
     }
 
     @Override
-    public boolean insertOnNotExists(E e) throws WtableException {
+    public boolean insertOnNotExists(E e) throws WtableCheckedException {
         return delegate.insertOnNotExists(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public boolean updateOnExists(E e) throws WtableException {
+    public boolean updateOnExists(E e) throws WtableCheckedException {
         return delegate.updateOnExists(
                 mapperToRowkey.apply(e), mapperToColkey.apply(e), mapperToValue.apply(e)
         );
     }
 
     @Override
-    public boolean compareAndUpdate(E id, UnaryOperator<E> updater) throws WtableException {
+    public boolean compareAndUpdate(E id, UnaryOperator<E> updater) throws WtableCheckedException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         return delegate.compareAndUpdate(
@@ -88,7 +88,7 @@ final class TypedRepositoryImpl<E> implements TypedRepository<E> {
     }
 
     @Override
-    public boolean compareAndDelete(E id, Predicate<E> when) throws WtableException {
+    public boolean compareAndDelete(E id, Predicate<E> when) throws WtableCheckedException {
         final RowKey rowKey = mapperToRowkey.apply(id);
         final ColKey colKey = mapperToColkey.apply(id);
         return delegate.compareAndDelete(
