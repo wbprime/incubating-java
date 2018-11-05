@@ -2,7 +2,7 @@ package im.wangbo.bj58.wtable.core;
 
 import javax.annotation.Nullable;
 
-public class WtableUncheckedException extends Exception {
+public class WtableUncheckedException extends RuntimeException {
     private Table table;
 
     @Nullable
