@@ -1,8 +1,8 @@
 package im.wangbo.bj58.wtable.repository;
 
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import im.wangbo.bj58.wtable.core.CasLockedValue;
 import im.wangbo.bj58.wtable.core.ColKey;
@@ -13,7 +13,7 @@ import im.wangbo.bj58.wtable.core.WtableException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 
 /**
- * TODO add brief description here
+ * Implement {@link Repository}.
  *
  * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
  *
@@ -76,7 +76,7 @@ abstract class AbstractRepositoryImpl implements Repository {
 
     @Override
     public boolean compareAndUpdate(
-            final RowKey r, final ColKey c, final Function<Value, Value updater
+            final RowKey r, final ColKey c, final UnaryOperator<Value> updater
     ) throws WtableException {
         final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
 

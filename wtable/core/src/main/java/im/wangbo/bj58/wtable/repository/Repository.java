@@ -3,6 +3,7 @@ package im.wangbo.bj58.wtable.repository;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
@@ -84,7 +85,7 @@ public interface Repository {
      * @throws WtableException if failed
      */
     boolean compareAndUpdate(
-            final RowKey r, final ColKey c, final Function<Value, Value> updater
+            final RowKey r, final ColKey c, final UnaryOperator<Value> updater
     ) throws WtableException;
 
     /**

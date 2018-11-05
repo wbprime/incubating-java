@@ -3,7 +3,7 @@ package im.wangbo.bj58.wtable.core;
 import javax.annotation.Nullable;
 
 public class WtableException extends Exception {
-    private String op;
+    private final String op;
     private Table table;
 
     @Nullable
@@ -42,12 +42,36 @@ public class WtableException extends Exception {
             @Nullable final CasStamp casStamp,
             final Throwable cause
     ) {
-        super("Failed to perform wtable operation " + op, cause);
+        super("Failed to perform wtable operation \"" + op + "\"", cause);
         this.op = op;
         this.table = table;
         this.rowKey = rowKey;
         this.colKey = colKey;
         this.value = value;
         this.casStamp = casStamp;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    @Nullable
+    public RowKey getRowKey() {
+        return rowKey;
+    }
+
+    @Nullable
+    public ColKey getColKey() {
+        return colKey;
+    }
+
+    @Nullable
+    public Value getValue() {
+        return value;
+    }
+
+    @Nullable
+    public CasStamp getCasStamp() {
+        return casStamp;
     }
 }
