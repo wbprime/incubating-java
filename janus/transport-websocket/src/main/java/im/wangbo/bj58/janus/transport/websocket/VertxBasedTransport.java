@@ -15,7 +15,9 @@ import im.wangbo.bj58.janus.transport.PluginHandleRequest;
 import im.wangbo.bj58.janus.transport.ResponseHandler;
 import im.wangbo.bj58.janus.transport.SessionRequest;
 import im.wangbo.bj58.janus.transport.Transport;
-import im.wangbo.bj58.janus.transport.UnsupportedSchemaTransport;
+import io.vertx.core.http.RequestOptions;
+import io.vertx.core.http.WebsocketVersion;
+import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.http.HttpClient;
 import io.vertx.reactivex.core.http.WebSocket;
@@ -30,22 +32,14 @@ import io.vertx.reactivex.core.http.WebSocket;
 public class VertxBasedTransport implements Transport {
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxBasedTransport.class);
 
-    private static final String SCHEMA_WEBSOCKET = "ws";
-    private static final String SCHEMA_WEBSOCKET_SECURE = "wss";
+    private volatile Optional<WebSocket> curWebSocket;
 
-    private Optional<WebSocket> curWebSocket;
-
-    private VertxBasedTransport(final URI janusUri) {
+    private VertxBasedTransport() {
         this.curWebSocket = Optional.empty();
     }
 
-    public static Transport create(final URI uri) {
-        final String protocol = uri.getScheme();
-        if (SCHEMA_WEBSOCKET.equalsIgnoreCase(protocol) || SCHEMA_WEBSOCKET_SECURE.equalsIgnoreCase(protocol)) {
-            return new VertxBasedTransport(uri);
-        } else {
-            return new UnsupportedSchemaTransport(uri);
-        }
+    public static Transport create() {
+        return new VertxBasedTransport();
     }
 
     @Override
@@ -56,8 +50,13 @@ public class VertxBasedTransport implements Transport {
 
         final Vertx vertx = Vertx.vertx();
         final HttpClient httpClient = vertx.createHttpClient();
+
+        final RequestOptions opts = new RequestOptions()
+                .setHost(uri.getHost())
+                .setPort(uri.getPort())
+                .setURI(uri.getPath());
         httpClient.websocket(
-                uri.getPort(), uri.getHost(), uri.getPath(),
+                opts, MultiMap.caseInsensitiveMultiMap(), WebsocketVersion.V13, "janus-protocol",
                 websocket -> {
                     websocket.textMessageHandler(stdMessageHandler::accept);
                     curWebSocket = Optional.of(websocket);

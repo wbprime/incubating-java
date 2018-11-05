@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -20,6 +21,7 @@ import im.wangbo.bj58.janus.PluginHandle;
 import im.wangbo.bj58.janus.ServerInfo;
 import im.wangbo.bj58.janus.Session;
 import im.wangbo.bj58.janus.Transaction;
+import im.wangbo.bj58.janus.transport.InvalidResponse;
 import im.wangbo.bj58.janus.transport.JanusAckResponse;
 import im.wangbo.bj58.janus.transport.JanusErrorResponse;
 import im.wangbo.bj58.janus.transport.JanusEventResponse;
@@ -48,265 +50,226 @@ final class StdMessageHandler implements Consumer<String> {
         this.messageHandler = responseHandler;
     }
 
-    private void handleUnknownMessage(final String msg) {
-        parse(msg).ifPresent(
-                v -> messageHandler.handle(UnknownResponse.create(v))
-        );
+    private Transaction transactionFromJson(final JsonObject json) {
+        return Transaction.of(json.getString("transaction"));
+    }
+
+    private Session sessionFromJson(final JsonObject json) {
+        return Session.of(json.getJsonNumber("session_id").longValue());
+    }
+
+    private long pluginHandleFromJson(final JsonObject json) {
+        return json.getJsonNumber("sender").longValue();
+    }
+
+    private JanusAckResponse ackFromJson(final JsonObject json) {
+        return JanusAckResponse.builder()
+                .transaction(transactionFromJson(json))
+                .build();
+    }
+
+    private JanusErrorResponse errorFromJson(final JsonObject json) {
+        final JsonObject inner = json.getJsonObject("error");
+        return JanusErrorResponse.builder()
+                .transaction(transactionFromJson(json))
+                .errorCode(inner.getInt("code"))
+                .errorMessage(inner.getString("reason"))
+                .build();
+    }
+
+    private JanusEventResponse eventFromJson(final JsonObject json) {
+//        final JsonObject inner = json.getJsonObject("pluginData");
+        return JanusEventResponse.builder()
+                .transaction(transactionFromJson(json))
+                .pluginHandle(PluginHandle.of(Session.of(0L), pluginHandleFromJson(json)))
+                .data(JsonValue.EMPTY_JSON_OBJECT) // TODO
+                .build();
+    }
+
+    private WebrtcHangupResponse hangupFromJson(final JsonObject json) {
+        return WebrtcHangupResponse.builder()
+                .transaction(transactionFromJson(json))
+                .pluginHandle(PluginHandle.of(sessionFromJson(json), pluginHandleFromJson(json)))
+                .message(json.getString("reason"))
+                .build();
+    }
+
+    private WebrtcMediaResponse mediaFromJson(final JsonObject json) {
+        return WebrtcMediaResponse.builder()
+                .transaction(transactionFromJson(json))
+                .pluginHandle(PluginHandle.of(sessionFromJson(json), pluginHandleFromJson(json)))
+                .mediaType(json.getString("type"))
+                .isReceiving(json.getBoolean("receiving"))
+                .build();
+    }
+
+    private WebrtcSlowlinkResponse slowlinkFromJson(final JsonObject json) {
+        return WebrtcSlowlinkResponse.builder()
+                .transaction(transactionFromJson(json))
+                .pluginHandle(PluginHandle.of(sessionFromJson(json), pluginHandleFromJson(json)))
+                .numberOfNacks(json.getInt("nacks"))
+                .isUplink(json.getBoolean("uplink"))
+                .build();
+    }
+
+    private ServerInfoResponse serverInfoFromJson(final JsonObject json) {
+        final Map<String, ServerInfo.PluginDesc> plugins;
+        {
+            final JsonObject inner = json.getJsonObject("plugins");
+            if (inner.isEmpty()) {
+                plugins = Collections.emptyMap();
+            } else {
+                plugins = Maps.newHashMapWithExpectedSize(inner.size());
+                inner.forEach(
+                        (k, v) -> {
+                            final JsonObject o = (JsonObject) v;
+                            plugins.put(
+                                    k,
+                                    ServerInfo.PluginDesc.builder()
+                                            .name(o.getString("name"))
+                                            .author(o.getString("author"))
+                                            .description(o.getString("description"))
+                                            .versionNumber(o.getInt("version"))
+                                            .versionString(o.getString("version_string"))
+                                            .build()
+                            );
+                        }
+                );
+            }
+        }
+        final Map<String, ServerInfo.TransportDesc> transports;
+        {
+            final JsonObject inner = json.getJsonObject("transports");
+            if (inner.isEmpty()) {
+                transports = Collections.emptyMap();
+            } else {
+                transports = Maps.newHashMapWithExpectedSize(inner.size());
+                inner.forEach(
+                        (k, v) -> {
+                            final JsonObject o = (JsonObject) v;
+                            transports.put(
+                                    k,
+                                    ServerInfo.TransportDesc.builder()
+                                            .name(o.getString("name"))
+                                            .author(o.getString("author"))
+                                            .description(o.getString("description"))
+                                            .versionNumber(o.getInt("version"))
+                                            .versionString(o.getString("version_string"))
+                                            .build()
+                            );
+                        }
+                );
+            }
+        }
+        final Map<String, ServerInfo.EvHandlerDesc> evHandlers;
+        {
+            final JsonObject inner = json.getJsonObject("transports");
+            if (inner.isEmpty()) {
+                evHandlers = Collections.emptyMap();
+            } else {
+                evHandlers = Maps.newHashMapWithExpectedSize(inner.size());
+                inner.forEach(
+                        (k, v) -> {
+                            final JsonObject o = (JsonObject) v;
+                            evHandlers.put(
+                                    k,
+                                    ServerInfo.EvHandlerDesc.builder()
+                                            .name(o.getString("name"))
+                                            .author(o.getString("author"))
+                                            .description(o.getString("description"))
+                                            .versionNumber(o.getInt("version"))
+                                            .versionString(o.getString("version_string"))
+                                            .build()
+                            );
+                        }
+                );
+            }
+        }
+
+        return ServerInfoResponse.builder()
+                .transaction(transactionFromJson(json))
+                .server(ServerInfo.ServerDesc.builder()
+                        .name(json.getString("name"))
+                        .author(json.getString("author"))
+                        .sessionTimeout(Duration.ofSeconds(json.getInt("session-timeout")))
+                        .versionNumber(json.getInt("version"))
+                        .versionString(json.getString("version_string"))
+                        .build()
+                )
+                .plugins(plugins)
+                .transports(transports)
+                .eventHandlers(evHandlers)
+                .build();
+    }
+
+    private JanusSuccessResponse successFromJson(final JsonObject json) {
+        final JanusSuccessResponse.Builder builder = JanusSuccessResponse.builder()
+                .transaction(transactionFromJson(json));
+        if (json.containsKey("data")) {
+            return builder.data(json.getJsonObject("data")).build();
+        } else {
+            return builder.data(JsonObject.EMPTY_JSON_OBJECT).build();
+        }
+    }
+
+    private WebrtcUpResponse webrtcupFromJson(final JsonObject json) {
+        return WebrtcUpResponse.builder()
+                .transaction(transactionFromJson(json))
+                .pluginHandle(PluginHandle.of(sessionFromJson(json), pluginHandleFromJson(json)))
+                .build();
     }
 
     @Override
     public void accept(final String msg) {
         LOGGER.debug("Received message: {}", msg);
 
-        final Optional<JsonObject> json = parse(msg);
-        final Optional<TypeResp> resp = json.map(TypeResp::fromJson);
-        if (resp.isPresent()) {
-            final String respType = resp.get().getResponseType();
+        final Optional<JsonObject> jsonOpt = parse(msg);
+        if (jsonOpt.isPresent()) {
+            final JsonObject json = jsonOpt.get();
+            final String respType = json.getString("janus");
             switch (respType) {
-                default: {
-                    handleUnknownMessage(msg);
-                }
-                break;
-                case TypeResp.TYPE_ACK: {
-                    final Optional<AckResp> response = json.map(AckResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final AckResp r = response.get();
-                        messageHandler.handle(
-                                JanusAckResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_ERROR: {
-                    final Optional<ErrorResp> response = json.map(ErrorResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final ErrorResp r = response.get();
-                        messageHandler.handle(
-                                JanusErrorResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .errorCode(r.getError().getCode())
-                                        .errorMessage(r.getError().getMessage())
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_EVENT: {
-                    final Optional<EventResp> response = json.map(EventResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final EventResp r = response.get();
-                        messageHandler.handle(
-                                JanusEventResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .pluginHandle(PluginHandle.of(Session.of(0L), r.getPluginId()))
-                                        .data(JsonValue.EMPTY_JSON_OBJECT) // TODO
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_HANGUP: {
-                    final Optional<HangupResp> response = json.map(HangupResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final HangupResp r = response.get();
-                        messageHandler.handle(
-                                WebrtcHangupResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .pluginHandle(PluginHandle.of(Session.of(r.getSessionId()), r.getPluginId()))
-                                        .message(r.getMessage())
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_MEDIA: {
-                    final Optional<MediaResp> response = json.map(MediaResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final MediaResp r = response.get();
-                        messageHandler.handle(
-                                WebrtcMediaResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .pluginHandle(PluginHandle.of(Session.of(r.getSessionId()), r.getPluginId()))
-                                        .mediaType(r.getMediaType())
-                                        .isReceiving(r.getReceiving())
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_SERVER_INFO: {
-                    final Optional<ServerInfoResp> response = json.map(ServerInfoResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final ServerInfoResp r = response.get();
-
-                        final Map<String, ServerInfo.PluginDesc> plugins;
-                        {
-                            final Map<String, ServerInfoResp.PluginDesc> ps = r.getPlugins();
-                            if (null != ps) {
-                                plugins = Maps.newHashMapWithExpectedSize(ps.size());
-                                for (Map.Entry<String, ServerInfoResp.PluginDesc> entry : ps.entrySet()) {
-                                    final ServerInfoResp.PluginDesc desc = entry.getValue();
-                                    plugins.put(
-                                            entry.getKey(),
-                                            ServerInfo.PluginDesc.builder()
-                                                    .name(desc.getName())
-                                                    .author(desc.getAuthor())
-                                                    .description(desc.getDescription())
-                                                    .versionNumber(desc.getVersion())
-                                                    .versionString(desc.getVersionDescription())
-                                                    .build()
-                                    );
-                                }
-                            } else {
-                                plugins = Collections.emptyMap();
-                            }
-                        }
-                        final Map<String, ServerInfo.TransportDesc> transports;
-                        {
-                            final Map<String, ServerInfoResp.TransportDesc> ts = r.getTransports();
-                            if (null != ts) {
-                                transports = Maps.newHashMapWithExpectedSize(ts.size());
-                                for (Map.Entry<String, ServerInfoResp.TransportDesc> entry : ts.entrySet()) {
-                                    final ServerInfoResp.TransportDesc desc = entry.getValue();
-                                    transports.put(
-                                            entry.getKey(),
-                                            ServerInfo.TransportDesc.builder()
-                                                    .name(desc.getName())
-                                                    .author(desc.getAuthor())
-                                                    .description(desc.getDescription())
-                                                    .versionNumber(desc.getVersion())
-                                                    .versionString(desc.getVersionDescription())
-                                                    .build()
-                                    );
-                                }
-                            } else {
-                                transports = Collections.emptyMap();
-                            }
-                        }
-                        final Map<String, ServerInfo.EvHandlerDesc> evHandlers;
-                        {
-                            final Map<String, ServerInfoResp.EvHandlerDesc> es = r.getEventHandlers();
-                            if (null != es) {
-                                evHandlers = Maps.newHashMapWithExpectedSize(es.size());
-                                for (Map.Entry<String, ServerInfoResp.EvHandlerDesc> entry : es.entrySet()) {
-                                    final ServerInfoResp.EvHandlerDesc desc = entry.getValue();
-                                    evHandlers.put(
-                                            entry.getKey(),
-                                            ServerInfo.EvHandlerDesc.builder()
-                                                    .name(desc.getName())
-                                                    .author(desc.getAuthor())
-                                                    .description(desc.getDescription())
-                                                    .versionNumber(desc.getVersion())
-                                                    .versionString(desc.getVersionDescription())
-                                                    .build()
-                                    );
-                                }
-                            } else {
-                                evHandlers = Collections.emptyMap();
-                            }
-                        }
-
-                        messageHandler.handle(
-                                ServerInfoResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .server(
-                                                ServerInfo.ServerDesc.builder()
-                                                        .name(r.getName())
-                                                        .author(r.getAuthor())
-                                                        .sessionTimeout(Duration.ofSeconds(r.getSessionTimeout()))
-                                                        .versionNumber(r.getVersion())
-                                                        .versionString(r.getVersionDescription())
-                                                        .build()
-                                        )
-                                        .plugins(plugins)
-                                        .transports(transports)
-                                        .eventHandlers(evHandlers)
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_SLOWLINK: {
-                    final Optional<SlowlinkResp> response = json.map(SlowlinkResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final SlowlinkResp r = response.get();
-                        messageHandler.handle(
-                                WebrtcSlowlinkResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .pluginHandle(PluginHandle.of(Session.of(r.getSessionId()), r.getPluginId()))
-                                        .numberOfNacks(r.getNumberOfNacks())
-                                        .isUplink(r.getUplink())
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_SUCCESS: {
-                    final Optional<SuccessResp> response = json.map(SuccessResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final SuccessResp r = response.get();
-                        messageHandler.handle(
-                                JanusSuccessResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .data(r.getData())
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
-                case TypeResp.TYPE_WEBRTCUP: {
-                    final Optional<WebrtcUpResp> response = json.map(WebrtcUpResp::fromJson);
-
-                    if (response.isPresent()) {
-                        final WebrtcUpResp r = response.get();
-                        messageHandler.handle(
-                                WebrtcUpResponse.builder()
-                                        .transaction(Transaction.of(r.getTransactionId()))
-                                        .pluginHandle(PluginHandle.of(Session.of(r.getSessionId()), r.getPluginId()))
-                                        .build()
-                        );
-                    } else {
-                        handleUnknownMessage(msg);
-                    }
-                }
-                break;
+                default:
+                    messageHandler.handle(UnknownResponse.create(json));
+                    break;
+                case TypeResp.TYPE_ACK:
+                    messageHandler.handle(ackFromJson(json));
+                    break;
+                case TypeResp.TYPE_ERROR:
+                    messageHandler.handle(errorFromJson(json));
+                    break;
+                case TypeResp.TYPE_EVENT:
+                    messageHandler.handle(eventFromJson(json));
+                    break;
+                case TypeResp.TYPE_HANGUP:
+                    messageHandler.handle(hangupFromJson(json));
+                    break;
+                case TypeResp.TYPE_MEDIA:
+                    messageHandler.handle(mediaFromJson(json));
+                    break;
+                case TypeResp.TYPE_SERVER_INFO:
+                    messageHandler.handle(serverInfoFromJson(json));
+                    break;
+                case TypeResp.TYPE_SLOWLINK:
+                    messageHandler.handle(slowlinkFromJson(json));
+                    break;
+                case TypeResp.TYPE_SUCCESS:
+                    messageHandler.handle(successFromJson(json));
+                    break;
+                case TypeResp.TYPE_WEBRTCUP:
+                    messageHandler.handle(webrtcupFromJson(json));
+                    break;
             }
         } else {
-            // Handle invalid json message
+            // Invalid response, failed to parse response as JSON
+            messageHandler.handle(InvalidResponse.create(msg));
         }
     }
 
     private Optional<JsonObject> parse(final String msg) {
-        try {
-            final JsonObject response = Json.createReader(new StringReader(msg)).readObject();
+        try (final StringReader reader = new StringReader(msg)) {
+            final JsonObject response = Json.createReader(reader).readObject();
             return Optional.of(response);
-        } catch (Exception ex) {
+        } catch (JsonException ex) {
             return Optional.empty();
         }
     }

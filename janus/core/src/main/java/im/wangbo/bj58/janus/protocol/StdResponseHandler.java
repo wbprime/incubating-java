@@ -5,13 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 
-import im.wangbo.bj58.janus.transport.UnknownResponse;
+import im.wangbo.bj58.janus.transport.InvalidResponse;
 import im.wangbo.bj58.janus.transport.JanusAckResponse;
 import im.wangbo.bj58.janus.transport.JanusErrorResponse;
 import im.wangbo.bj58.janus.transport.JanusEventResponse;
 import im.wangbo.bj58.janus.transport.JanusSuccessResponse;
 import im.wangbo.bj58.janus.transport.ResponseHandler;
 import im.wangbo.bj58.janus.transport.ServerInfoResponse;
+import im.wangbo.bj58.janus.transport.UnknownResponse;
 import im.wangbo.bj58.janus.transport.WebrtcHangupResponse;
 import im.wangbo.bj58.janus.transport.WebrtcMediaResponse;
 import im.wangbo.bj58.janus.transport.WebrtcSlowlinkResponse;
@@ -120,6 +121,11 @@ final class StdResponseHandler implements ResponseHandler {
 
     @Override
     public void handle(UnknownResponse response) {
+        LOGGER.info("Response of unknown type: {}", response);
+    }
+
+    @Override
+    public void handle(InvalidResponse response) {
         LOGGER.info("Invalid async response: {}", response);
     }
 

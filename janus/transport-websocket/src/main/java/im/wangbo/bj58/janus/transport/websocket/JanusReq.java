@@ -2,6 +2,7 @@ package im.wangbo.bj58.janus.transport.websocket;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -87,7 +88,7 @@ abstract class JanusReq {
     }
 
     public static Builder builder() {
-        return new AutoValue_JanusReq.Builder();
+        return new AutoValue_JanusReq.Builder().candidates(Collections.emptyList());
     }
 
     @AutoValue.Builder

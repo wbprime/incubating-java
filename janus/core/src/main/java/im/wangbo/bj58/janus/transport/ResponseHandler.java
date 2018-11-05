@@ -18,4 +18,5 @@ public interface ResponseHandler {
     void handle(final WebrtcSlowlinkResponse response);
     void handle(final ServerInfoResponse response);
     void handle(final UnknownResponse response);
+    void handle(final InvalidResponse response);
 }
