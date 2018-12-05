@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
 public interface Transport {
-    CompletableFuture<Void> connect(final URI uri, final ResponseHandler messageHandler);
+//    CompletableFuture<Void> connect(final URI uri, final ResponseHandler messageHandler);
 
     CompletableFuture<Void> close();
 

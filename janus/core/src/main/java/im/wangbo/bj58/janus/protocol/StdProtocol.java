@@ -8,6 +8,8 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,6 +26,7 @@ import im.wangbo.bj58.janus.transport.GlobalRequest;
 import im.wangbo.bj58.janus.transport.PluginHandleRequest;
 import im.wangbo.bj58.janus.transport.SessionRequest;
 import im.wangbo.bj58.janus.transport.Transport;
+import im.wangbo.bj58.janus.transport.TransportFactory;
 
 /**
  * TODO add brief description here
@@ -32,139 +35,62 @@ import im.wangbo.bj58.janus.transport.Transport;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-public class StdAsyncProtocol implements AsyncProtocol {
+public class StdProtocol {
     private final Transport transport;
+    private final RespHandler respHandler;
 
     private final Map<Transaction, FutureCallback<Object>> responseCallbacks = Maps.newConcurrentMap();
 
-    private StdAsyncProtocol(final Transport transport) {
+    private StdProtocol(final Transport transport, final RespHandler handler) {
         this.transport = transport;
+        this.respHandler = handler;
     }
 
-    public static StdAsyncProtocol create(final Transport transport) {
-        return new StdAsyncProtocol(transport);
-    }
-
-    private Transaction newTransaction() {
-        while (true) {
-            final Transaction t = Transaction.of();
-            if (! responseCallbacks.containsKey(t)) {
-                return t;
-            }
-        }
-    }
-
-    @Override
-    public ListenableFuture<Void> connect(final URI uri) {
+    public static Future<StdProtocol> connect(final TransportFactory transportFactory, final URI uri) {
         final SettableFuture<Void> promise = SettableFuture.create();
-        transport.connect(uri,
-                StdResponseHandler.builder()
-                        .serverInfoHandler(
-                                e -> {
-                                    final FutureCallback<Object> callback = responseCallbacks.remove(e.transaction());
-                                    if (null != callback) {
-                                        callback.onSuccess(e.serverInfo());
-                                    }
 
-                                    // TODO handle callback not found
-                                }
-                        )
-                        .janusErrorHandler(
-                                e -> {
-                                    final FutureCallback<Object> callback = responseCallbacks.remove(e.transaction());
-                                    if (null != callback) {
-                                        callback.onFailure(
-                                                new Exception(e.error().toString())
-                                        );
-                                    }
-
-                                    // TODO handle callback not found
-                                }
-                        )
-                        .janusAckHandler(
-                                e -> {
-                                    final FutureCallback<Object> callback = responseCallbacks.remove(e.transaction());
-                                    if (null != callback) {
-                                        callback.onSuccess(e);
-                                    }
-
-                                    // TODO handle callback not found
-                                }
-                        )
-                        .janusSuccessHandler(
-                                e -> {
-                                    final FutureCallback<Object> callback = responseCallbacks.remove(e.transaction());
-                                    if (null != callback) {
-                                        callback.onSuccess(e.data());
-                                    }
-
-                                    // TODO handle callback not found
-                                }
-                        )
-                        .build()
-        ).handle((v, ex) -> {
-            if (null != ex) promise.setException(ex);
-            else promise.set(v);
-            return promise;
-        });
-
-        return promise;
+        final RespHandler respHandler = new RespHandler();
+        return transportFactory.connect(uri, respHandler)
+                .thenApply(transport -> new StdProtocol(transport, respHandler));
     }
 
-    @Override
     public ListenableFuture<Void> close() {
         final SettableFuture<Void> promise = SettableFuture.create();
         transport.close()
-        .handle((v, ex) -> {
-            if (null != ex) promise.setException(ex);
-            else promise.set(v);
-            return promise;
-        });
+                .handle((v, ex) -> {
+                    if (null != ex) promise.setException(ex);
+                    else promise.set(v);
+                    return promise;
+                });
         return promise;
     }
 
-    @Override
-    public ListenableFuture<ServerInfo> info() {
+    public CompletableFuture<ServerInfo> info() {
         final Transaction t = newTransaction();
 
-        final SettableFuture<ServerInfo> result = SettableFuture.create();
-        responseCallbacks.put(
-                t,
-                new FutureCallback<Object>() {
-                    @Override
-                    public void onSuccess(@Nonnull final Object obj) {
-                        result.set((ServerInfo) obj);
+        final CompletableFuture<ServerInfo> future = new CompletableFuture<>();
+        transport.send(GlobalRequest.builder().request("info").transaction(t).build())
+                .whenComplete((result, throwable) -> {
+                    if (null != throwable) {
+                        future.completeExceptionally(throwable);
+                    } else {
+                        respHandler.register(t, future);
                     }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        result.setException(t);
-                    }
-                }
-        );
-
-        transport.send(
-                GlobalRequest.builder()
-                        .request("info")
-                        .transaction(t)
-                        .build()
-                );
-
-        return result;
+                });
+        return future;
     }
 
-    @Override
-    public ListenableFuture<Session> create() throws InterruptedException {
+    public CompletableFuture<Session> createSession() throws InterruptedException {
         final Transaction t = newTransaction();
 
-        final SettableFuture<Session> result = SettableFuture.create();
+        final CompletableFuture<Session> result = new CompletableFuture<>();
         responseCallbacks.put(
                 t,
                 new FutureCallback<Object>() {
                     @Override
                     public void onSuccess(@Nonnull Object obj) {
                         final JsonObject json = (JsonObject) obj;
-                        result.set(Session.of(json.getJsonNumber("id").longValue()));
+                        result.complete(Session.of(json.getJsonNumber("id").longValue()));
                     }
 
                     @Override
@@ -184,7 +110,6 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return result;
     }
 
-    @Override
     public ListenableFuture<Void> destroy(final Session session) throws InterruptedException {
         final Transaction t = newTransaction();
 
@@ -215,7 +140,6 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return result;
     }
 
-    @Override
     public ListenableFuture<Void> keepAlive(final Session session) throws InterruptedException {
         final Transaction t = newTransaction();
 
@@ -246,7 +170,6 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return result;
     }
 
-    @Override
     public ListenableFuture<PluginHandle> attach(final Session session, final String plugin) {
         final Transaction t = newTransaction();
 
@@ -279,7 +202,6 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return result;
     }
 
-    @Override
     public ListenableFuture<Void> detach(final PluginHandle handle) throws InterruptedException {
         final Transaction t = newTransaction();
 
@@ -310,7 +232,6 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return result;
     }
 
-    @Override
     public ListenableFuture<Void> trickle(
             final PluginHandle handle, final List<Candidate> candidates
     ) {
@@ -348,14 +269,12 @@ public class StdAsyncProtocol implements AsyncProtocol {
         return promise;
     }
 
-    @Override
     public ListenableFuture<Void> request(
             final PluginHandle handle, final JsonObject body
     ) {
         return request_private(handle, body, null);
     }
 
-    @Override
     public ListenableFuture<Void> request(
             final PluginHandle handle, final JsonObject body, final Jsep jsep
     ) {
@@ -394,5 +313,14 @@ public class StdAsyncProtocol implements AsyncProtocol {
         );
 
         return result;
+    }
+
+    private Transaction newTransaction() {
+        while (true) {
+            final Transaction t = Transaction.of();
+            if (!responseCallbacks.containsKey(t)) {
+                return t;
+            }
+        }
     }
 }
