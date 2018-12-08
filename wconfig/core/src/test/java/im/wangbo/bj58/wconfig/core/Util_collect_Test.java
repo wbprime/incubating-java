@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+
+import static im.wangbo.bj58.wconfig.core.JsonUtil.assertJsonByKeys;
+import static im.wangbo.bj58.wconfig.core.JsonUtil.assertJsonByPointer;
 
 /**
  * TODO add brief description here
@@ -34,31 +34,6 @@ public class Util_collect_Test {
         Assertions.assertThat(json).isEmpty();
     }
 
-    private void assertJson(final JsonObject json, final Predicate<JsonObject> test) {
-        final boolean b = test.test(json);
-        Assertions.assertThat(b).isTrue();
-    }
-
-    private void assertJsonByKeys(final JsonObject json, final String ...keys) {
-        assertJson(json, jsonObject -> {
-            for (String key : keys) {
-                if (! jsonObject.containsKey(key)) return false;
-            }
-
-            return jsonObject.size() == keys.length;
-        });
-    }
-
-    private void assertJsonByPointer(final JsonObject json, final String pointer, final String value) {
-        assertJson(json, jsonObject -> {
-            final JsonValue v = jsonObject.getValue(pointer);
-            if (null == v) return false;
-            if (! v.getValueType().equals(JsonValue.ValueType.STRING)) return false;
-
-            final String str = JsonString.class.cast(v).getString();
-            return value.equals(str);
-        });
-    }
 
     @Test
     public void testCollect_level1Map() throws Exception {
@@ -91,9 +66,7 @@ public class Util_collect_Test {
         Util.collect(map, builder);
 
         final JsonObject json = builder.build();
-        Assertions.assertThat(json).isNotEmpty()
-                .containsKeys("key1", "key2", "key3")
-                .hasSize(3);
+        assertJsonByKeys(json, "key1", "key2", "key3");
         assertJsonByPointer(json, "/key1", "value1");
         assertJsonByPointer(json, "/key2", "value2");
         assertJsonByPointer(json, "/key3/key31", "value31");
@@ -122,9 +95,7 @@ public class Util_collect_Test {
         Util.collect(map, builder);
 
         final JsonObject json = builder.build();
-        Assertions.assertThat(json).isNotEmpty()
-                .containsKeys("key1", "key2", "key3")
-                .hasSize(3);
+        assertJsonByKeys(json, "key1", "key2", "key3");
         assertJsonByPointer(json, "/key1", "value1");
         assertJsonByPointer(json, "/key2", "value2");
         assertJsonByPointer(json, "/key3/key31", "value31");

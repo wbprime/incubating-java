@@ -1,10 +1,10 @@
 package im.wangbo.bj58.wconfig.core;
 
+import com.google.common.base.Splitter;
+
 import java.util.Map;
 
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 /**
  * TODO add brief description here
@@ -22,8 +22,10 @@ public final class MapBasedConfigSource implements ConfigSource {
 
     @Override
     public JsonObject load() throws ConfigException {
-        final JsonObjectBuilder builder = Json.createObjectBuilder();
-        backingMap.forEach(builder::add);
-        return builder.build();
+        return Util.transform(
+                backingMap.keySet(),
+                backingMap::get,
+                Splitter.on('.').omitEmptyStrings().trimResults()
+        ).build();
     }
 }

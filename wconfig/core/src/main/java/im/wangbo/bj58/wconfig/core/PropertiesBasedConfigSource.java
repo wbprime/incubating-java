@@ -1,10 +1,10 @@
 package im.wangbo.bj58.wconfig.core;
 
+import com.google.common.base.Splitter;
+
 import java.util.Properties;
 
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 /**
  * TODO add brief description here
@@ -22,12 +22,10 @@ public final class PropertiesBasedConfigSource implements ConfigSource {
 
     @Override
     public JsonObject load() throws ConfigException {
-        final JsonObjectBuilder builder = Json.createObjectBuilder();
-        return builder.build();
-    }
-
-    @Override
-    public void close() throws ConfigException {
-        // Do nothing
+        return Util.transform(
+                backingProperties.stringPropertyNames(),
+                backingProperties::getProperty,
+                Splitter.on('.').omitEmptyStrings().trimResults()
+        ).build();
     }
 }

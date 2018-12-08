@@ -70,7 +70,20 @@ final class Util {
      *     "group1": {
      *         ...
      *         "sub_group1":{
-     *             "name1": "value1",
+     *             "name2": "value2"
+     *         }
+     *         ...
+     *     }
+     * }
+     *
+     * 3. ["group1.sub_group1.name2" -> "value2", "group1.sub_group1" -> "value1"]
+     * would be merged as:
+     *
+     * {
+     *     "group1": {
+     *         ...
+     *         "sub_group1":{
+     *             "": "value1",
      *             "name2": "value2"
      *         }
      *         ...
@@ -97,9 +110,13 @@ final class Util {
             Map<String, Object> tempMap = null;
             for (int i = sepKeys.size() - 1; i >= 0; i--) {
                 if (null == tempMap) {
-                    tempMap = ImmutableMap.of(sepKeys.get(i), val);
+                    final Map<String, Object> mm = Maps.newHashMap();
+                    mm.put(sepKeys.get(i), val);
+                    tempMap = mm;
                 } else {
-                    tempMap = ImmutableMap.of(sepKeys.get(i), tempMap);
+                    final Map<String, Object> mm = Maps.newHashMap();
+                    mm.put(sepKeys.get(i), tempMap);
+                    tempMap = mm;
                 }
             }
 
