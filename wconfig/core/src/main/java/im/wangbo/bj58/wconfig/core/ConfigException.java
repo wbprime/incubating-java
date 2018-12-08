@@ -8,4 +8,19 @@ package im.wangbo.bj58.wconfig.core;
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
 public class ConfigException extends Exception {
+    public ConfigException() {
+        super();
+    }
+
+    public ConfigException(final String message) {
+        super(message);
+    }
+
+    public ConfigException(final Throwable cause) {
+        super(cause);
+    }
+
+    public ConfigException(final String message, final  Throwable cause) {
+        super(message, cause);
+    }
 }
