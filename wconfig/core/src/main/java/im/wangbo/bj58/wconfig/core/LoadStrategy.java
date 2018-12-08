@@ -1,5 +1,7 @@
 package im.wangbo.bj58.wconfig.core;
 
+import java.time.Duration;
+
 /**
  * TODO add brief description here
  *
@@ -11,4 +13,12 @@ public interface LoadStrategy {
     void register(final Reloadable store) throws ConfigException;
 
     void deregister(final Reloadable store) throws ConfigException;
+
+    static LoadStrategy immediately() {
+        return new LoadImmediatelyStrategy();
+    }
+
+    static LoadStrategy periodically(final Duration d) {
+        return new LoadPeriodicallyStrategy(d);
+    }
 }

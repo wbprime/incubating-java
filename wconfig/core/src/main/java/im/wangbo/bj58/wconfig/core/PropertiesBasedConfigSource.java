@@ -1,7 +1,9 @@
 package im.wangbo.bj58.wconfig.core;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.json.JsonObject;
@@ -15,9 +17,31 @@ import javax.json.JsonObject;
  */
 public final class PropertiesBasedConfigSource implements ConfigSource {
     private final Properties backingProperties;
+    private final Optional<String> sep;
 
-    PropertiesBasedConfigSource(final Properties properties) {
+    public static PropertiesBasedConfigSource systemProperties() {
+        return of(System.getProperties());
+    }
+
+    public static PropertiesBasedConfigSource systemProperties(final String sep) {
+        return of(System.getProperties(), sep);
+    }
+
+    public static PropertiesBasedConfigSource of(final Properties p) {
+        return new PropertiesBasedConfigSource(p, Optional.empty());
+    }
+
+    public static PropertiesBasedConfigSource of(
+            final Properties p, final String sep
+    ) {
+        return new PropertiesBasedConfigSource(p, Optional.of(sep));
+    }
+
+    private PropertiesBasedConfigSource(
+            final Properties properties, final Optional<String> sep
+    ) {
         this.backingProperties = properties;
+        this.sep = sep;
     }
 
     @Override
@@ -25,7 +49,8 @@ public final class PropertiesBasedConfigSource implements ConfigSource {
         return Util.transform(
                 backingProperties.stringPropertyNames(),
                 backingProperties::getProperty,
-                Splitter.on('.').omitEmptyStrings().trimResults()
+                sep.map(s -> Splitter.on(s).omitEmptyStrings().trimResults())
+                        .orElse(Splitter.on(CharMatcher.none()))
         ).build();
     }
 }

@@ -17,7 +17,7 @@ import java.util.TimerTask;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-public class LoadPeriodicallyStrategy implements LoadStrategy {
+final class LoadPeriodicallyStrategy implements LoadStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(LoadPeriodicallyStrategy.class);
 
     private final Timer timer = new Timer(true);
@@ -25,7 +25,7 @@ public class LoadPeriodicallyStrategy implements LoadStrategy {
 
     private final Duration interval;
 
-    public LoadPeriodicallyStrategy(final Duration interval) {
+    LoadPeriodicallyStrategy(final Duration interval) {
         this.interval = interval;
     }
 

@@ -14,7 +14,7 @@ import javax.json.JsonObject;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-class StdConfigRetriever implements ConfigRetriever, Reloadable {
+public final class StdConfigRetriever implements ConfigRetriever, Reloadable {
     private final ConfigSource source;
 
     private LoadStrategy strategy = new LoadNoopStrategy();
@@ -22,7 +22,11 @@ class StdConfigRetriever implements ConfigRetriever, Reloadable {
 
     private final AtomicReference<JsonObject> cachedConf = new AtomicReference<>(JsonObject.EMPTY_JSON_OBJECT);
 
-    StdConfigRetriever(final ConfigSource source) {
+    public static StdConfigRetriever create(final ConfigSource source) {
+        return new StdConfigRetriever(source);
+    }
+
+    private StdConfigRetriever(final ConfigSource source) {
         this.source = source;
     }
 

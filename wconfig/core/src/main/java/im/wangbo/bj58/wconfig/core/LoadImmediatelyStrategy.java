@@ -7,7 +7,7 @@ package im.wangbo.bj58.wconfig.core;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-public class LoadImmediatelyStrategy implements LoadStrategy {
+final class LoadImmediatelyStrategy implements LoadStrategy {
     @Override
     public void register(final Reloadable store) throws ConfigException {
         store.reload();
