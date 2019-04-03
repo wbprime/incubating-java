@@ -22,16 +22,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value</artifactId>
             <scope>provided</scope>
@@ -49,6 +39,7 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.json.bind</groupId>
@@ -57,11 +48,8 @@
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
+            <scope>provided</scope>
         </dependency>
-        <!-- <dependency> -->
-        <!-- <groupId>com.squareup.moshi</groupId> -->
-        <!-- <artifactId>moshi</artifactId> -->
-        <!-- </dependency> -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
