@@ -1,8 +1,14 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.client;
 
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import im.wangbo.bj58.janus.schema.Candidate;
+import im.wangbo.bj58.janus.schema.Jsep;
+import im.wangbo.bj58.janus.schema.PluginHandleId;
+import im.wangbo.bj58.janus.schema.ServerInfo;
+import im.wangbo.bj58.janus.schema.SessionId;
 
 /**
  * TODO add brief description here

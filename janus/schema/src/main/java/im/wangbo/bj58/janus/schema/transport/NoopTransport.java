@@ -1,7 +1,8 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.transport;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 
@@ -11,20 +12,14 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 final class NoopTransport implements Transport {
-    private static class SingletonHolder {
-        private static final NoopTransport INSTANCE = new NoopTransport();
-
-        static NoopTransport instance() {
-            return INSTANCE;
-        }
-    }
+    private static final NoopTransport INSTANCE = new NoopTransport();
 
     static NoopTransport instance() {
-        return SingletonHolder.instance();
+        return INSTANCE;
     }
 
     @Override
-    public CompletableFuture<Void> connect(URI uri) {
+    public CompletableFuture<Void> connect(final URI uri) {
         return CompletableFuture.completedFuture(null);
     }
 
@@ -36,5 +31,15 @@ final class NoopTransport implements Transport {
     @Override
     public CompletableFuture<Void> request(final JsonObject request) {
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public synchronized Transport handler(final Consumer<JsonObject> handler) {
+        return this;
+    }
+
+    @Override
+    public Transport exceptionHandler(Consumer<Throwable> handler) {
+        return this;
     }
 }

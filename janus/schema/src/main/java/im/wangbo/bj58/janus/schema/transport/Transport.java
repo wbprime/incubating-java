@@ -1,7 +1,8 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.transport;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 
@@ -17,7 +18,14 @@ public interface Transport {
 
     CompletableFuture<Void> request(final JsonObject request);
 
+    Transport handler(final Consumer<JsonObject> handler);
+    Transport exceptionHandler(final Consumer<Throwable> handler);
+
     static Transport noop() {
         return NoopTransport.instance();
+    }
+
+    static Transport websocket() {
+        return new WebSocketTransport();
     }
 }

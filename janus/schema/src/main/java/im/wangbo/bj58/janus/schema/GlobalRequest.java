@@ -15,8 +15,6 @@ public abstract class GlobalRequest {
 
     public abstract TransactionId transaction();
 
-    public abstract TransactionId transaction();
-
     public static GlobalRequest create(final RequestMethod request, final TransactionId transaction) {
         return new AutoValue_GlobalRequest(request, transaction);
     }
