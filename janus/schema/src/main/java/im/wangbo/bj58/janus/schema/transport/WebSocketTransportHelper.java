@@ -7,13 +7,13 @@ import io.vertx.core.http.WebSocket;
  *
  * @author Elvis Wang
  */
-interface WebSocketHelper {
+interface WebSocketTransportHelper {
     default void close() {
-        /* Default do nothing */
+        throw new IllegalStateException("Not Connected to a valid WebSocket endpoint");
     }
 
     default void send(final String msg) {
-        /* Default do nothing */
+        throw new IllegalStateException("Not Connected to a valid WebSocket endpoint");
     }
 
     static NoopHelper noop() {
@@ -24,16 +24,16 @@ interface WebSocketHelper {
         return new StdHelper(ws);
     }
 
-    class NoopHelper implements WebSocketHelper {
+    class NoopHelper implements WebSocketTransportHelper {
         private static final NoopHelper INSTANCE = new NoopHelper();
 
         @Override
         public String toString() {
-            return "NoopHelper {}";
+            return "NoopWeSocketHelper {}";
         }
     }
 
-    class StdHelper implements WebSocketHelper {
+    class StdHelper implements WebSocketTransportHelper {
         private final WebSocket ws;
 
         private StdHelper(final WebSocket ws) {
@@ -52,7 +52,7 @@ interface WebSocketHelper {
 
         @Override
         public String toString() {
-            return "StdHelper {}";
+            return "StdWebSocketHelper {}";
         }
     }
 }

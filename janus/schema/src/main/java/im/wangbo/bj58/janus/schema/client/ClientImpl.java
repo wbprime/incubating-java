@@ -1,17 +1,17 @@
 package im.wangbo.bj58.janus.schema.client;
 
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 
-import im.wangbo.bj58.janus.schema.Candidate;
-import im.wangbo.bj58.janus.schema.Jsep;
+import im.wangbo.bj58.janus.schema.GlobalRequest;
 import im.wangbo.bj58.janus.schema.PluginHandleId;
+import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionId;
+import im.wangbo.bj58.janus.schema.SessionRequest;
 import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
@@ -19,14 +19,14 @@ import im.wangbo.bj58.janus.schema.transport.Transport;
  *
  * @author Elvis Wang
  */
-public class ClientImpl implements Client {
+class ClientImpl implements Client {
     private final URI uri;
 
     private final Transport transport;
 
-    ClientImpl(final URI uri) {
+    ClientImpl(final URI uri, final Transport transport) {
         this.uri = uri;
-        this.transport = Transport.noop();
+        this.transport = transport;
     }
 
     @Override
@@ -70,26 +70,22 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public CompletableFuture<Void> detachPlugin(PluginHandleId handle) {
+    public CompletableFuture<Void> detachPlugin(final SessionId session, PluginHandleId handle) {
         return null;
     }
 
     @Override
-    public CompletableFuture<Void> trickle(PluginHandleId handle, List<Candidate> candidates) {
+    public CompletableFuture<Void> request(GlobalRequest request) {
         return null;
     }
 
     @Override
-    public <T> CompletableFuture<Void> request(
-            final PluginHandleId handle, final T body, final Class<T> clz
-    ) {
+    public CompletableFuture<Void> request(SessionRequest request) {
         return null;
     }
 
     @Override
-    public <T> CompletableFuture<Void> request(
-            final PluginHandleId handle, final T body, final Jsep jsep, final Class<T> clz
-    ) {
+    public CompletableFuture<Void> request(PluginHandleRequest request) {
         return null;
     }
 }

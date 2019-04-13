@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.json.Json;
@@ -15,25 +16,27 @@ import javax.json.Json;
  * @author Elvis Wang
  */
 @Ignore
-public class WebSocketTransportTest {
-    WebSocketTransport transport;
+public class HttpTransportTest {
+    private HttpTransport transport;
 
     @Before
     public void setUp() throws Exception {
-        transport = WebSocketTransport.create();
+        transport = HttpTransport.create();
 
-//        transport.connect(URI.create("ws://10.9.192.162:8888")).get(1, TimeUnit.MINUTES);
-        transport.connect(URI.create("wss://janus.conf.meetecho.com:8188/janus")).get(1, TimeUnit.MINUTES);
+//        transport.connect(URI.create("http://10.9.192.162:8888")).get(1, TimeUnit.MINUTES);
+        transport.connect(URI.create("https://janus.conf.meetecho.com/janus")).get(1, TimeUnit.MINUTES);
     }
 
     @Test
     public void test() throws Exception {
-        transport.request(
+        final CompletableFuture<Void> request = transport.request(
                 Json.createObjectBuilder()
                         .add("janus", "info")
                         .add("transaction", "server_info")
                         .build()
         );
+
+        request.get(1, TimeUnit.MINUTES);
 
         Thread.sleep(10000L);
     }

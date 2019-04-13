@@ -20,6 +20,7 @@ import javax.json.JsonObject;
 
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.RequestOptions;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebsocketVersion;
@@ -39,7 +40,7 @@ final class WebSocketTransport implements Transport {
     private List<Consumer<JsonObject>> handlers = Collections.emptyList();
     private Consumer<Throwable> exHandler = ex -> LOG.error("WebSocket backend exception", ex);
 
-    private WebSocketHelper websocket = WebSocketHelper.noop();
+    private WebSocketTransportHelper websocket = WebSocketTransportHelper.noop();
 
     static WebSocketTransport create() {
         return new WebSocketTransport();
@@ -49,22 +50,21 @@ final class WebSocketTransport implements Transport {
     public CompletableFuture<Void> connect(final URI uri) {
         final String schema = uri.getScheme();
 
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-
         final RequestOptions options = new RequestOptions().setHost(uri.getHost()).setURI(uri.getPath());
         if ("ws".equalsIgnoreCase(schema)) {
             options.setSsl(false).setPort(uri.getPort() == -1 ? DEFAULT_WS_PORT : uri.getPort());
         } else if ("wss".equalsIgnoreCase(schema)) {
             options.setSsl(true).setPort(uri.getPort() == -1 ? DEFAULT_WSS_PORT : uri.getPort());
         } else {
-            future.completeExceptionally(
-                    new IllegalArgumentException("Unsupported schema \"" + schema + "\" by WebSocketTransport")
-            );
-            return future;
+            return Futures.illegalArgument("Unsupported schema \"" + schema + "\" by WebSocketTransport");
         }
 
+        LOG.debug("Trying to connect Janus WebSocket server on Host: \"{}\", Port {}, SSL: {}, Path: \"{}\"",
+                options.getHost(), options.getPort(), options.isSsl(), options.getURI());
+
         // Connect to WebSocket
-        Vertx.vertx().createHttpClient()
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        Vertx.vertx().createHttpClient(new HttpClientOptions().setTrustAll(true))
                 .websocket(
                         options,
                         MultiMap.caseInsensitiveMultiMap(),
@@ -74,27 +74,33 @@ final class WebSocketTransport implements Transport {
                             updateWebSocket(ws);
                             ws.closeHandler(ignored -> updateWebSocket(null))
                                     .endHandler(ignored -> LOG.debug("WebSocket backend connection ended"))
-                                    .closeHandler(ignored -> LOG.debug("WebSocket backend connection closed"))
                                     .exceptionHandler(ex -> LOG.warn("WebSocket backend exception to \"{}\"", uri, ex))
-                                    .textMessageHandler(this::hanldeInternal)
+                                    .textMessageHandler(this::handleInternal)
                                     .binaryMessageHandler(ignored -> LOG.warn("Received binary frame"));
                             future.complete(null);
                         }
                 );
-
         return future;
     }
 
     @Override
     public CompletableFuture<Void> close() {
-        websocket.close();
-        return CompletableFuture.completedFuture(null);
+        try {
+            websocket.close();
+            return Futures.completed();
+        } catch (Exception ex) {
+            return Futures.failed(ex);
+        }
     }
 
     @Override
     public CompletableFuture<Void> request(final JsonObject request) {
-        websocket.send(request.toString());
-        return CompletableFuture.completedFuture(null);
+        try {
+            websocket.send(request.toString());
+            return Futures.completed();
+        } catch (Exception ex) {
+            return Futures.failed(ex);
+        }
     }
 
     @Override
@@ -112,7 +118,7 @@ final class WebSocketTransport implements Transport {
         return this;
     }
 
-    private void hanldeInternal(final String res) {
+    private void handleInternal(final String res) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Receive remote WebSocket response: ");
             Splitter.on('\n').splitToList(res).forEach(line -> LOG.debug(" => {}", line));
@@ -142,7 +148,7 @@ final class WebSocketTransport implements Transport {
 
     private void updateWebSocket(@Nullable final WebSocket ws) {
         LOG.debug("WebSocketTransport backend switched to {}", ws);
-        if (null == ws) websocket = WebSocketHelper.noop();
-        else websocket = WebSocketHelper.std(ws);
+        if (null == ws) websocket = WebSocketTransportHelper.noop();
+        else websocket = WebSocketTransportHelper.std(ws);
     }
 }

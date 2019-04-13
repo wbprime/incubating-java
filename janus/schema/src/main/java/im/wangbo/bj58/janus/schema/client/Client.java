@@ -1,14 +1,15 @@
 package im.wangbo.bj58.janus.schema.client;
 
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import im.wangbo.bj58.janus.schema.Candidate;
-import im.wangbo.bj58.janus.schema.Jsep;
+import im.wangbo.bj58.janus.schema.GlobalRequest;
 import im.wangbo.bj58.janus.schema.PluginHandleId;
+import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionId;
+import im.wangbo.bj58.janus.schema.SessionRequest;
+import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
  * TODO add brief description here
@@ -16,8 +17,8 @@ import im.wangbo.bj58.janus.schema.SessionId;
  * @author Elvis Wang
  */
 public interface Client {
-    static Client create(final URI uri) {
-        return new ClientImpl(uri);
+    static Client create(final URI uri, final Transport transport) {
+        return new ClientImpl(uri, transport);
     }
 
     CompletableFuture<Void> connect();
@@ -30,26 +31,9 @@ public interface Client {
 
     CompletableFuture<Void> keepAlive(final SessionId session);
     CompletableFuture<PluginHandleId> attachPlugin(final SessionId session, final String plugin);
-    CompletableFuture<Void> detachPlugin(final PluginHandleId handle);
+    CompletableFuture<Void> detachPlugin(final SessionId session, final PluginHandleId handle);
 
-    /**
-     * Send "trickle" message with given candidates.
-     *
-     * If {@code candidates} is empty, send "trickle" with candidates sending completed;
-     * otherwise send all candidates via "trickle" message.
-     *
-     * @param handle plugin handle
-     * @param candidates candidates
-     * @return future
-     */
-    CompletableFuture<Void> trickle(
-            final PluginHandleId handle, final List<Candidate> candidates
-    );
-
-    <T> CompletableFuture<Void> request(
-            final PluginHandleId handle, final T body, final Class<T> clz
-    );
-    <T> CompletableFuture<Void> request(
-            final PluginHandleId handle, final T body, final Jsep jsep, final Class<T> clz
-    );
+    CompletableFuture<Void> request(final GlobalRequest request);
+    CompletableFuture<Void> request(final SessionRequest request);
+    CompletableFuture<Void> request(final PluginHandleRequest request);
 }
