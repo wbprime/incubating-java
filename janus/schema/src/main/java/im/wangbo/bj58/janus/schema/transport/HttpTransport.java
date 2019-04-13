@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -94,10 +95,13 @@ final class HttpTransport implements Transport {
         );
 
         switch (req.method()) {
-            case POST:
-                // TODO
-                req.end(body.toString());
-                break;
+            case POST: {
+                final JsonObjectBuilder builder = Json.createObjectBuilder(body.root());
+                builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().value());
+                builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction());
+                req.end(builder.build().toString());
+            }
+            break;
             default:
                 //            GET:
                 //            OPTIONS:
@@ -147,7 +151,7 @@ final class HttpTransport implements Transport {
                 }
             }
             default:
-                return Futures.illegalArgument("Unknown request type \"" + req.request() + "\" in " + req);
+                return Futures.illegalArgument("Unknown \"" + req.request() + "\" in " + req);
         }
 
     }

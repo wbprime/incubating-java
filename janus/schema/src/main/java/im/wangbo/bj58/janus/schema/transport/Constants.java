@@ -17,6 +17,7 @@ final class Constants {
     }
 
     static final String REQ_FIELD_REQUEST_TYPE = "janus";
+    static final String REQ_FIELD_TRANSACTION = "transaction";
 
     static OptionalLong sessionId(final JsonObject json, final String key) {
         return Jsons.longValue(json, key);
