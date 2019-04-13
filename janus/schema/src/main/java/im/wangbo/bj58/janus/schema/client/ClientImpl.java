@@ -3,12 +3,10 @@ package im.wangbo.bj58.janus.schema.client;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
 import im.wangbo.bj58.janus.schema.GlobalRequest;
 import im.wangbo.bj58.janus.schema.PluginHandleId;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
+import im.wangbo.bj58.janus.schema.RequestMethod;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionId;
 import im.wangbo.bj58.janus.schema.SessionRequest;
@@ -41,8 +39,12 @@ class ClientImpl implements Client {
 
     @Override
     public CompletableFuture<ServerInfo> info() {
-        final JsonObjectBuilder builder = Json.createObjectBuilder();
-        final CompletableFuture<Void> sent = transport.request(builder.build());
+        final CompletableFuture<Void> sent = transport.send(
+                Transport.Request.builder()
+                        .request(RequestMethod.SERVER_INFO)
+                        .transaction("wbprime" + System.currentTimeMillis())
+                        .build()
+        );
 
         final CompletableFuture<ServerInfo> future = new CompletableFuture<>();
 

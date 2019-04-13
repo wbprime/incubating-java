@@ -20,17 +20,17 @@ final class NoopTransport implements Transport {
 
     @Override
     public CompletableFuture<Void> connect(final URI uri) {
-        return CompletableFuture.completedFuture(null);
+        return Futures.completed();
     }
 
     @Override
     public CompletableFuture<Void> close() {
-        return CompletableFuture.completedFuture(null);
+        return Futures.completed();
     }
 
     @Override
-    public CompletableFuture<Void> request(final JsonObject request) {
-        return CompletableFuture.completedFuture(null);
+    public CompletableFuture<Void> send(final Request request) {
+        return Futures.completed();
     }
 
     @Override

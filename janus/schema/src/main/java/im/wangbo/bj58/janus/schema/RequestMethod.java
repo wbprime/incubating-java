@@ -1,7 +1,5 @@
 package im.wangbo.bj58.janus.schema;
 
-import com.google.auto.value.AutoValue;
-
 /**
  * TODO add brief description here
  *
@@ -9,12 +7,23 @@ import com.google.auto.value.AutoValue;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-@AutoValue
-public abstract class RequestMethod {
-    public abstract String type();
+public enum RequestMethod {
+    SERVER_INFO("info"),
+    CREATE_SESSION("create"),
+    DESTROY_SESSION("destroy"),
+    ATTACH_PLUGIN("attach"),
+    DETACH_PLUGIN("detach"),
+    HANGUP_PLUGIN("hangup"),
+    PLUGIN_MESSAGE("message"),
+    TRICKLE("trickle");
 
-    public static RequestMethod of(final String type) {
-        return new AutoValue_RequestMethod(type);
+    private final String type;
+
+    RequestMethod(final String v) {
+        this.type = v;
     }
 
+    public final String value() {
+        return type;
+    }
 }

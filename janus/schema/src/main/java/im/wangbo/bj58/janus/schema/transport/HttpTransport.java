@@ -1,7 +1,6 @@
 package im.wangbo.bj58.janus.schema.transport;
 
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
-import javax.json.JsonString;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -77,76 +76,78 @@ final class HttpTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> request(final JsonObject request) {
-        final JsonString reqTypeJson = request.getJsonString(Constants.REQ_FIELD_REQUEST_TYPE);
-        final String reqType = null != reqTypeJson ? reqTypeJson.getString() : "";
-        if (Strings.isNullOrEmpty(reqType)) {
-            return Futures.illegalArgument("Missing \"" + Constants.REQ_FIELD_REQUEST_TYPE + "\" field: " + request);
-        }
+    public CompletableFuture<Void> send(final Request body) {
+        return request(body).thenCompose(req -> send(req, body));
+    }
 
-        final Long sessionId = Constants.sessionId(request, )
-
-        final HttpClientRequest httpRequest = request(reqType);
-        if (null == httpRequest) {
-            return Futures.illegalArgument(
-                    "Unsupported value \"%s\" for \"%s\" field: %s",
-                    reqType, Constants.REQ_FIELD_REQUEST_TYPE, request
-            );
-        }
-
+    private CompletableFuture<Void> send(final HttpClientRequest req, final Request body) {
         final CompletableFuture<Void> future = new CompletableFuture<>();
-        httpRequest.endHandler(ignored -> {
+        req.endHandler(ignored -> {
             LOG.debug("HTTP backend connection ended");
             future.complete(null);
-        })
-                .exceptionHandler(ex -> {
-                    LOG.warn("HTTP backend exception", ex);
-                    future.completeExceptionally(ex);
-                })
-                .handler(response ->
-                        response.exceptionHandler(ex -> LOG.warn("HTTP backend response exception", ex))
-                                .bodyHandler(buf -> handleInternal(buf.toString(StandardCharsets.UTF_8)))
-                );
+        }).exceptionHandler(ex -> {
+            LOG.warn("HTTP backend exception", ex);
+            future.completeExceptionally(ex);
+        }).handler(response ->
+                response.exceptionHandler(ex -> LOG.warn("HTTP backend response exception", ex))
+                        .bodyHandler(buf -> handleInternal(buf.toString(StandardCharsets.UTF_8)))
+        );
 
-        switch (httpRequest.method()) {
+        switch (req.method()) {
             case POST:
-                httpRequest.end(request.toString());
+                // TODO
+                req.end(body.toString());
                 break;
             default:
-//            GET:
-//            OPTIONS:
-//            HEAD:
-//            PUT:
-//            DELETE:
-//            TRACE:
-//            CONNECT:
-//            PATCH:
-//            OTHER:
-                httpRequest.end();
+                //            GET:
+                //            OPTIONS:
+                //            HEAD:
+                //            PUT:
+                //            DELETE:
+                //            TRACE:
+                //            CONNECT:
+                //            PATCH:
+                //            OTHER:
+                req.end();
                 break;
         }
-
-        LOG.debug("Sent message to HTTP endpoint {}: {}", httpRequest.absoluteURI(), request);
+        LOG.debug("Sent message to HTTP endpoint {}: {}", req.absoluteURI(), body);
         return future;
     }
 
-    @Nullable
-    private HttpClientRequest request(final String type, @Nullable final String sessionId, @Nullable final String pluginId) {
-        switch (type) {
-            case Constants.REQ_REQ_TP_SERVER_INFO:
-                return http.get("info");
-            case Constants.REQ_REQ_TP_CREATE_SESSION:
-                return http.post("");
-            case Constants.REQ_REQ_TP_DESTROY_SESSION: // fall through
-            case Constants.REQ_REQ_TP_ATTACH_PLUGIN:
-                return http.post(sessionId);
-            case Constants.REQ_REQ_TP_DETACH_PLUGIN: // fall through
-            case Constants.REQ_REQ_TP_HANGUP_PLUGIN: // fall through
-            case Constants.REQ_REQ_TP_PLUGIN_MESSAGE: // fall through
-            case Constants.REQ_REQ_TP_TRICKLE:
-                return http.post(sessionId + "/" + pluginId);
+    private CompletableFuture<HttpClientRequest> request(final Request req) {
+        switch (req.request()) {
+            case SERVER_INFO:
+                return Futures.completed(http.getRequest("info"));
+            case CREATE_SESSION:
+                return Futures.completed(http.postRequest(""));
+            case DESTROY_SESSION: // fall through
+            case ATTACH_PLUGIN: {
+                final OptionalLong sessionId = req.sessionId();
+                if (sessionId.isPresent()) {
+                    return Futures.completed(http.postRequest("" + sessionId.getAsLong()));
+                } else {
+                    return Futures.illegalArgument("Missing [sessionId] in " + req);
+                }
+            }
+            case DETACH_PLUGIN: // fall through
+            case HANGUP_PLUGIN: // fall through
+            case PLUGIN_MESSAGE: // fall through
+            case TRICKLE: {
+                final OptionalLong sessionId = req.sessionId();
+                final OptionalLong pluginId = req.pluginId();
+                if (sessionId.isPresent() && pluginId.isPresent()) {
+                    return Futures.completed(http.postRequest(sessionId.getAsLong() + "/" + pluginId.getAsLong()));
+                } else {
+                    final StringBuilder sb = new StringBuilder("Missing [");
+                    if (!sessionId.isPresent()) sb.append("sessionId ");
+                    if (!pluginId.isPresent()) sb.append("pluginId ");
+                    sb.append("] in ").append(req);
+                    return Futures.illegalArgument(sb.toString());
+                }
+            }
             default:
-                return null;
+                return Futures.illegalArgument("Unknown request type \"" + req.request() + "\" in " + req);
         }
 
     }

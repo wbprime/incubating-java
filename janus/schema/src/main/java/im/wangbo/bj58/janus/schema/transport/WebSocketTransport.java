@@ -94,7 +94,7 @@ final class WebSocketTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> request(final JsonObject request) {
+    public CompletableFuture<Void> send(final Request request) {
         try {
             websocket.send(request.toString());
             return Futures.completed();

@@ -17,7 +17,7 @@ interface HttpTransportHelper {
      * @param subPath sub path prefixed with "/"
      * @return request
      */
-    default HttpClientRequest get(final String subPath) {
+    default HttpClientRequest getRequest(final String subPath) {
         throw new IllegalStateException("Not Connected to a valid HTTP endpoint");
     }
 
@@ -25,7 +25,7 @@ interface HttpTransportHelper {
      * @param subPath sub path prefixed with "/"
      * @return request
      */
-    default HttpClientRequest post(final String subPath) {
+    default HttpClientRequest postRequest(final String subPath) {
         throw new IllegalStateException("Not Connected to a valid HTTP endpoint");
     }
 
@@ -66,12 +66,12 @@ interface HttpTransportHelper {
         }
 
         @Override
-        public HttpClientRequest get(final String subPath) {
+        public HttpClientRequest getRequest(final String subPath) {
             return http.get(concatPath(subPath));
         }
 
         @Override
-        public HttpClientRequest post(final String subPath) {
+        public HttpClientRequest postRequest(final String subPath) {
             return http.post(concatPath(subPath));
         }
 

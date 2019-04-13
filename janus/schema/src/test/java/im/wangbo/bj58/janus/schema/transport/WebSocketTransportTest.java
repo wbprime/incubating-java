@@ -22,19 +22,19 @@ public class WebSocketTransportTest {
     public void setUp() throws Exception {
         transport = WebSocketTransport.create();
 
-//        transport.connect(URI.create("ws://10.9.192.162:8888")).get(1, TimeUnit.MINUTES);
+//        transport.connect(URI.create("ws://10.9.192.162:8888")).getRequest(1, TimeUnit.MINUTES);
         transport.connect(URI.create("wss://janus.conf.meetecho.com:8188/janus")).get(1, TimeUnit.MINUTES);
     }
 
     @Test
     public void test() throws Exception {
-        transport.request(
-                Json.createObjectBuilder()
-                        .add("janus", "info")
-                        .add("transaction", "server_info")
-                        .build()
-        );
-
-        Thread.sleep(10000L);
+//        transport.request(
+//                Json.createObjectBuilder()
+//                        .add("janus", "info")
+//                        .add("transaction", "server_info")
+//                        .build()
+//        );
+//
+//        Thread.sleep(10000L);
     }
 }
