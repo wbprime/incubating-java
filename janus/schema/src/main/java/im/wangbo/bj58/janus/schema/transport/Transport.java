@@ -12,6 +12,10 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 public interface Transport {
+    default boolean accepts(final URI uri) {
+        return false;
+    }
+
     CompletableFuture<Void> connect(final URI uri);
 
     CompletableFuture<Void> close();

@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.client;
 
+import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import im.wangbo.bj58.janus.schema.GlobalRequest;
@@ -15,7 +16,7 @@ import im.wangbo.bj58.janus.schema.transport.SessionId;
  * @author Elvis Wang
  */
 public interface Client {
-    CompletableFuture<Void> connect();
+    CompletableFuture<Void> connect(final URI uri);
     CompletableFuture<Void> close();
 
     CompletableFuture<ServerInfo> info();

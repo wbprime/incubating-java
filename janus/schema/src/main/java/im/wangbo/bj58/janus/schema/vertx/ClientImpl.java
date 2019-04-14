@@ -4,15 +4,15 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import im.wangbo.bj58.janus.schema.GlobalRequest;
-import im.wangbo.bj58.janus.schema.client.Client;
-import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
-import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.SessionRequest;
+import im.wangbo.bj58.janus.schema.client.Client;
+import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
+import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import im.wangbo.bj58.janus.schema.transport.Transport;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 
 /**
  * TODO add brief description here
@@ -20,17 +20,14 @@ import im.wangbo.bj58.janus.schema.transport.Transport;
  * @author Elvis Wang
  */
 class ClientImpl implements Client {
-    private final URI uri;
+    private Transport transport;
 
-    private final Transport transport;
-
-    ClientImpl(final URI uri, final Transport transport) {
-        this.uri = uri;
-        this.transport = transport;
+    ClientImpl() {
+//        this.transport = transport;
     }
 
     @Override
-    public CompletableFuture<Void> connect() {
+    public CompletableFuture<Void> connect(final URI uri) {
         return transport.connect(uri);
     }
 

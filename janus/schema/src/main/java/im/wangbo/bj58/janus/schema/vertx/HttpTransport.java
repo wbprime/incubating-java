@@ -17,15 +17,15 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
-import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.eventbus.EventBus;
 import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
 import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
 import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
 import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -62,6 +62,12 @@ final class HttpTransport implements Transport {
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
         this.eventBus = new EventBusImpl(vertx);
+    }
+
+    @Override
+    public boolean accepts(final URI uri) {
+        final String schema = uri.getScheme();
+        return "http".equalsIgnoreCase(schema) || "https".equalsIgnoreCase(schema);
     }
 
     @Override
