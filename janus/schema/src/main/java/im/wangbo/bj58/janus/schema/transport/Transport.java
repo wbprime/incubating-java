@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import javax.json.JsonObject;
 
 import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.TransactionId;
 
 /**
  * TODO add brief description here
@@ -39,7 +40,7 @@ public interface Transport {
     abstract class RequestMessage {
         public abstract RequestMethod request();
 
-        public abstract String transaction();
+        public abstract TransactionId transaction();
 
         public abstract OptionalLong sessionId();
 

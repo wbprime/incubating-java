@@ -1,9 +1,6 @@
 package im.wangbo.bj58.janus.schema.transport;
 
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 
@@ -37,8 +34,8 @@ interface HttpTransportHelper {
         return NoopHelper.INSTANCE;
     }
 
-    static StdHelper std(final HttpClient client, final String rootPath) {
-        return new StdHelper(client, rootPath);
+    static StdHelper std(final Vertx vertx, final HttpClient client, final String rootPath) {
+        return new StdHelper(vertx, client, rootPath);
     }
 
     class NoopHelper implements HttpTransportHelper {
@@ -51,10 +48,12 @@ interface HttpTransportHelper {
     }
 
     class StdHelper implements HttpTransportHelper {
+        private final Vertx vertx;
         private final HttpClient http;
         private final String rootPath;
 
-        private StdHelper(final HttpClient client, final String root) {
+        StdHelper(final Vertx vertx, HttpClient client, String root) {
+            this.vertx = vertx;
             this.http = client;
             this.rootPath = root.startsWith("/") ? root : "/" + root;
         }

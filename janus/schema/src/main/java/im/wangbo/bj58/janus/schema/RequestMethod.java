@@ -23,7 +23,7 @@ public enum RequestMethod {
         this.type = v;
     }
 
-    public final String value() {
+    public final String method() {
         return type;
     }
 }

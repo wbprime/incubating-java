@@ -64,7 +64,7 @@ final class HttpTransport implements Transport {
 
         // Connect to HTTP endpoint
         final HttpClient httpClient = vertx.createHttpClient(options);
-        updateBackend(httpClient, uri);
+        updateBackend(vertx, httpClient, uri);
 
         return Futures.completed();
     }
@@ -84,7 +84,7 @@ final class HttpTransport implements Transport {
         final CompletableFuture<Void> future = new CompletableFuture<>();
 
         final HttpRequesting requesting = HttpRequesting.create(msg, http);
-        requesting.request(msg, future)
+        requesting.sendRequest(msg, future)
                 .whenComplete((re, ex) -> {
                     if (null != ex) exHandler.accept(ex);
                     else handlers.forEach(h -> h.accept(re));
@@ -118,8 +118,8 @@ final class HttpTransport implements Transport {
         };
     }
 
-    private void updateBackend(final HttpClient client, final URI uri) {
+    private void updateBackend(final Vertx vertx, final HttpClient client, final URI uri) {
         LOG.debug("HttpTransport backend switched to {} => {}", client, uri);
-        http = HttpTransportHelper.std(client, uri.getPath());
+        http = HttpTransportHelper.std(vertx, client, uri.getPath());
     }
 }

@@ -89,17 +89,17 @@ abstract class HttpRequesting {
         }
     }
 
-    final CompletionStage<JsonObject> request(final Transport.RequestMessage msg, final CompletableFuture<Void> sent) {
+    final CompletionStage<JsonObject> sendRequest(final Transport.RequestMessage msg, final CompletableFuture<Void> requestFuture) {
         final Optional<JsonObject> body = body(msg);
 
         final CompletableFuture<JsonObject> future = new CompletableFuture<>();
 
-        final HttpClientRequest request = request();
+        final HttpClientRequest request = buildHttpRequest();
 
         final HttpClientRequest request2 = request.endHandler(ignored -> {
             LOG.debug("Request ended to \"{}\"", request.absoluteURI());
-            sent.complete(null);
-        }).exceptionHandler(sent::completeExceptionally)
+            requestFuture.complete(null);
+        }).exceptionHandler(requestFuture::completeExceptionally)
                 .handler(
                         res -> res.exceptionHandler(future::completeExceptionally)
                                 .bodyHandler(
@@ -119,7 +119,7 @@ abstract class HttpRequesting {
         return future;
     }
 
-    abstract HttpClientRequest request();
+    abstract HttpClientRequest buildHttpRequest();
 
     abstract Optional<JsonObject> body(final Transport.RequestMessage msg);
 
@@ -129,7 +129,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        final HttpClientRequest request() {
+        final HttpClientRequest buildHttpRequest() {
             return httpHelper().getRequest("info");
         }
 
@@ -145,15 +145,15 @@ abstract class HttpRequesting {
         }
 
         @Override
-        HttpClientRequest request() {
+        HttpClientRequest buildHttpRequest() {
             return httpHelper().postRequest("");
         }
 
         @Override
         final Optional<JsonObject> body(final Transport.RequestMessage body) {
             final JsonObjectBuilder builder = Json.createObjectBuilder(body.root());
-            builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().value());
-            builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction());
+            builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().method());
+            builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction().id());
             return Optional.of(builder.build());
         }
     }
@@ -167,7 +167,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        HttpClientRequest request() {
+        HttpClientRequest buildHttpRequest() {
             return httpHelper().postRequest("" + sid);
         }
 
@@ -188,7 +188,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        HttpClientRequest request() {
+        HttpClientRequest buildHttpRequest() {
             return httpHelper().postRequest(sid + "/" + hid);
         }
     }
