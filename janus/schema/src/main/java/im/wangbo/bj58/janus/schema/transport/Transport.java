@@ -21,7 +21,7 @@ public interface Transport {
 
     CompletableFuture<Void> close();
 
-    CompletableFuture<Void> send(final Request request);
+    CompletableFuture<Void> send(final RequestMessage msg);
 
     Transport handler(final Consumer<JsonObject> handler);
 
@@ -36,7 +36,7 @@ public interface Transport {
     }
 
     @AutoValue
-    abstract class Request {
+    abstract class RequestMessage {
         public abstract RequestMethod request();
 
         public abstract String transaction();
@@ -48,7 +48,7 @@ public interface Transport {
         public abstract JsonObject root();
 
         public static Builder builder() {
-            return new AutoValue_Transport_Request.Builder().root(JsonObject.EMPTY_JSON_OBJECT);
+            return new AutoValue_Transport_RequestMessage.Builder().root(JsonObject.EMPTY_JSON_OBJECT);
         }
 
         @AutoValue.Builder
@@ -69,7 +69,7 @@ public interface Transport {
 
             public abstract Builder root(JsonObject root);
 
-            public abstract Request build();
+            public abstract RequestMessage build();
         }
     }
 }

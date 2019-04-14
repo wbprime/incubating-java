@@ -29,7 +29,7 @@ final class NoopTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final Request request) {
+    public CompletableFuture<Void> send(final RequestMessage msg) {
         return Futures.completed();
     }
 

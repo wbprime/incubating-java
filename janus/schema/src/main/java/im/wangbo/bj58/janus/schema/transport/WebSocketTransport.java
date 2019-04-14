@@ -94,9 +94,9 @@ final class WebSocketTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final Request request) {
+    public CompletableFuture<Void> send(final RequestMessage msg) {
         try {
-            websocket.send(request.toString());
+            websocket.send(msg.toString());
             return Futures.completed();
         } catch (Exception ex) {
             return Futures.failed(ex);

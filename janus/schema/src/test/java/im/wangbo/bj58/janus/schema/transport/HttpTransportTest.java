@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.json.JsonObject;
+
 import im.wangbo.bj58.janus.schema.RequestMethod;
 
 /**
@@ -29,15 +31,20 @@ public class HttpTransportTest {
 
     @Test
     public void test() throws Exception {
-        final CompletableFuture<Void> request = transport.send(
-                Transport.Request.builder()
+        final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
+
+        final CompletableFuture<Void> request = transport.handler(finished::complete)
+                .send(Transport.RequestMessage.builder()
                         .request(RequestMethod.SERVER_INFO)
                         .transaction("wbprime" + System.currentTimeMillis())
                         .build()
-        );
+                );
 
-        request.get(1, TimeUnit.MINUTES);
-
-        Thread.sleep(10000L);
+        request.thenCompose(ignored -> finished)
+                .whenComplete((re, ex) -> {
+                    if (null == ex) System.out.println(re.toString());
+                    else ex.printStackTrace();
+                })
+                .get(1L, TimeUnit.MINUTES);
     }
 }
