@@ -9,8 +9,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
 import io.vertx.core.Vertx;
@@ -81,16 +83,12 @@ final class HttpTransport implements Transport {
 
     @Override
     public CompletableFuture<Void> send(final RequestMessage msg) {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
-
-        final HttpRequesting requesting = HttpRequesting.create(msg, http);
-        requesting.sendRequest(msg, future)
-                .whenComplete((re, ex) -> {
-                    if (null != ex) exHandler.accept(ex);
-                    else handlers.forEach(h -> h.accept(re));
-                });
-
-        return future;
+        try {
+            final HttpRequesting requesting = HttpRequesting.create(msg, http);
+            return requesting.sendRequest(msg, this::onResponse);
+        } catch (Exception ex) {
+            return Futures.failed(ex);
+        }
     }
 
     @Override
@@ -120,6 +118,15 @@ final class HttpTransport implements Transport {
 
     private void updateBackend(final Vertx vertx, final HttpClient client, final URI uri) {
         LOG.debug("HttpTransport backend switched to {} => {}", client, uri);
-        http = HttpTransportHelper.std(vertx, client, uri.getPath());
+        http = HttpTransportHelper.std(vertx, client, uri.getPath(), this::onResponse);
+    }
+
+    // Either json or ex would be null but not both.
+    private void onResponse(@Nullable final JsonObject json, @Nullable final Throwable ex) {
+        if (null != ex) {
+            exHandler.accept(ex);
+        } else {
+            handlers.forEach(handler -> handler.accept(json));
+        }
     }
 }

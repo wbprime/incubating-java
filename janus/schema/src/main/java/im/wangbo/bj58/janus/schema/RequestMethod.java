@@ -1,5 +1,7 @@
 package im.wangbo.bj58.janus.schema;
 
+import com.google.auto.value.AutoValue;
+
 /**
  * TODO add brief description here
  *
@@ -7,23 +9,29 @@ package im.wangbo.bj58.janus.schema;
  *
  * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
  */
-public enum RequestMethod {
-    SERVER_INFO("info"),
-    CREATE_SESSION("create"),
-    DESTROY_SESSION("destroy"),
-    ATTACH_PLUGIN("attach"),
-    DETACH_PLUGIN("detach"),
-    HANGUP_PLUGIN("hangup"),
-    PLUGIN_MESSAGE("message"),
-    TRICKLE("trickle");
+@AutoValue
+public abstract class RequestMethod {
+    public static final String SERVER_INFO= "info";
+    public static final String CREATE_SESSION= "create";
+    public static final String DESTROY_SESSION= "destroy";
+    public static final String ATTACH_PLUGIN= "attach";
+    public static final String DETACH_PLUGIN= "detach";
+    public static final String HANGUP_PLUGIN= "hangup";
+    public static final String SEND_MESSAGE= "message";
+    public static final String TRICKLE= "trickle";
 
-    private final String type;
+    public abstract String method();
 
-    RequestMethod(final String v) {
-        this.type = v;
-    }
+    public static RequestMethod serverInfo() { return of(SERVER_INFO);}
+    public static RequestMethod createSession() { return of(CREATE_SESSION);}
+    public static RequestMethod destroySession() { return of(DESTROY_SESSION);}
+    public static RequestMethod attachPlugin() { return of(ATTACH_PLUGIN);}
+    public static RequestMethod detachPlugin() { return of(DETACH_PLUGIN);}
+    public static RequestMethod hangupPlugin() { return of(HANGUP_PLUGIN);}
+    public static RequestMethod sendMessage() { return of(SEND_MESSAGE);}
+    public static RequestMethod trickle() { return of(TRICKLE);}
 
-    public final String method() {
-        return type;
+    public static RequestMethod of(final String m) {
+        return new AutoValue_RequestMethod(m);
     }
 }

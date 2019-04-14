@@ -5,7 +5,6 @@ import com.google.common.primitives.Longs;
 import java.util.OptionalLong;
 
 import javax.json.JsonNumber;
-import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
@@ -19,15 +18,14 @@ public class Jsons {
         throw new UnsupportedOperationException("Construction forbidden");
     }
 
-    public static OptionalLong longValue(final JsonObject json, final String key) {
-        final JsonValue v = json.get(key);
-        if (null != v) {
-            switch (v.getValueType()) {
+    public static OptionalLong longValue(final JsonValue value) {
+        if (null != value) {
+            switch (value.getValueType()) {
                 case STRING:
-                    final Long l = Longs.tryParse(JsonString.class.cast(v).getString());
+                    final Long l = Longs.tryParse(JsonString.class.cast(value).getString());
                     return null != l ? OptionalLong.of(l) : OptionalLong.empty();
                 case NUMBER:
-                    final JsonNumber decimal = JsonNumber.class.cast(v);
+                    final JsonNumber decimal = JsonNumber.class.cast(value);
                     return decimal.isIntegral() ?
                             OptionalLong.of(decimal.longValue()) : OptionalLong.empty();
                 default:

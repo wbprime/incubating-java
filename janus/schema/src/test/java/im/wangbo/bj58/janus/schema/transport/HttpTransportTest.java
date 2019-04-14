@@ -30,22 +30,45 @@ public class HttpTransportTest {
         transport.connect(URI.create("https://janus.conf.meetecho.com/janus")).get(1, TimeUnit.MINUTES);
     }
 
+    private void log(final JsonObject json, final Throwable ex) {
+        if (null != ex) {
+            System.out.println("Log exception: " + ex.getMessage());
+            ex.printStackTrace();
+        } else {
+            System.out.println("Log JSON result");
+            json.forEach((k, v) -> System.out.println(k + " => " + v));
+        }
+    }
+
     @Test
-    public void test() throws Exception {
+    public void test_unsupportedMethod() throws Exception {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
                 .send(Transport.RequestMessage.builder()
-                        .request(RequestMethod.SERVER_INFO)
+                        .request(RequestMethod.of("random" + System.currentTimeMillis()))
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
                 );
 
         request.thenCompose(ignored -> finished)
-                .whenComplete((re, ex) -> {
-                    if (null == ex) System.out.println(re.toString());
-                    else ex.printStackTrace();
-                })
+                .whenComplete(this::log)
+                .get(1L, TimeUnit.MINUTES);
+    }
+
+    @Test
+    public void test_serverInfo() throws Exception {
+        final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
+
+        final CompletableFuture<Void> request = transport.handler(finished::complete)
+                .send(Transport.RequestMessage.builder()
+                        .request(RequestMethod.serverInfo())
+                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
+                        .build()
+                );
+
+        request.thenCompose(ignored -> finished)
+                .whenComplete(this::log)
                 .get(1L, TimeUnit.MINUTES);
     }
 }

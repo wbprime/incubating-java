@@ -1,5 +1,9 @@
 package im.wangbo.bj58.janus.schema.transport;
 
+import java.util.function.BiConsumer;
+
+import javax.json.JsonObject;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
@@ -34,8 +38,11 @@ interface HttpTransportHelper {
         return NoopHelper.INSTANCE;
     }
 
-    static StdHelper std(final Vertx vertx, final HttpClient client, final String rootPath) {
-        return new StdHelper(vertx, client, rootPath);
+    static StdHelper std(
+            final Vertx vertx, final HttpClient client, final String rootPath,
+            final BiConsumer<JsonObject, Throwable> handler
+    ) {
+        return new StdHelper(vertx, client, rootPath, handler);
     }
 
     class NoopHelper implements HttpTransportHelper {
@@ -52,10 +59,16 @@ interface HttpTransportHelper {
         private final HttpClient http;
         private final String rootPath;
 
-        StdHelper(final Vertx vertx, HttpClient client, String root) {
+        private final BiConsumer<JsonObject, Throwable> handler;
+
+        StdHelper(
+                final Vertx vertx, final HttpClient client, final String root,
+                final BiConsumer<JsonObject, Throwable> handler
+        ) {
             this.vertx = vertx;
             this.http = client;
             this.rootPath = root.startsWith("/") ? root : "/" + root;
+            this.handler = handler;
         }
 
         @Override
