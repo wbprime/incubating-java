@@ -1,16 +1,13 @@
 package im.wangbo.bj58.janus.schema.client;
 
-import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import im.wangbo.bj58.janus.schema.GlobalRequest;
-import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
-import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.SessionRequest;
-import im.wangbo.bj58.janus.schema.eventbus.EventBus;
-import im.wangbo.bj58.janus.schema.transport.Transport;
+import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
+import im.wangbo.bj58.janus.schema.transport.SessionId;
 
 /**
  * TODO add brief description here
@@ -18,10 +15,6 @@ import im.wangbo.bj58.janus.schema.transport.Transport;
  * @author Elvis Wang
  */
 public interface Client {
-    static Client create(final URI uri, final Transport transport, final EventBus eventBus) {
-        return new ClientImpl(uri, transport);
-    }
-
     CompletableFuture<Void> connect();
     CompletableFuture<Void> close();
 

@@ -1,9 +1,10 @@
-package im.wangbo.bj58.janus.schema.client;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import im.wangbo.bj58.janus.schema.GlobalRequest;
+import im.wangbo.bj58.janus.schema.client.Client;
 import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
