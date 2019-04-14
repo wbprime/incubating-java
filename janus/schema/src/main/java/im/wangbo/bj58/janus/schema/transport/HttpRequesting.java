@@ -35,8 +35,8 @@ abstract class HttpRequesting {
     }
 
     static HttpRequesting create(final Transport.RequestMessage msg, final HttpTransportHelper helper) {
-        final OptionalLong sessionId = msg.sessionId();
-        final OptionalLong pluginId = msg.pluginId();
+        final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
+        final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());;
         switch (msg.request()) {
             case SERVER_INFO:
                 return new ServerInfoHttpRequesting(helper);

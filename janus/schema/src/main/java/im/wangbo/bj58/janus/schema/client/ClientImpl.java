@@ -10,6 +10,7 @@ import im.wangbo.bj58.janus.schema.RequestMethod;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionId;
 import im.wangbo.bj58.janus.schema.SessionRequest;
+import im.wangbo.bj58.janus.schema.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
@@ -42,7 +43,7 @@ class ClientImpl implements Client {
         final CompletableFuture<Void> sent = transport.send(
                 Transport.RequestMessage.builder()
                         .request(RequestMethod.SERVER_INFO)
-                        .transaction("wbprime" + System.currentTimeMillis())
+                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
         );
 

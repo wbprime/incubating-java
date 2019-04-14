@@ -3,13 +3,16 @@ package im.wangbo.bj58.janus.schema.transport;
 import com.google.auto.value.AutoValue;
 
 import java.net.URI;
-import java.util.OptionalLong;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
+import im.wangbo.bj58.janus.schema.PluginHandleId;
 import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.SessionId;
 import im.wangbo.bj58.janus.schema.TransactionId;
 
 /**
@@ -42,9 +45,9 @@ public interface Transport {
 
         public abstract TransactionId transaction();
 
-        public abstract OptionalLong sessionId();
+        public abstract Optional<SessionId> sessionId();
 
-        public abstract OptionalLong pluginId();
+        public abstract Optional<PluginHandleId> pluginId();
 
         public abstract JsonObject root();
 
@@ -56,16 +59,18 @@ public interface Transport {
         public abstract static class Builder {
             public abstract Builder request(RequestMethod request);
 
-            public abstract Builder transaction(String transaction);
+            public abstract Builder transaction(final TransactionId transaction);
 
-            abstract Builder sessionId(OptionalLong sessionId);
-            public final Builder sessionId(long v) {
-                return sessionId(OptionalLong.of(v));
+            abstract Builder sessionId(Optional<SessionId> sessionId);
+
+            public final Builder sessionId(@Nullable SessionId sessionId) {
+                return sessionId(Optional.ofNullable(sessionId));
             }
 
-            abstract Builder pluginId(OptionalLong pluginId);
-            public final Builder pluginId(long v) {
-                return pluginId(OptionalLong.of(v));
+            abstract Builder pluginId(Optional<PluginHandleId> pluginId);
+
+            public final Builder pluginId(@Nullable PluginHandleId v) {
+                return pluginId(Optional.ofNullable(v));
             }
 
             public abstract Builder root(JsonObject root);

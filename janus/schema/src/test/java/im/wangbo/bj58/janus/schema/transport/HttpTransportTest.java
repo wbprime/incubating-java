@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.TransactionId;
 
 /**
  * TODO add brief description here
@@ -36,7 +37,7 @@ public class HttpTransportTest {
         final CompletableFuture<Void> request = transport.handler(finished::complete)
                 .send(Transport.RequestMessage.builder()
                         .request(RequestMethod.SERVER_INFO)
-                        .transaction("wbprime" + System.currentTimeMillis())
+                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
                 );
 
