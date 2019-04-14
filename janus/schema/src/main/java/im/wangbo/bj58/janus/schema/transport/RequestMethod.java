@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.transport;
 
 import com.google.auto.value.AutoValue;
 

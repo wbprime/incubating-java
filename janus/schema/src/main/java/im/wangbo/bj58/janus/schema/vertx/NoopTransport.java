@@ -1,10 +1,13 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import javax.json.JsonObject;
+
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
+import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
  * TODO add brief description here
@@ -29,7 +32,7 @@ final class NoopTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final RequestMessage msg) {
+    public CompletableFuture<Void> send(final TransportRequest msg) {
         return Futures.completed();
     }
 

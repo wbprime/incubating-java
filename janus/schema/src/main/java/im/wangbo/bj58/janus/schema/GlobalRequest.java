@@ -2,6 +2,9 @@ package im.wangbo.bj58.janus.schema;
 
 import com.google.auto.value.AutoValue;
 
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
+
 /**
  * TODO add brief description here
  *

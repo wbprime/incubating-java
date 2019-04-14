@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,8 +11,9 @@ import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.RequestMethod;
-import im.wangbo.bj58.janus.schema.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 
 /**
  * TODO add brief description here
@@ -49,7 +50,7 @@ public class HttpTransportTest {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(Transport.RequestMessage.builder()
+                .send(TransportRequest.builder()
                         .request(RequestMethod.of("random" + System.currentTimeMillis()))
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
@@ -65,7 +66,7 @@ public class HttpTransportTest {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(Transport.RequestMessage.serverInfoMessageBuilder()
+                .send(TransportRequest.serverInfoMessageBuilder()
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
                 );
@@ -80,7 +81,7 @@ public class HttpTransportTest {
         {
              transport.handler(handler)
                     .exceptionHandler(exHandler)
-                    .send(Transport.RequestMessage.createSessionMessageBuilder()
+                    .send(TransportRequest.createSessionMessageBuilder()
                             .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                             .build()
                     ).get(1L, TimeUnit.MINUTES);

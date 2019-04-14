@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 /**
  * TODO add brief description here

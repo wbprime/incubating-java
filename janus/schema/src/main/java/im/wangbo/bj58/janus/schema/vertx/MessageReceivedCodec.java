@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.eventbus;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
@@ -14,16 +15,16 @@ import io.vertx.core.eventbus.MessageCodec;
  *
  * @author Elvis Wang
  */
-class MessageReceivedCodec implements MessageCodec<EventBus.MessageReceived, EventBus.MessageReceived> {
+class MessageReceivedCodec implements MessageCodec<MessageReceived, MessageReceived> {
     @Override
-    public void encodeToWire(Buffer buffer, EventBus.MessageReceived msg) {
+    public void encodeToWire(Buffer buffer, MessageReceived msg) {
         final String json = msg.message().toString();
         buffer.appendInt(json.length());
         buffer.appendString(json, StandardCharsets.UTF_8.name());
     }
 
     @Override
-    public EventBus.MessageReceived decodeFromWire(int pos, Buffer buffer) {
+    public MessageReceived decodeFromWire(int pos, Buffer buffer) {
         final JsonObject message;
         {
             final int len = buffer.getInt(pos);
@@ -33,17 +34,17 @@ class MessageReceivedCodec implements MessageCodec<EventBus.MessageReceived, Eve
 //                pos += len;
         }
 
-        return EventBus.MessageReceived.of(message);
+        return MessageReceived.of(message);
     }
 
     @Override
-    public EventBus.MessageReceived transform(EventBus.MessageReceived message) {
+    public MessageReceived transform(MessageReceived message) {
         return message;
     }
 
     @Override
     public String name() {
-        return new EventTypeMeta<EventBus.MessageReceived>() {
+        return new EventTypeMeta<MessageReceived>() {
         }.codecName();
     }
 

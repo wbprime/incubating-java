@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -17,10 +17,15 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.RequestMethod;
-import im.wangbo.bj58.janus.schema.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.eventbus.EventBus;
-import im.wangbo.bj58.janus.schema.eventbus.EventTypeMeta;
+import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
+import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
+import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
+import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
+import im.wangbo.bj58.janus.schema.transport.Transport;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -56,7 +61,7 @@ final class HttpTransport implements Transport {
 
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
-        this.eventBus = new EventBus(vertx);
+        this.eventBus = new EventBusImpl(vertx);
     }
 
     @Override
@@ -77,17 +82,17 @@ final class HttpTransport implements Transport {
         final HttpClient httpClient = vertx.createHttpClient(options);
         updateBackend(vertx, httpClient, uri);
 
-        vertx.eventBus().<EventBus.SessionCreated>consumer(
-                EventTypeMeta.create(EventBus.SessionCreated.class).address(),
+        vertx.eventBus().<SessionCreated>consumer(
+                EventTypeMeta.create(SessionCreated.class).address(),
                 msg -> onSessionCreated(msg.body()));
-        vertx.eventBus().<EventBus.SessionDestroyed>consumer(
-                EventTypeMeta.create(EventBus.SessionDestroyed.class).address(),
+        vertx.eventBus().<SessionDestroyed>consumer(
+                EventTypeMeta.create(SessionDestroyed.class).address(),
                 msg -> onSessionDestroyed(msg.body()));
-        vertx.eventBus().<EventBus.MessageSent>consumer(
-                EventTypeMeta.create(EventBus.MessageSent.class).address(),
+        vertx.eventBus().<MessageSent>consumer(
+                EventTypeMeta.create(MessageSent.class).address(),
                 msg -> onRequestSent(msg.body()));
-        vertx.eventBus().<EventBus.MessageReceived>consumer(
-                EventTypeMeta.create(EventBus.MessageReceived.class).address(),
+        vertx.eventBus().<MessageReceived>consumer(
+                EventTypeMeta.create(MessageReceived.class).address(),
                 msg -> onResponseRecv(msg.body()));
 
         return Futures.completed();
@@ -104,7 +109,7 @@ final class HttpTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final RequestMessage msg) {
+    public CompletableFuture<Void> send(final TransportRequest msg) {
         try {
             final HttpRequesting requesting = HttpRequesting.create(msg, http, eventBus);
             return requesting.sendRequest(msg, this::onResponse);
@@ -152,13 +157,13 @@ final class HttpTransport implements Transport {
         }
     }
 
-    private void onSessionCreated(final EventBus.SessionCreated msg) {
+    private void onSessionCreated(final SessionCreated msg) {
         LOG.debug("Session {} created", msg.sessionId());
 
         final long timerId = vertx.setPeriodic(pollIntervalInMillis, ignored -> {
             final HttpRequesting requesting = new HttpRequesting.LongPollHttpRequesting(http, eventBus, msg.sessionId());
             requesting.sendRequest(
-                    RequestMessage.builder()
+                    TransportRequest.builder()
                             .request(RequestMethod.of("Not needed"))
                             .transaction(TransactionId.of("Not needed"))
                             .build(),
@@ -171,7 +176,7 @@ final class HttpTransport implements Transport {
         }
     }
 
-    private void onSessionDestroyed(final EventBus.SessionDestroyed msg) {
+    private void onSessionDestroyed(final SessionDestroyed msg) {
         LOG.debug("Session {} destroyed", msg.sessionId());
 
         final Long timerId = sessionIdMappedPollings.remove(msg.sessionId());
@@ -181,12 +186,12 @@ final class HttpTransport implements Transport {
     }
 
     // For log output
-    private void onRequestSent(final EventBus.MessageSent msg) {
+    private void onRequestSent(final MessageSent msg) {
         LOG.debug("Message sent to \"{}\" via {}: {}", msg.fullUri(), msg.httpMethod(), msg.message());
     }
 
     // For log output
-    private void onResponseRecv(final EventBus.MessageReceived msg) {
+    private void onResponseRecv(final MessageReceived msg) {
         LOG.debug("Message recv: {}", msg.message());
     }
 }

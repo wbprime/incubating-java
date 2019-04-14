@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.eventbus;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
  *
  * @author Elvis Wang
  */
-public abstract class EventTypeMeta<T> {
+abstract class EventTypeMeta<T> {
     private final Class<T> clz;
 
     @SuppressWarnings("unchecked")

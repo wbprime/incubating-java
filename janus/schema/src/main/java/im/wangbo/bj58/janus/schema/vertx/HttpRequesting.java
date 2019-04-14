@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +17,13 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.eventbus.EventBus;
+import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
+import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
+import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
+import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientRequest;
 
@@ -39,7 +44,7 @@ abstract class HttpRequesting {
     }
 
     static HttpRequesting create(
-            final Transport.RequestMessage msg,
+            final TransportRequest msg,
             final HttpTransportHelper httpHelper,
             final EventBus eventBusHelper
     ) {
@@ -140,7 +145,7 @@ abstract class HttpRequesting {
     }
 
     final CompletableFuture<Void> sendRequest(
-            final Transport.RequestMessage msg, final BiConsumer<JsonObject, Throwable> responseHandler
+            final TransportRequest msg, final BiConsumer<JsonObject, Throwable> responseHandler
     ) {
         // Response
         final CompletableFuture<Void> requestFuture = new CompletableFuture<>();
@@ -164,25 +169,25 @@ abstract class HttpRequesting {
     // Visible for inheriting
     void notifyRequestSent(final String httpMethod, final String uri, final JsonObject data) {
         eventBus().sendEvent(
-                EventBus.MessageSent.builder()
+                MessageSent.builder()
                         .httpMethod(httpMethod)
                         .fullUri(uri)
                         .message(data)
                         .build(),
-                EventBus.MessageSent.class
+                MessageSent.class
         );
     }
 
     // Visible for inheriting
     void notifyResponseRecv(final JsonObject data) {
-        eventBus().sendEvent(EventBus.MessageReceived.of(data), EventBus.MessageReceived.class);
+        eventBus().sendEvent(MessageReceived.of(data), MessageReceived.class);
     }
 
     // Visible for inheriting
     abstract HttpClientRequest buildHttpRequest();
 
     // Visible for inheriting
-    abstract Optional<JsonObject> requestBody(final Transport.RequestMessage msg);
+    abstract Optional<JsonObject> requestBody(final TransportRequest msg);
 
     static abstract class GetHttpRequesting extends HttpRequesting {
         GetHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
@@ -195,7 +200,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        final Optional<JsonObject> requestBody(final Transport.RequestMessage body) {
+        final Optional<JsonObject> requestBody(final TransportRequest body) {
             return Optional.empty();
         }
 
@@ -239,7 +244,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        final Optional<JsonObject> requestBody(final Transport.RequestMessage body) {
+        final Optional<JsonObject> requestBody(final TransportRequest body) {
             final JsonObjectBuilder builder = Json.createObjectBuilder(body.root());
             builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().method());
             builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction().id());
@@ -272,7 +277,7 @@ abstract class HttpRequesting {
             // TODO check success in data
             final OptionalLong sessionId = Constants.sessionId(data);
             sessionId.ifPresent(
-                    id -> eventBus().sendEvent(EventBus.SessionCreated.of(id), EventBus.SessionCreated.class)
+                    id -> eventBus().sendEvent(SessionCreated.of(id), SessionCreated.class)
             );
         }
     }
@@ -301,7 +306,7 @@ abstract class HttpRequesting {
             super.notifyResponseRecv(data);
 
             // TODO check success in data
-            eventBus().sendEvent(EventBus.SessionDestroyed.of(sid), EventBus.SessionDestroyed.class);
+            eventBus().sendEvent(SessionDestroyed.of(sid), SessionDestroyed.class);
         }
     }
 

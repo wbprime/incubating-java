@@ -4,13 +4,13 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 import im.wangbo.bj58.janus.schema.GlobalRequest;
-import im.wangbo.bj58.janus.schema.PluginHandleId;
+import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
-import im.wangbo.bj58.janus.schema.RequestMethod;
 import im.wangbo.bj58.janus.schema.ServerInfo;
-import im.wangbo.bj58.janus.schema.SessionId;
+import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.SessionRequest;
-import im.wangbo.bj58.janus.schema.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
@@ -41,7 +41,7 @@ class ClientImpl implements Client {
     @Override
     public CompletableFuture<ServerInfo> info() {
         final CompletableFuture<Void> sent = transport.send(
-                Transport.RequestMessage.serverInfoMessageBuilder()
+                TransportRequest.serverInfoMessageBuilder()
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
         );

@@ -8,6 +8,10 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
+import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
+
 /**
  * TODO add brief description here
  *

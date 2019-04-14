@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.transport;
+package im.wangbo.bj58.janus.schema.vertx;
 
 /**
  * TODO add brief description here
@@ -70,7 +70,7 @@ final class WebSocketTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final RequestMessage msg) {
+    public CompletableFuture<Void> send(final TransportRequest msg) {
         try {
             websocket.send(msg.toString());
             return Futures.completed();
