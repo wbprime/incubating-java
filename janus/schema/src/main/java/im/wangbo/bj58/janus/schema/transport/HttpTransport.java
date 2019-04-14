@@ -1,6 +1,7 @@
 package im.wangbo.bj58.janus.schema.transport;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +10,15 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
+import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.TransactionId;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -31,12 +35,14 @@ final class HttpTransport implements Transport {
     private static final int DEFAULT_HTTPS_PORT = 443;
 
     private final Vertx vertx;
-    private final long pollIntervalInMillis = 500L;
+    private final long pollIntervalInMillis = TimeUnit.SECONDS.toMillis(2L);
+
+    private HttpTransportHelper http = HttpTransportHelper.noop();
+    private final HttpEventBusHelper eventBus;
 
     private List<Consumer<JsonObject>> handlers = Collections.emptyList();
     private Consumer<Throwable> exHandler = ex -> LOG.error("HTTP backend exception", ex);
-
-    private HttpTransportHelper http = HttpTransportHelper.noop();
+    private final ConcurrentMap<Long, Long> sessionIdMappedPollings = Maps.newConcurrentMap();
 
     static HttpTransport create() {
         return create(Vertx.vertx());
@@ -48,6 +54,7 @@ final class HttpTransport implements Transport {
 
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
+        this.eventBus = new HttpEventBusHelper(vertx);
     }
 
     @Override
@@ -68,6 +75,23 @@ final class HttpTransport implements Transport {
         final HttpClient httpClient = vertx.createHttpClient(options);
         updateBackend(vertx, httpClient, uri);
 
+        vertx.eventBus().<HttpEventBusHelper.SessionCreated>consumer(
+                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.SessionCreated>() {
+                }.address(),
+                msg -> onSessionCreated(msg.body()));
+        vertx.eventBus().<HttpEventBusHelper.SessionDestroyed>consumer(
+                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.SessionDestroyed>() {
+                }.address(),
+                msg -> onSessionDestroyed(msg.body()));
+        vertx.eventBus().<HttpEventBusHelper.MessageSent>consumer(
+                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.MessageSent>() {
+                }.address(),
+                msg -> onRequestSent(msg.body()));
+        vertx.eventBus().<HttpEventBusHelper.MessageReceived>consumer(
+                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.MessageReceived>() {
+                }.address(),
+                msg -> onResponseRecv(msg.body()));
+
         return Futures.completed();
     }
 
@@ -84,7 +108,7 @@ final class HttpTransport implements Transport {
     @Override
     public CompletableFuture<Void> send(final RequestMessage msg) {
         try {
-            final HttpRequesting requesting = HttpRequesting.create(msg, http);
+            final HttpRequesting requesting = HttpRequesting.create(msg, http, eventBus);
             return requesting.sendRequest(msg, this::onResponse);
         } catch (Exception ex) {
             return Futures.failed(ex);
@@ -128,5 +152,43 @@ final class HttpTransport implements Transport {
         } else {
             handlers.forEach(handler -> handler.accept(json));
         }
+    }
+
+    private void onSessionCreated(final HttpEventBusHelper.SessionCreated msg) {
+        LOG.debug("Session {} created", msg.sessionId());
+
+        final long timerId = vertx.setPeriodic(pollIntervalInMillis, ignored -> {
+            final HttpRequesting requesting = new HttpRequesting.LongPollHttpRequesting(http, eventBus, msg.sessionId());
+            requesting.sendRequest(
+                    RequestMessage.builder()
+                            .request(RequestMethod.of("Not needed"))
+                            .transaction(TransactionId.of("Not needed"))
+                            .build(),
+                    this::onResponse);
+        });
+
+        final Long existedTimerId = sessionIdMappedPollings.putIfAbsent(msg.sessionId(), timerId);
+        if (null != existedTimerId) {
+            vertx.cancelTimer(existedTimerId);
+        }
+    }
+
+    private void onSessionDestroyed(final HttpEventBusHelper.SessionDestroyed msg) {
+        LOG.debug("Session {} destroyed", msg.sessionId());
+
+        final Long timerId = sessionIdMappedPollings.remove(msg.sessionId());
+        if (null != timerId) {
+            vertx.cancelTimer(timerId);
+        }
+    }
+
+    // For log output
+    private void onRequestSent(final HttpEventBusHelper.MessageSent msg) {
+        LOG.debug("Message sent to \"{}\" via {}: {}", msg.fullUri(), msg.httpMethod(), msg.message());
+    }
+
+    // For log output
+    private void onResponseRecv(final HttpEventBusHelper.MessageReceived msg) {
+        LOG.debug("Message recv: {}", msg.message());
     }
 }

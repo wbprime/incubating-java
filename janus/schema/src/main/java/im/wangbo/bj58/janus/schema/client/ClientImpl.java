@@ -41,8 +41,7 @@ class ClientImpl implements Client {
     @Override
     public CompletableFuture<ServerInfo> info() {
         final CompletableFuture<Void> sent = transport.send(
-                Transport.RequestMessage.builder()
-                        .request(RequestMethod.serverInfo())
+                Transport.RequestMessage.serverInfoMessageBuilder()
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
         );

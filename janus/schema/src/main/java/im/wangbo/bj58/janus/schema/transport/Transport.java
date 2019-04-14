@@ -55,8 +55,16 @@ public interface Transport {
             return new AutoValue_Transport_RequestMessage.Builder().root(JsonObject.EMPTY_JSON_OBJECT);
         }
 
+        public static Builder serverInfoMessageBuilder() {
+            return builder().request(RequestMethod.serverInfo());
+        }
+
+        public static Builder createSessionMessageBuilder() {
+            return builder().request(RequestMethod.createSession());
+        }
+
         @AutoValue.Builder
-        public abstract static class Builder {
+        public static abstract class Builder {
             public abstract Builder request(RequestMethod request);
 
             public abstract Builder transaction(final TransactionId transaction);
