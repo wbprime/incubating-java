@@ -1,12 +1,11 @@
 package im.wangbo.bj58.janus.schema.transport;
 
-import io.vertx.core.http.WebSocket;
-
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
+/*
 interface WebSocketTransportHelper {
     default void close() {
         throw new IllegalStateException("Not Connected to a valid WebSocket endpoint");
@@ -56,3 +55,5 @@ interface WebSocketTransportHelper {
         }
     }
 }
+
+ */

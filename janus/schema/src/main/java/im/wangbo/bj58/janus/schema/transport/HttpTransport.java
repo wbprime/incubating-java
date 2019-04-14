@@ -19,6 +19,8 @@ import javax.json.JsonObject;
 
 import im.wangbo.bj58.janus.schema.RequestMethod;
 import im.wangbo.bj58.janus.schema.TransactionId;
+import im.wangbo.bj58.janus.schema.eventbus.EventBus;
+import im.wangbo.bj58.janus.schema.eventbus.EventTypeMeta;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -38,7 +40,7 @@ final class HttpTransport implements Transport {
     private final long pollIntervalInMillis = TimeUnit.SECONDS.toMillis(2L);
 
     private HttpTransportHelper http = HttpTransportHelper.noop();
-    private final HttpEventBusHelper eventBus;
+    private final EventBus eventBus;
 
     private List<Consumer<JsonObject>> handlers = Collections.emptyList();
     private Consumer<Throwable> exHandler = ex -> LOG.error("HTTP backend exception", ex);
@@ -54,7 +56,7 @@ final class HttpTransport implements Transport {
 
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
-        this.eventBus = new HttpEventBusHelper(vertx);
+        this.eventBus = new EventBus(vertx);
     }
 
     @Override
@@ -75,21 +77,17 @@ final class HttpTransport implements Transport {
         final HttpClient httpClient = vertx.createHttpClient(options);
         updateBackend(vertx, httpClient, uri);
 
-        vertx.eventBus().<HttpEventBusHelper.SessionCreated>consumer(
-                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.SessionCreated>() {
-                }.address(),
+        vertx.eventBus().<EventBus.SessionCreated>consumer(
+                EventTypeMeta.create(EventBus.SessionCreated.class).address(),
                 msg -> onSessionCreated(msg.body()));
-        vertx.eventBus().<HttpEventBusHelper.SessionDestroyed>consumer(
-                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.SessionDestroyed>() {
-                }.address(),
+        vertx.eventBus().<EventBus.SessionDestroyed>consumer(
+                EventTypeMeta.create(EventBus.SessionDestroyed.class).address(),
                 msg -> onSessionDestroyed(msg.body()));
-        vertx.eventBus().<HttpEventBusHelper.MessageSent>consumer(
-                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.MessageSent>() {
-                }.address(),
+        vertx.eventBus().<EventBus.MessageSent>consumer(
+                EventTypeMeta.create(EventBus.MessageSent.class).address(),
                 msg -> onRequestSent(msg.body()));
-        vertx.eventBus().<HttpEventBusHelper.MessageReceived>consumer(
-                new HttpEventBusHelper.EventTypeMeta<HttpEventBusHelper.MessageReceived>() {
-                }.address(),
+        vertx.eventBus().<EventBus.MessageReceived>consumer(
+                EventTypeMeta.create(EventBus.MessageReceived.class).address(),
                 msg -> onResponseRecv(msg.body()));
 
         return Futures.completed();
@@ -154,7 +152,7 @@ final class HttpTransport implements Transport {
         }
     }
 
-    private void onSessionCreated(final HttpEventBusHelper.SessionCreated msg) {
+    private void onSessionCreated(final EventBus.SessionCreated msg) {
         LOG.debug("Session {} created", msg.sessionId());
 
         final long timerId = vertx.setPeriodic(pollIntervalInMillis, ignored -> {
@@ -173,7 +171,7 @@ final class HttpTransport implements Transport {
         }
     }
 
-    private void onSessionDestroyed(final HttpEventBusHelper.SessionDestroyed msg) {
+    private void onSessionDestroyed(final EventBus.SessionDestroyed msg) {
         LOG.debug("Session {} destroyed", msg.sessionId());
 
         final Long timerId = sessionIdMappedPollings.remove(msg.sessionId());
@@ -183,12 +181,12 @@ final class HttpTransport implements Transport {
     }
 
     // For log output
-    private void onRequestSent(final HttpEventBusHelper.MessageSent msg) {
+    private void onRequestSent(final EventBus.MessageSent msg) {
         LOG.debug("Message sent to \"{}\" via {}: {}", msg.fullUri(), msg.httpMethod(), msg.message());
     }
 
     // For log output
-    private void onResponseRecv(final HttpEventBusHelper.MessageReceived msg) {
+    private void onResponseRecv(final EventBus.MessageReceived msg) {
         LOG.debug("Message recv: {}", msg.message());
     }
 }

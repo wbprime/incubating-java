@@ -18,6 +18,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import im.wangbo.bj58.janus.schema.RequestMethod;
+import im.wangbo.bj58.janus.schema.eventbus.EventBus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientRequest;
 
@@ -30,9 +31,9 @@ abstract class HttpRequesting {
     private static final Logger LOG = LoggerFactory.getLogger(HttpRequesting.class);
 
     private final HttpTransportHelper http;
-    private final HttpEventBusHelper eventBus;
+    private final EventBus eventBus;
 
-    HttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper) {
+    HttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
         this.http = helper;
         this.eventBus = eventBusHelper;
     }
@@ -40,7 +41,7 @@ abstract class HttpRequesting {
     static HttpRequesting create(
             final Transport.RequestMessage msg,
             final HttpTransportHelper httpHelper,
-            final HttpEventBusHelper eventBusHelper
+            final EventBus eventBusHelper
     ) {
         final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
         final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
@@ -89,7 +90,7 @@ abstract class HttpRequesting {
         return http;
     }
 
-    final HttpEventBusHelper eventBus() {
+    final EventBus eventBus() {
         return eventBus;
     }
 
@@ -163,17 +164,18 @@ abstract class HttpRequesting {
     // Visible for inheriting
     void notifyRequestSent(final String httpMethod, final String uri, final JsonObject data) {
         eventBus().sendEvent(
-                HttpEventBusHelper.MessageSent.builder()
+                EventBus.MessageSent.builder()
                         .httpMethod(httpMethod)
                         .fullUri(uri)
                         .message(data)
-                        .build()
+                        .build(),
+                EventBus.MessageSent.class
         );
     }
 
     // Visible for inheriting
     void notifyResponseRecv(final JsonObject data) {
-        eventBus().sendEvent(HttpEventBusHelper.MessageReceived.create(data));
+        eventBus().sendEvent(EventBus.MessageReceived.of(data), EventBus.MessageReceived.class);
     }
 
     // Visible for inheriting
@@ -183,7 +185,7 @@ abstract class HttpRequesting {
     abstract Optional<JsonObject> requestBody(final Transport.RequestMessage msg);
 
     static abstract class GetHttpRequesting extends HttpRequesting {
-        GetHttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper) {
+        GetHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -201,7 +203,7 @@ abstract class HttpRequesting {
     }
 
     static class ServerInfoHttpRequesting extends GetHttpRequesting {
-        ServerInfoHttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper) {
+        ServerInfoHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -215,7 +217,7 @@ abstract class HttpRequesting {
         private final long sid;
         private final int maxEvents = 10;
 
-        LongPollHttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper, final long sessionId) {
+        LongPollHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper);
             this.sid = sessionId;
         }
@@ -227,7 +229,7 @@ abstract class HttpRequesting {
     }
 
     static abstract class PostHttpRequesting extends HttpRequesting {
-        PostHttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper) {
+        PostHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -248,7 +250,7 @@ abstract class HttpRequesting {
     }
 
     static class GlobalBasedHttpRequesting extends PostHttpRequesting {
-        GlobalBasedHttpRequesting(HttpTransportHelper helper, HttpEventBusHelper eventBusHelper) {
+        GlobalBasedHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -259,7 +261,7 @@ abstract class HttpRequesting {
     }
 
     static class CreateSessionHttpRequesting extends GlobalBasedHttpRequesting {
-        CreateSessionHttpRequesting(HttpTransportHelper helper, HttpEventBusHelper eventBusHelper) {
+        CreateSessionHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -270,7 +272,7 @@ abstract class HttpRequesting {
             // TODO check success in data
             final OptionalLong sessionId = Constants.sessionId(data);
             sessionId.ifPresent(
-                    id -> eventBus().sendEvent(HttpEventBusHelper.SessionCreated.of(id))
+                    id -> eventBus().sendEvent(EventBus.SessionCreated.of(id), EventBus.SessionCreated.class)
             );
         }
     }
@@ -278,7 +280,7 @@ abstract class HttpRequesting {
     static class SessionBasedPostHttpRequesting extends PostHttpRequesting {
         final long sid;
 
-        SessionBasedPostHttpRequesting(final HttpTransportHelper helper, final HttpEventBusHelper eventBusHelper, final long sessionId) {
+        SessionBasedPostHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper);
             this.sid = sessionId;
         }
@@ -290,7 +292,7 @@ abstract class HttpRequesting {
     }
 
     static class DestroySessionHttpRequesting extends SessionBasedPostHttpRequesting {
-        DestroySessionHttpRequesting(HttpTransportHelper helper, HttpEventBusHelper eventBusHelper, final long sessionId) {
+        DestroySessionHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper, sessionId);
         }
 
@@ -299,7 +301,7 @@ abstract class HttpRequesting {
             super.notifyResponseRecv(data);
 
             // TODO check success in data
-            eventBus().sendEvent(HttpEventBusHelper.SessionDestroyed.of(sid));
+            eventBus().sendEvent(EventBus.SessionDestroyed.of(sid), EventBus.SessionDestroyed.class);
         }
     }
 
@@ -309,7 +311,7 @@ abstract class HttpRequesting {
 
         PluginPostHttpRequesting(
                 final HttpTransportHelper helper,
-                final HttpEventBusHelper eventBusHelper,
+                final EventBus eventBusHelper,
                 final long sessionId,
                 final long pluginId
         ) {

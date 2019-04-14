@@ -1,35 +1,11 @@
 package im.wangbo.bj58.janus.schema.transport;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.StringReader;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-
-import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.RequestOptions;
-import io.vertx.core.http.WebSocket;
-import io.vertx.core.http.WebsocketVersion;
-
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
+/*
 final class WebSocketTransport implements Transport {
     private static final Logger LOG = LoggerFactory.getLogger(WebSocketTransport.class);
 
@@ -152,3 +128,5 @@ final class WebSocketTransport implements Transport {
         else websocket = WebSocketTransportHelper.std(ws);
     }
 }
+
+*/
