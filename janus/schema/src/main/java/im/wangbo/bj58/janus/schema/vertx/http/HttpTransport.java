@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.vertx.http;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.eventbus.EventBus;
 import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
 import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
 import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
@@ -45,7 +44,7 @@ final class HttpTransport implements Transport {
     private final long pollIntervalInMillis = TimeUnit.SECONDS.toMillis(2L);
 
     private HttpTransportHelper http = HttpTransportHelper.noop();
-    private final EventBus eventBus;
+    private final EventBusHelper eventBus;
 
     private List<Consumer<JsonObject>> handlers = Collections.emptyList();
     private Consumer<Throwable> exHandler = ex -> LOG.error("HTTP backend exception", ex);
@@ -61,7 +60,7 @@ final class HttpTransport implements Transport {
 
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
-        this.eventBus = new EventBusImpl(vertx);
+        this.eventBus = new EventBusHelper(vertx);
     }
 
     @Override

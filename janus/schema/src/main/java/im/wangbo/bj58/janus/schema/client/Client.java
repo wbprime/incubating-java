@@ -9,6 +9,7 @@ import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionRequest;
 import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
+import im.wangbo.bj58.janus.schema.transport.Transport;
 
 /**
  * TODO add brief description here
@@ -16,7 +17,7 @@ import im.wangbo.bj58.janus.schema.transport.SessionId;
  * @author Elvis Wang
  */
 public interface Client {
-    CompletableFuture<Void> connect(final URI uri);
+    CompletableFuture<Void> connect(final URI uri, final Transport transport);
     CompletableFuture<Void> close();
 
     CompletableFuture<ServerInfo> info();

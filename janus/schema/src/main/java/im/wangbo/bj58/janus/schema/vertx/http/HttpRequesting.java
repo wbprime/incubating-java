@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.vertx.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +17,11 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
-import im.wangbo.bj58.janus.schema.eventbus.EventBus;
 import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
 import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
 import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
 import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientRequest;
@@ -36,9 +35,9 @@ abstract class HttpRequesting {
     private static final Logger LOG = LoggerFactory.getLogger(HttpRequesting.class);
 
     private final HttpTransportHelper http;
-    private final EventBus eventBus;
+    private final EventBusHelper eventBus;
 
-    HttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
+    HttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
         this.http = helper;
         this.eventBus = eventBusHelper;
     }
@@ -46,7 +45,7 @@ abstract class HttpRequesting {
     static HttpRequesting create(
             final TransportRequest msg,
             final HttpTransportHelper httpHelper,
-            final EventBus eventBusHelper
+            final EventBusHelper eventBusHelper
     ) {
         final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
         final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
@@ -95,7 +94,7 @@ abstract class HttpRequesting {
         return http;
     }
 
-    final EventBus eventBus() {
+    final EventBusHelper eventBus() {
         return eventBus;
     }
 
@@ -190,7 +189,7 @@ abstract class HttpRequesting {
     abstract Optional<JsonObject> requestBody(final TransportRequest msg);
 
     static abstract class GetHttpRequesting extends HttpRequesting {
-        GetHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
+        GetHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -208,7 +207,7 @@ abstract class HttpRequesting {
     }
 
     static class ServerInfoHttpRequesting extends GetHttpRequesting {
-        ServerInfoHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
+        ServerInfoHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -222,7 +221,7 @@ abstract class HttpRequesting {
         private final long sid;
         private final int maxEvents = 10;
 
-        LongPollHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper, final long sessionId) {
+        LongPollHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper);
             this.sid = sessionId;
         }
@@ -234,7 +233,7 @@ abstract class HttpRequesting {
     }
 
     static abstract class PostHttpRequesting extends HttpRequesting {
-        PostHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper) {
+        PostHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -255,7 +254,7 @@ abstract class HttpRequesting {
     }
 
     static class GlobalBasedHttpRequesting extends PostHttpRequesting {
-        GlobalBasedHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper) {
+        GlobalBasedHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -266,7 +265,7 @@ abstract class HttpRequesting {
     }
 
     static class CreateSessionHttpRequesting extends GlobalBasedHttpRequesting {
-        CreateSessionHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper) {
+        CreateSessionHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper) {
             super(helper, eventBusHelper);
         }
 
@@ -285,7 +284,7 @@ abstract class HttpRequesting {
     static class SessionBasedPostHttpRequesting extends PostHttpRequesting {
         final long sid;
 
-        SessionBasedPostHttpRequesting(final HttpTransportHelper helper, final EventBus eventBusHelper, final long sessionId) {
+        SessionBasedPostHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper);
             this.sid = sessionId;
         }
@@ -297,7 +296,7 @@ abstract class HttpRequesting {
     }
 
     static class DestroySessionHttpRequesting extends SessionBasedPostHttpRequesting {
-        DestroySessionHttpRequesting(HttpTransportHelper helper, EventBus eventBusHelper, final long sessionId) {
+        DestroySessionHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper, final long sessionId) {
             super(helper, eventBusHelper, sessionId);
         }
 
@@ -316,7 +315,7 @@ abstract class HttpRequesting {
 
         PluginPostHttpRequesting(
                 final HttpTransportHelper helper,
-                final EventBus eventBusHelper,
+                final EventBusHelper eventBusHelper,
                 final long sessionId,
                 final long pluginId
         ) {

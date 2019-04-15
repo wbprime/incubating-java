@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.vertx.http;
 
 import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
 import io.vertx.core.buffer.Buffer;

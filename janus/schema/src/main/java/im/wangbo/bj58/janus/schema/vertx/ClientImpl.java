@@ -27,7 +27,7 @@ class ClientImpl implements Client {
     }
 
     @Override
-    public CompletableFuture<Void> connect(final URI uri) {
+    public CompletableFuture<Void> connect(final URI uri, final Transport transport) {
         return transport.connect(uri);
     }
 

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.vertx.http;
 
 import org.junit.Before;
 import org.junit.Ignore;

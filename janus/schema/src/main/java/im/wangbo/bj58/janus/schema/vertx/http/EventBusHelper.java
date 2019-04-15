@@ -1,9 +1,8 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.vertx.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import im.wangbo.bj58.janus.schema.eventbus.EventBus;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 
@@ -12,14 +11,14 @@ import io.vertx.core.eventbus.DeliveryOptions;
  *
  * @author Elvis Wang
  */
-class EventBusImpl implements EventBus {
-    private static final Logger LOG = LoggerFactory.getLogger(EventBus.class);
+class EventBusHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(EventBusHelper.class);
 
     public static final String EVENT_BUS_EVENT_TYPE_KEY = "message_type";
 
     private final Vertx vertx;
 
-    public EventBusImpl(final Vertx vertx) {
+    public EventBusHelper(final Vertx vertx) {
         this.vertx = vertx;
 
         vertx.eventBus().registerCodec(new JsonObjCodec());
