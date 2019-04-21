@@ -167,14 +167,7 @@ abstract class HttpRequesting {
 
     // Visible for inheriting
     void notifyRequestSent(final String httpMethod, final String uri, final JsonObject data) {
-        eventBus().sendEvent(
-                MessageSent.builder()
-                        .httpMethod(httpMethod)
-                        .fullUri(uri)
-                        .message(data)
-                        .build(),
-                MessageSent.class
-        );
+        eventBus().sendEvent(MessageSent.of(data), MessageSent.class);
     }
 
     // Visible for inheriting

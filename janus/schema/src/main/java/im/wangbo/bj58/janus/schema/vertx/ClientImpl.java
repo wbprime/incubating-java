@@ -13,6 +13,9 @@ import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
 import im.wangbo.bj58.janus.schema.transport.TransportRequest;
+import im.wangbo.bj58.janus.schema.vertx.http.HttpTransport;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
 
 /**
  * TODO add brief description here
@@ -20,15 +23,19 @@ import im.wangbo.bj58.janus.schema.transport.TransportRequest;
  * @author Elvis Wang
  */
 class ClientImpl implements Client {
-    private Transport transport;
+    private final EventBus eventBus;
+    private final Transport transport;
 
     ClientImpl() {
-//        this.transport = transport;
+        final Vertx vertx = Vertx.vertx();
+
+        this.eventBus = vertx.eventBus();
+        this.transport = HttpTransport.create(vertx);
     }
 
     @Override
     public CompletableFuture<Void> connect(final URI uri, final Transport transport) {
-        return transport.connect(uri);
+        return transport.connect(uri).whenComplete((re, ex) -> {/* TODO register event handlers */});
     }
 
     @Override

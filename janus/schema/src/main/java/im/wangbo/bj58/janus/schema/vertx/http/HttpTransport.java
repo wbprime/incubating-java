@@ -25,6 +25,7 @@ import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
 import im.wangbo.bj58.janus.schema.transport.TransportRequest;
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -34,7 +35,7 @@ import io.vertx.core.http.HttpClientOptions;
  *
  * @author Elvis Wang
  */
-final class HttpTransport implements Transport {
+public final class HttpTransport implements Transport {
     private static final Logger LOG = LoggerFactory.getLogger(HttpTransport.class);
 
     private static final int DEFAULT_HTTP_PORT = 80;
@@ -54,13 +55,13 @@ final class HttpTransport implements Transport {
         return create(Vertx.vertx());
     }
 
-    static HttpTransport create(final Vertx vertx) {
+    public static HttpTransport create(final Vertx vertx) {
         return new HttpTransport(vertx);
     }
 
     private HttpTransport(final Vertx vertx) {
         this.vertx = vertx;
-        this.eventBus = new EventBusHelper(vertx);
+        this.eventBus = new EventBusHelper(vertx.eventBus());
     }
 
     @Override
@@ -88,16 +89,16 @@ final class HttpTransport implements Transport {
         updateBackend(vertx, httpClient, uri);
 
         vertx.eventBus().<SessionCreated>consumer(
-                EventTypeMeta.create(SessionCreated.class).address(),
+                AbstractEventTypeMeta.create(SessionCreated.class).address(),
                 msg -> onSessionCreated(msg.body()));
         vertx.eventBus().<SessionDestroyed>consumer(
-                EventTypeMeta.create(SessionDestroyed.class).address(),
+                AbstractEventTypeMeta.create(SessionDestroyed.class).address(),
                 msg -> onSessionDestroyed(msg.body()));
         vertx.eventBus().<MessageSent>consumer(
-                EventTypeMeta.create(MessageSent.class).address(),
+                AbstractEventTypeMeta.create(MessageSent.class).address(),
                 msg -> onRequestSent(msg.body()));
         vertx.eventBus().<MessageReceived>consumer(
-                EventTypeMeta.create(MessageReceived.class).address(),
+                AbstractEventTypeMeta.create(MessageReceived.class).address(),
                 msg -> onResponseRecv(msg.body()));
 
         return Futures.completed();
@@ -192,7 +193,7 @@ final class HttpTransport implements Transport {
 
     // For log output
     private void onRequestSent(final MessageSent msg) {
-        LOG.debug("Message sent to \"{}\" via {}: {}", msg.fullUri(), msg.httpMethod(), msg.message());
+        LOG.debug("Message sent: {}", msg.message());
     }
 
     // For log output

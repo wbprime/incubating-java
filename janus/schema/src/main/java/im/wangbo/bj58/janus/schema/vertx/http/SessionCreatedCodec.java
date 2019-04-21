@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
@@ -27,7 +28,7 @@ class SessionCreatedCodec implements MessageCodec<SessionCreated, SessionCreated
 
     @Override
     public String name() {
-        return new EventTypeMeta<SessionCreated>() {
+        return new AbstractEventTypeMeta<SessionCreated>() {
         }.codecName();
     }
 

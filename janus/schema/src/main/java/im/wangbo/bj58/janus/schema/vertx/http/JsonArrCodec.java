@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonArray;
 
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
@@ -39,7 +40,7 @@ class JsonArrCodec implements MessageCodec<JsonArray, JsonArray> {
 
     @Override
     public String name() {
-        return new EventTypeMeta<JsonArray>() {
+        return new AbstractEventTypeMeta<JsonArray>() {
         }.codecName();
     }
 

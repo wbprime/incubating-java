@@ -46,6 +46,9 @@
         <javax_jsonb_yasson_version>1.0</javax_jsonb_yasson_version>
         <javax_jsr305_findbugs_verson>3.0.2</javax_jsr305_findbugs_verson>
 
+        <javax_jsonp_johnzon_version>1.1.11</javax_jsonp_johnzon_version>
+        <javax_jsonb_johnzon_version>1.1.11</javax_jsonb_johnzon_version>
+
         <google_guava_version>23.0</google_guava_version>
         <google_guice_version>4.1.0</google_guice_version>
         <google_autovalue_version>1.5</google_autovalue_version>
@@ -113,6 +116,17 @@
                 <groupId>org.eclipse</groupId>
                 <artifactId>yasson</artifactId>
                 <version>${javax_jsonb_yasson_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-core</artifactId>
+                <version>${javax_jsonp_johnzon_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-jsonb</artifactId>
+                <version>${javax_jsonb_johnzon_version}</version>
             </dependency>
 
             <dependency>

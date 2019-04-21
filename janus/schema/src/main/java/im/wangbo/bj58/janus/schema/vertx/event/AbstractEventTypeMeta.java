@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx.http;
+package im.wangbo.bj58.janus.schema.vertx.event;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -8,11 +8,11 @@ import java.lang.reflect.Type;
  *
  * @author Elvis Wang
  */
-abstract class EventTypeMeta<T> {
+public abstract class AbstractEventTypeMeta<T> {
     private final Class<T> clz;
 
     @SuppressWarnings("unchecked")
-    public EventTypeMeta() {
+    public AbstractEventTypeMeta() {
         final Type type = getClass().getGenericSuperclass();
         final ParameterizedType ptype = (ParameterizedType) type; // safe
         final Type typeArgument = ptype.getActualTypeArguments()[0]; // safe
@@ -20,12 +20,12 @@ abstract class EventTypeMeta<T> {
         this.clz = (Class<T>) typeArgument; // safe
     }
 
-    private EventTypeMeta(final Class<T> clz) {
+    private AbstractEventTypeMeta(final Class<T> clz) {
         this.clz = clz;
     }
 
-    public static <T> EventTypeMeta<T> create(final Class<T> clz) {
-        return new EventTypeMeta<T>(clz) {
+    public static <T> AbstractEventTypeMeta<T> create(final Class<T> clz) {
+        return new AbstractEventTypeMeta<T>(clz) {
         };
     }
 

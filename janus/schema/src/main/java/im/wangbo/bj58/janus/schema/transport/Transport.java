@@ -12,6 +12,10 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 public interface Transport {
+    default String name() {
+        return "Transport";
+    }
+
     default boolean accepts(final URI uri) {
         return false;
     }

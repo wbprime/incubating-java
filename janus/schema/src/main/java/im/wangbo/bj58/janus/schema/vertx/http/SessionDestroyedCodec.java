@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
@@ -27,7 +28,7 @@ class SessionDestroyedCodec implements MessageCodec<SessionDestroyed, SessionDes
 
     @Override
     public String name() {
-        return new EventTypeMeta<SessionDestroyed>() {
+        return new AbstractEventTypeMeta<SessionDestroyed>() {
         }.codecName();
     }
 

@@ -7,6 +7,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
@@ -18,11 +19,6 @@ import io.vertx.core.eventbus.MessageCodec;
 class MessageSentCodec implements MessageCodec<MessageSent, MessageSent> {
     @Override
     public void encodeToWire(Buffer buffer, MessageSent messageSent) {
-        buffer.appendInt(messageSent.httpMethod().length());
-        buffer.appendString(messageSent.httpMethod(), StandardCharsets.UTF_8.name());
-        buffer.appendInt(messageSent.fullUri().length());
-        buffer.appendString(messageSent.fullUri(), StandardCharsets.UTF_8.name());
-
         final String json = messageSent.message().toString();
         buffer.appendInt(json.length());
         buffer.appendString(json, StandardCharsets.UTF_8.name());
@@ -30,22 +26,6 @@ class MessageSentCodec implements MessageCodec<MessageSent, MessageSent> {
 
     @Override
     public MessageSent decodeFromWire(int pos, Buffer buffer) {
-        final String httpMethod;
-        {
-            final int len = buffer.getInt(pos);
-            pos += 4;
-            httpMethod = buffer.getString(pos, pos + len, StandardCharsets.UTF_8.name());
-            pos += len;
-        }
-
-        final String fullUri;
-        {
-            final int len = buffer.getInt(pos);
-            pos += 4;
-            fullUri = buffer.getString(pos, pos + len, StandardCharsets.UTF_8.name());
-            pos += len;
-        }
-
         final JsonObject message;
         {
             final int len = buffer.getInt(pos);
@@ -55,11 +35,7 @@ class MessageSentCodec implements MessageCodec<MessageSent, MessageSent> {
 //                pos += len;
         }
 
-        return MessageSent.builder()
-                .httpMethod(httpMethod)
-                .fullUri(fullUri)
-                .message(message)
-                .build();
+        return MessageSent.of(message);
     }
 
     @Override
@@ -69,7 +45,7 @@ class MessageSentCodec implements MessageCodec<MessageSent, MessageSent> {
 
     @Override
     public String name() {
-        return new EventTypeMeta<MessageSent>() {
+        return new AbstractEventTypeMeta<MessageSent>() {
         }.codecName();
     }
 

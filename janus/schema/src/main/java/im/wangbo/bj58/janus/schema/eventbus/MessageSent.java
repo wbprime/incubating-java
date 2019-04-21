@@ -10,25 +10,15 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class MessageSent {
-    public abstract String httpMethod();
-
-    public abstract String fullUri();
-
+public abstract class MessageSent implements JsonableEvent {
     public abstract JsonObject message();
 
-    public static Builder builder() {
-        return new AutoValue_MessageSent.Builder();
+    @Override
+    public final JsonObject json() {
+        return message();
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder httpMethod(String httpMethod);
-
-        public abstract Builder fullUri(String fullUri);
-
-        public abstract Builder message(JsonObject message);
-
-        public abstract MessageSent build();
+    public static MessageSent of(final JsonObject message) {
+        return new AutoValue_MessageSent(message);
     }
 }

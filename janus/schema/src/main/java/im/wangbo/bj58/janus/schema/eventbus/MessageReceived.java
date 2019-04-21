@@ -10,11 +10,15 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class MessageReceived {
+public abstract class MessageReceived implements JsonableEvent {
     public abstract JsonObject message();
 
-    public static MessageReceived of(JsonObject message) {
-        return new AutoValue_MessageReceived(message);
+    @Override
+    public final JsonObject json() {
+        return message();
     }
 
+    public static MessageReceived of(final JsonObject message) {
+        return new AutoValue_MessageReceived(message);
+    }
 }
