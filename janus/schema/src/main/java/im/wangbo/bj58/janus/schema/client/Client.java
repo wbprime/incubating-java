@@ -7,6 +7,7 @@ import im.wangbo.bj58.janus.schema.GlobalRequest;
 import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionRequest;
+import im.wangbo.bj58.janus.schema.event.EventHandlerRegistry;
 import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
@@ -17,6 +18,8 @@ import im.wangbo.bj58.janus.schema.transport.Transport;
  * @author Elvis Wang
  */
 public interface Client {
+    EventHandlerRegistry eventHandlerRegistry();
+
     CompletableFuture<Void> connect(final URI uri, final Transport transport);
     CompletableFuture<Void> close();
 

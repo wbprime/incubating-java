@@ -8,6 +8,7 @@ import im.wangbo.bj58.janus.schema.PluginHandleRequest;
 import im.wangbo.bj58.janus.schema.ServerInfo;
 import im.wangbo.bj58.janus.schema.SessionRequest;
 import im.wangbo.bj58.janus.schema.client.Client;
+import im.wangbo.bj58.janus.schema.event.EventHandlerRegistry;
 import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
@@ -31,6 +32,11 @@ class ClientImpl implements Client {
 
         this.eventBus = vertx.eventBus();
         this.transport = HttpTransport.create(vertx);
+    }
+
+    @Override
+    public EventHandlerRegistry eventHandlerRegistry() {
+        return new EventHandlerRegistry() { };
     }
 
     @Override

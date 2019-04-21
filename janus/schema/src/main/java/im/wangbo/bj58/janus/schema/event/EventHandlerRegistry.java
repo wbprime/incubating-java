@@ -8,7 +8,11 @@ import java.util.function.Consumer;
  * @author Elvis Wang
  */
 public interface EventHandlerRegistry {
-    void register(final Consumer<? extends JsonableEvent> handler);
+    default void register(final Consumer<? extends JsonableEvent> handler) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
-    void deregister(final Consumer<? extends JsonableEvent> handler);
+    default void deregister(final Consumer<? extends JsonableEvent> handler) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
