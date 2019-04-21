@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.eventbus;
+package im.wangbo.bj58.janus.schema.event;
 
 import com.google.auto.value.AutoValue;
 
@@ -11,12 +11,12 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SessionDestroyed implements JsonableEvent {
+public abstract class SessionCreated implements JsonableEvent {
     public abstract long sessionId();
 
     @Override
     public final String eventType() {
-        return MoreEvents.TYPE_SESSION_DESTROYED;
+        return MoreEvents.TYPE_SESSION_CREATED;
     }
 
     @Override
@@ -26,8 +26,7 @@ public abstract class SessionDestroyed implements JsonableEvent {
                 .build();
     }
 
-    public static SessionDestroyed of(long sessionId) {
-        return new AutoValue_SessionDestroyed(sessionId);
+    public static SessionCreated of(long sessionId) {
+        return new AutoValue_SessionCreated(sessionId);
     }
 }
-

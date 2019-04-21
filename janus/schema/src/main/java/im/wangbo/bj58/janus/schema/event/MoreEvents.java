@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.eventbus;
+package im.wangbo.bj58.janus.schema.event;
 
 /**
  * TODO add brief description here

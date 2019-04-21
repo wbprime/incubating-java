@@ -1,4 +1,4 @@
-package im.wangbo.bj58.janus.schema.eventbus;
+package im.wangbo.bj58.janus.schema.event;
 
 import com.google.auto.value.AutoValue;
 
@@ -11,14 +11,14 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class PluginDetached implements JsonableEvent {
+public abstract class PluginAttached implements JsonableEvent {
     public abstract long sessionId();
 
     public abstract long handleId();
 
     @Override
     public final String eventType() {
-        return MoreEvents.TYPE_PLUGIN_HANDLE_DETACHED;
+        return MoreEvents.TYPE_PLUGIN_HANDLE_ATTACHED;
     }
 
     @Override
@@ -29,7 +29,7 @@ public abstract class PluginDetached implements JsonableEvent {
                 .build();
     }
 
-    public static PluginDetached create(final long sessionId, final long pluginHandleId) {
-        return new AutoValue_PluginDetached(sessionId, pluginHandleId);
+    public static PluginAttached create(final long sessionId, final long pluginHandleId) {
+        return new AutoValue_PluginAttached(sessionId, pluginHandleId);
     }
 }

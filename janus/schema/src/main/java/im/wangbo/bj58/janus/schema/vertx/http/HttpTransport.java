@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.eventbus.MessageReceived;
-import im.wangbo.bj58.janus.schema.eventbus.MessageSent;
-import im.wangbo.bj58.janus.schema.eventbus.SessionCreated;
-import im.wangbo.bj58.janus.schema.eventbus.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.event.MessageReceived;
+import im.wangbo.bj58.janus.schema.event.MessageSent;
+import im.wangbo.bj58.janus.schema.event.SessionCreated;
+import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
 import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
