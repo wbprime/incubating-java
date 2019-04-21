@@ -11,18 +11,20 @@ import javax.json.JsonObject;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SessionDestroyed implements JsonableEvent {
+public abstract class PluginDetached implements JsonableEvent {
     public abstract long sessionId();
 
+    public abstract long handleId();
+
     @Override
-    public JsonObject json() {
+    public final JsonObject json() {
         return Json.createObjectBuilder()
                 .add(MoreEvents.KEY_SESSION_ID, sessionId())
+                .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())
                 .build();
     }
 
-    public static SessionDestroyed of(long sessionId) {
-        return new AutoValue_SessionDestroyed(sessionId);
+    public static PluginDetached create(final long sessionId, final long pluginHandleId) {
+        return new AutoValue_PluginDetached(sessionId, pluginHandleId);
     }
 }
-

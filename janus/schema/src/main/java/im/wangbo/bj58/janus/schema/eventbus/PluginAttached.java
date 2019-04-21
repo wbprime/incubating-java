@@ -2,6 +2,7 @@ package im.wangbo.bj58.janus.schema.eventbus;
 
 import com.google.auto.value.AutoValue;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 
 /**
@@ -11,16 +12,16 @@ import javax.json.JsonObject;
  */
 @AutoValue
 public abstract class PluginAttached implements JsonableEvent {
-    private static final String SESSION_ID = "sessionId";
-    private static final String PLUGIN_HANDLE_ID = "pluginHandleId";
+    public abstract long sessionId();
 
-    public abstract long getSessionId();
-
-    public abstract long getPluginHandleId();
+    public abstract long handleId();
 
     @Override
     public final JsonObject json() {
-        return JsonObject.EMPTY_JSON_OBJECT;
+        return Json.createObjectBuilder()
+                .add(MoreEvents.KEY_SESSION_ID, sessionId())
+                .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())
+                .build();
     }
 
     public static PluginAttached create(final long sessionId, final long pluginHandleId) {
