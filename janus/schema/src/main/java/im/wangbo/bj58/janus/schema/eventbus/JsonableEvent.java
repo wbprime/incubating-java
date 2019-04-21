@@ -7,7 +7,8 @@ import javax.json.JsonObject;
  *
  * @author Elvis Wang
  */
-@FunctionalInterface
 public interface JsonableEvent {
-    JsonObject json();
+    String eventType();
+
+    JsonObject eventBody();
 }

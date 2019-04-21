@@ -19,7 +19,7 @@ public class PluginAttachedTest {
 
         final Jsonb jsonb = JsonbBuilder.create();
 
-//        final String json = jsonb.toJson(pluginAttached);
+//        final String eventBody = jsonb.toJson(pluginAttached);
         final String json = jsonb.toJson(pluginAttached, PluginAttached.class);
 
         System.out.println(json);

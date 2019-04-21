@@ -17,7 +17,12 @@ public abstract class PluginAttached implements JsonableEvent {
     public abstract long handleId();
 
     @Override
-    public final JsonObject json() {
+    public final String eventType() {
+        return MoreEvents.TYPE_PLUGIN_HANDLE_ATTACHED;
+    }
+
+    @Override
+    public final JsonObject eventBody() {
         return Json.createObjectBuilder()
                 .add(MoreEvents.KEY_SESSION_ID, sessionId())
                 .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())

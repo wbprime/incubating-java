@@ -14,7 +14,12 @@ public abstract class MessageSent implements JsonableEvent {
     public abstract JsonObject message();
 
     @Override
-    public final JsonObject json() {
+    public final String eventType() {
+        return MoreEvents.TYPE_MESSAGE_SENT;
+    }
+
+    @Override
+    public final JsonObject eventBody() {
         return message();
     }
 
