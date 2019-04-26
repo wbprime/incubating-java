@@ -23,11 +23,11 @@ import io.vertx.core.eventbus.EventBus;
  *
  * @author Elvis Wang
  */
-class ClientImpl implements Client {
+public class VertexBasedClient implements Client {
     private final EventBus eventBus;
     private final Transport transport;
 
-    ClientImpl() {
+    VertexBasedClient() {
         final Vertx vertx = Vertx.vertx();
 
         this.eventBus = vertx.eventBus();
@@ -41,7 +41,7 @@ class ClientImpl implements Client {
 
     @Override
     public CompletableFuture<Void> connect(final URI uri, final Transport transport) {
-        return transport.connect(uri).whenComplete((re, ex) -> {/* TODO register event handlers */});
+        return transport.connect(uri).whenComplete((re, ex) -> {/* TODO handler event handlers */});
     }
 
     @Override
