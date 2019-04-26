@@ -19,27 +19,29 @@ import io.vertx.core.eventbus.Message;
  * @author Elvis Wang
  */
 public class VertxBasedEventHandlerRegistry implements EventHandlerRegistry {
-    private final Multimap<String, Consumer<? extends JsonableEvent>> mappedHandlers;
+    private final Multimap<String, Consumer<JsonableEvent>> mappedHandlers;
     private final Set<Consumer<Exception>> exHandlers;
 
     private VertxBasedEventHandlerRegistry(final Vertx vertx) {
         this.mappedHandlers = HashMultimap.create();
         this.exHandlers = Sets.newConcurrentHashSet();
 
-        vertx.eventBus().consumer(
-                "",
-                (Handler<Message<JsonableEvent>>) event -> {
-                    for (final Consumer<JsonableEvent> handler : handlers) {
-                        try {
-                            handler.accept(event.body());
-                        } catch (Exception ex) {
-                            for (Consumer<Exception> exHandler : exHandlers) {
-                                exHandler.accept(ex);
+        for (final String key : mappedHandlers.keySet()) {
+            vertx.eventBus().consumer(
+                    key,
+                    (Handler<Message<JsonableEvent>>) event -> {
+                        for (final Consumer<JsonableEvent> handler : mappedHandlers.get(key)) {
+                            try {
+                                handler.accept(event.body());
+                            } catch (Exception ex) {
+                                for (Consumer<Exception> exHandler : exHandlers) {
+                                    exHandler.accept(ex);
+                                }
                             }
                         }
                     }
-                }
-        );
+            );
+        }
 
     }
 
@@ -48,8 +50,8 @@ public class VertxBasedEventHandlerRegistry implements EventHandlerRegistry {
     }
 
     @Override
-    public synchronized <T extends JsonableEvent> void handler(Consumer<T> handler, Class<T> messageType) {
-        mappedHandlers.put(messageType.getName(), handler);
+    public synchronized void handler(Consumer<JsonableEvent> handler) {
+        mappedHandlers.put("TODO", handler);
     }
 
     @Override

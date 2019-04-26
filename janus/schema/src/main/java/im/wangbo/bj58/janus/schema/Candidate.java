@@ -1,6 +1,7 @@
 package im.wangbo.bj58.janus.schema;
 
 import com.google.auto.value.AutoValue;
+import java.io.InputStream;
 
 /**
  * TODO add brief description here
