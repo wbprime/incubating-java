@@ -8,7 +8,7 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class SizeValue implements Value {
+abstract class SizeValue extends Value {
     public final String value() {
         return sizeInBytes() + "B";
     }

@@ -10,7 +10,7 @@ import java.time.Duration;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class DurationValue implements Value {
+abstract class DurationValue extends Value {
     public final String value() {
         return duration().getSeconds() + "s";
     }

@@ -8,7 +8,7 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class PlainValue implements Value {
+abstract class PlainValue extends Value {
     public abstract String value();
 
     static PlainValue of(final String value) {
