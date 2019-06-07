@@ -20,7 +20,7 @@ public abstract class SizeInPixel {
     /*
      * See http://ffmpeg.org/ffmpeg-utils.html#Video-size
      */
-    public static enum VideoSize {
+    public static enum Predefined {
         size_ntsc(720, 480),
         size_pal(720, 576),
         size_qntsc(352, 240),
@@ -79,12 +79,12 @@ public abstract class SizeInPixel {
         private final int w;
         private final int h;
 
-        VideoSize(int w, int h) {
+        Predefined(int w, int h) {
             this.w = w;
             this.h = h;
         }
 
-        public SizeInPixel sizeInPixel() {
+        public SizeInPixel size() {
             return SizeInPixel.of(w, h);
         }
     }

@@ -54,7 +54,7 @@ public abstract class Value {
         return size(size.width(), size.height());
     }
 
-    public static Value size(final SizeInPixel.VideoSize size) {
-        return size(size.sizeInPixel());
+    public static Value size(final SizeInPixel.Predefined size) {
+        return size(size.size());
     }
 }
