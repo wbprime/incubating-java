@@ -16,7 +16,7 @@ public class ScaleFilterBuilder implements FilterBuilder {
     }
 
     public void setWidthExpression(final String str) {
-        this.builder.addOption(Name.of("w"), Value.string(str));
+        this.builder.addOption(Name.of("w"), Value.ofString(str));
     }
 
     public void setHeight(final int v) {
@@ -24,7 +24,7 @@ public class ScaleFilterBuilder implements FilterBuilder {
     }
 
     public void setHeightExpression(final String str) {
-        this.builder.addOption(Name.of("h"), Value.string(str));
+        this.builder.addOption(Name.of("h"), Value.ofString(str));
     }
 
     @Override
