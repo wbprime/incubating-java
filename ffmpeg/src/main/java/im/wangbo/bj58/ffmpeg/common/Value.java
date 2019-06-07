@@ -45,4 +45,16 @@ public abstract class Value {
         final long bytes = BinarySizeUnit.B.convert(n, unit);
         return string(String.valueOf(bytes));
     }
+
+    public static Value size(final int w, final int h) {
+        return string(w + "x" + h);
+    }
+
+    public static Value size(final SizeInPixel size) {
+        return size(size.width(), size.height());
+    }
+
+    public static Value size(final SizeInPixel.VideoSize size) {
+        return size(size.sizeInPixel());
+    }
 }
