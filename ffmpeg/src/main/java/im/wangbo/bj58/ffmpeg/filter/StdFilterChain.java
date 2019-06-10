@@ -14,6 +14,10 @@ import java.util.List;
 public abstract class StdFilterChain implements FilterChain {
     public abstract ImmutableList<Filter> filters();
 
+    public static StdFilterChain of() {
+        return new AutoValue_StdFilterChain(ImmutableList.of());
+    }
+
     public static StdFilterChain of(final List<Filter> filters) {
         return new AutoValue_StdFilterChain(ImmutableList.copyOf(filters));
     }

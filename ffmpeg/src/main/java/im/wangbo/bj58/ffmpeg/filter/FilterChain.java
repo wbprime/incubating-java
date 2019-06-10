@@ -2,6 +2,8 @@ package im.wangbo.bj58.ffmpeg.filter;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.stream.Collectors;
+
 /**
  * TODO add brief description here
  *
@@ -13,5 +15,10 @@ public interface FilterChain extends FilterGraph {
     @Override
     default ImmutableList<FilterChain> chains() {
         return ImmutableList.of(this);
+    }
+
+    @Override
+    default String encode() {
+        return filters().stream().map(FilterChain::encode).collect(Collectors.joining(","));
     }
 }

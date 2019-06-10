@@ -11,6 +11,11 @@ import com.google.auto.value.AutoValue;
 abstract class NamedFilterPad implements FilterPad {
     abstract String name();
 
+    @Override
+    public final String encode() {
+        return "[" + name() + "]";
+    }
+
     static NamedFilterPad of(final String name) {
         return new AutoValue_NamedFilterPad(name);
     }

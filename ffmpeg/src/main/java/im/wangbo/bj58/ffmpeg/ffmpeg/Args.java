@@ -2,6 +2,7 @@ package im.wangbo.bj58.ffmpeg.ffmpeg;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.Value;
+import im.wangbo.bj58.ffmpeg.filter.FilterGraph;
 
 /**
  * TODO add brief description here
@@ -39,7 +40,6 @@ public final class Args {
             this.code = code;
         }
 
-
         @Override
         public final String encode() {
             return String.valueOf(code);
@@ -53,4 +53,25 @@ public final class Args {
     public static Arg hideBanner() {
         return Arg.named("-hide_banner");
     }
+
+    public static Arg forceOverwrite() {
+        return Arg.named("-y");
+    }
+
+    public static Arg neverOverwrite() {
+        return Arg.named("-n");
+    }
+
+    public static Arg inputUri(final String uri) {
+        return Arg.paired("-i", uri);
+    }
+
+    public static Arg outputUri(final String uri) {
+        return Arg.named(uri);
+    }
+
+    public static Arg complexFilterGraph(final FilterGraph globalFilterGraph) {
+        return Arg.paired("-filter_complex", globalFilterGraph.encode());
+    }
+
 }

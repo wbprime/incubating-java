@@ -19,4 +19,8 @@ public interface Arg {
     static Arg paired(final String name, final Value value) {
         return StdArg.of(name, value.encode());
     }
+
+    static Arg paired(final String name, final String value) {
+        return StdArg.of(name, value);
+    }
 }

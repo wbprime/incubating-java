@@ -9,6 +9,11 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 abstract class UnnamedFilterPad implements FilterPad {
+    @Override
+    public final String encode() {
+        return "";
+    }
+
     static UnnamedFilterPad of() {
         return new AutoValue_UnnamedFilterPad();
     }

@@ -15,6 +15,10 @@ public abstract class StdFilterGraph implements FilterGraph {
     @Override
     public abstract ImmutableList<FilterChain> chains();
 
+    public static StdFilterGraph of() {
+        return new AutoValue_StdFilterGraph(ImmutableList.of());
+    }
+
     public static StdFilterGraph of(final List<FilterChain> chains) {
         return new AutoValue_StdFilterGraph(ImmutableList.copyOf(chains));
     }

@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nullable;
+
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
+import im.wangbo.bj58.ffmpeg.filter.FilterChain;
+import im.wangbo.bj58.ffmpeg.filter.FilterGraph;
 
 /**
  * TODO add brief description here
@@ -21,6 +25,12 @@ public class FfmpegBuilder {
     private final List<Arg> args = Lists.newArrayList();
     private File pwDir;
 
+    private final List<InputSource> inputs = Lists.newArrayList();
+    private final List<OutputSink> outputs = Lists.newArrayList();
+
+    @Nullable
+    private FilterGraph globalFilterGraph;
+
     private FfmpegBuilder(final String path) {
         this.pathToExe = path;
     }
@@ -29,19 +39,55 @@ public class FfmpegBuilder {
         return new FfmpegBuilder(path);
     }
 
+    public FfmpegBuilder hideBanner() {
+        return addArg(Args.hideBanner());
+    }
+
+    public FfmpegBuilder enableLogLevel(final Args.LogLevel level) {
+        return addArg(Args.logLevel(level));
+    }
+
     public FfmpegBuilder addArg(final Arg arg) {
         args.add(arg);
         return this;
     }
 
+    public FfmpegBuilder addInput(final InputSourceBuilder builder) {
+        return addInput(builder.build());
+    }
+
+    public FfmpegBuilder addInput(final InputSource input) {
+        inputs.add(input);
+        return this;
+    }
+
+    public FfmpegBuilder addOutput(final OutputSinkBuilder builder) {
+        return addOutput(builder.build());
+    }
+
+    public FfmpegBuilder addOutput(final OutputSink output) {
+        outputs.add(output);
+        return this;
+    }
+
+    public FfmpegBuilder addFilterChain(final FilterChain filterChain) {
+        return this;
+    }
+
     public NativeExecutable build() {
+        if (null != globalFilterGraph) {
+            args.add(Args.complexFilterGraph(globalFilterGraph));
+        }
+
+        inputs.forEach(i -> args.addAll(i.asArgs()));
+        outputs.forEach(o -> args.addAll(o.asArgs()));
         final List<String> strArgs = args.stream()
                 .flatMap(arg -> arg.argValue().map(v -> Stream.of(arg.argName(), v)).orElse(Stream.of(arg.argName())))
                 .collect(Collectors.toList());
-        return NativeExecutable.builder().command(pathToExe)
-                .opts(strArgs)
+        return NativeExecutable.builder()
                 .workingDir(pwDir)
+                .command(pathToExe)
+                .addOpts(strArgs)
                 .build();
     }
-
 }

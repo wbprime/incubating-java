@@ -3,8 +3,6 @@ package im.wangbo.bj58.ffmpeg.filter;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
-import java.util.List;
-
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 
 /**
@@ -18,13 +16,13 @@ public abstract class StdFilter implements Filter {
     public abstract String typeId();
 
     @Override
-    public abstract ImmutableList<FilterPad> input();
+    public abstract ImmutableList<FilterPad> inputs();
 
     @Override
-    public abstract ImmutableList<FilterPad> output();
+    public abstract ImmutableList<FilterPad> outputs();
 
     @Override
-    public abstract List<Arg> args();
+    public abstract ImmutableList<Arg> args();
 
     public static Builder builder(final String type) {
         return new AutoValue_StdFilter.Builder().typeId(type);
@@ -34,11 +32,27 @@ public abstract class StdFilter implements Filter {
     public abstract static class Builder {
         public abstract Builder typeId(String typeId);
 
-        public abstract Builder input(ImmutableList<FilterPad> input);
+        abstract ImmutableList.Builder<FilterPad> inputsBuilder();
+        public final Builder addInput(final FilterPad input) {
+            inputsBuilder().add(input);
+            return this;
+        }
 
-        public abstract Builder output(ImmutableList<FilterPad> output);
+        abstract ImmutableList.Builder<FilterPad> outputsBuilder();
+        public final Builder addOutput(FilterPad output) {
+            outputsBuilder().add(output);
+            return this;
+        }
 
-        public abstract Builder args(List<Arg> args);
+        public abstract Builder args(ImmutableList<Arg> args);
+
+        abstract ImmutableList.Builder<Arg> argsBuilder();
+
+        public final Builder addArg(final Arg arg) {
+            argsBuilder().add(arg);
+            return this;
+        }
+
 
         public abstract StdFilter build();
     }
