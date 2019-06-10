@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-import im.wangbo.bj58.ffmpeg.Arg;
+import im.wangbo.bj58.ffmpeg.arg.Arg;
 
 /**
  * TODO add brief description here
