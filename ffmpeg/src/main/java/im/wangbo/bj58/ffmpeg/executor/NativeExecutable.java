@@ -96,6 +96,11 @@ public class NativeExecutable {
             return this;
         }
 
+        public Builder opts(final List<String> strs) {
+            opts.addAll(strs);
+            return this;
+        }
+
         public Builder addOpt(final String str) {
             opts.add(str);
             return this;
