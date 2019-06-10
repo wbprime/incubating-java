@@ -23,6 +23,8 @@ public class FfmpegBuilder {
     private final String pathToExe;
 
     private final List<Arg> args = Lists.newArrayList();
+
+    @Nullable
     private File pwDir;
 
     private final List<InputSource> inputs = Lists.newArrayList();
@@ -52,7 +54,7 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addInput(final InputSourceBuilder builder) {
+    public FfmpegBuilder addInput(final InputSource.Builder builder) {
         return addInput(builder.build());
     }
 
@@ -61,7 +63,7 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addOutput(final OutputSinkBuilder builder) {
+    public FfmpegBuilder addOutput(final OutputSink.Builder builder) {
         return addOutput(builder.build());
     }
 
