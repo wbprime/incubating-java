@@ -1,9 +1,8 @@
 package im.wangbo.bj58.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -11,23 +10,22 @@ import java.util.List;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class StdArg implements Arg {
-    abstract List<String> opts();
+abstract class StdArg implements Arg {
+    @Override
+    public abstract String argName();
 
     @Override
-    public final List<String> encode() {
-        return opts();
+    public abstract Optional<String> argValue();
+
+    private static StdArg create(final String argName, final Optional<String> argValue) {
+        return new AutoValue_StdArg(argName, argValue);
     }
 
-    private static StdArg create(final List<String> opts) {
-        return new AutoValue_StdArg(opts);
+    static StdArg of(final String opt) {
+        return create(opt, Optional.empty());
     }
 
-    public static StdArg of(final String opt) {
-        return create(ImmutableList.of(opt));
-    }
-
-    public static StdArg of(final String name, final String value) {
-        return create(ImmutableList.of(name, value));
+    static StdArg of(final String name, final String value) {
+        return create(name, Optional.of(value));
     }
 }

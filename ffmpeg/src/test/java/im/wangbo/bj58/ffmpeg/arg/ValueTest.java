@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.common;
+package im.wangbo.bj58.ffmpeg.arg;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class ValueTest {
 
         final String expected = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .format(dt.withOffsetSameInstant(ZoneOffset.UTC));
-        Assertions.assertThat(v.value()).isEqualTo(expected);
+        Assertions.assertThat(v.encode()).isEqualTo(expected);
     }
     @Test
     void localDatetime() {
@@ -29,6 +29,6 @@ class ValueTest {
         final Value v = Value.datetime(dt);
 
         final String expected = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS").format(dt);
-        Assertions.assertThat(v.value()).isEqualTo(expected);
+        Assertions.assertThat(v.encode()).isEqualTo(expected);
     }
 }

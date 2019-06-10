@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.common;
+package im.wangbo.bj58.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
 
@@ -8,7 +8,12 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SizeInPixel {
+public abstract class SizeInPixel implements Value {
+    @Override
+    public final String encode() {
+        return width() + "x" + height();
+    }
+
     public abstract int width();
 
     public abstract int height();
@@ -88,6 +93,4 @@ public abstract class SizeInPixel {
             return SizeInPixel.of(w, h);
         }
     }
-
-
 }

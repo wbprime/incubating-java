@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.common;
+package im.wangbo.bj58.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
 
@@ -8,7 +8,12 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SizeInByte {
+public abstract class SizeInByte implements Value {
+    @Override
+    public final String encode() {
+        return String.valueOf(bytes());
+    }
+
     public abstract long bytes();
 
     public final long bits() {
