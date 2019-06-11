@@ -12,4 +12,8 @@ public interface MediaMuxer extends Value {
 
     @Override
     String asString();
+
+    static MediaMuxer named(final String name) {
+        return StdMuxer.of(name);
+    }
 }
