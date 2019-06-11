@@ -7,6 +7,7 @@ import java.util.List;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaDecoder;
+import im.wangbo.bj58.ffmpeg.ffmpeg.seek.Seeking;
 
 /**
  * TODO add brief description here
@@ -36,6 +37,11 @@ public interface InputSource {
 
         public Builder decoder(final StreamSpecifier stream, final MediaDecoder decoder) {
             args.add(Arg.paired("-c:" + stream.asString(), decoder.asString()));
+            return this;
+        }
+
+        public Builder seeking(final Seeking seeking) {
+            args.addAll(seeking.asArgs());
             return this;
         }
 

@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterChain;
 import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterGraph;
 
 /**
@@ -34,7 +33,7 @@ public class FfmpegBuilder {
         this.pathToExe = path;
     }
 
-    static FfmpegBuilder builder(final String path) {
+    public static FfmpegBuilder builder(final String path) {
         return new FfmpegBuilder(path);
     }
 
@@ -74,9 +73,9 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addFilterChain(final FilterChain filterChain) {
-        return this;
-    }
+//    public FfmpegBuilder addFilterChain(final FilterChain filterChain) {
+//        return this;
+//    }
 
     public NativeExecutable build() {
         inputs.forEach(i -> args.addAll(i.asArgs()));
