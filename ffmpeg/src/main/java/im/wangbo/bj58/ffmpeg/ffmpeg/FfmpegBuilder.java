@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.filter.FilterChain;
-import im.wangbo.bj58.ffmpeg.filter.FilterGraph;
+import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterChain;
+import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterGraph;
 
 /**
  * TODO add brief description here
@@ -29,9 +29,6 @@ public class FfmpegBuilder {
 
     private final List<InputSource> inputs = Lists.newArrayList();
     private final List<OutputSink> outputs = Lists.newArrayList();
-
-    @Nullable
-    private FilterGraph globalFilterGraph;
 
     private FfmpegBuilder(final String path) {
         this.pathToExe = path;
@@ -72,15 +69,16 @@ public class FfmpegBuilder {
         return this;
     }
 
+    public FfmpegBuilder addFilterGraph(final FilterGraph filterGraph) {
+        args.add(Arg.paired("-filter_complex", filterGraph));
+        return this;
+    }
+
     public FfmpegBuilder addFilterChain(final FilterChain filterChain) {
         return this;
     }
 
     public NativeExecutable build() {
-        if (null != globalFilterGraph) {
-            args.add(Args.complexFilterGraph(globalFilterGraph));
-        }
-
         inputs.forEach(i -> args.addAll(i.asArgs()));
         outputs.forEach(o -> args.addAll(o.asArgs()));
         final List<String> strArgs = args.stream()

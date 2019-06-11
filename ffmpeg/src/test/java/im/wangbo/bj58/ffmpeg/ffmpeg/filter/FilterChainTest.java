@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.filter;
+package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,12 +7,13 @@ import org.junit.jupiter.api.Test;
  *
  * @author Elvis Wang
  */
-class FilterGraphTest {
+class FilterChainTest {
     @Test
     void encode() {
-        final FilterGraph graph = StdFilterGraph.of();
+        final FilterChain chain = StdFilterChain.of();
 
-        final String result = graph.asString();
+        final String result = chain.asString();
         System.out.println(result);
     }
+
 }

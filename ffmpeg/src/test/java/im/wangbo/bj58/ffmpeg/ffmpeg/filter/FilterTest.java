@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.filter;
+package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;

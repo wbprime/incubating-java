@@ -2,7 +2,6 @@ package im.wangbo.bj58.ffmpeg.ffmpeg;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.Value;
-import im.wangbo.bj58.ffmpeg.filter.FilterGraph;
 
 /**
  * TODO add brief description here
@@ -69,9 +68,4 @@ public final class Args {
     public static Arg outputUri(final String uri) {
         return Arg.named(uri);
     }
-
-    public static Arg complexFilterGraph(final FilterGraph globalFilterGraph) {
-        return Arg.paired("-filter_complex", globalFilterGraph.asString());
-    }
-
 }
