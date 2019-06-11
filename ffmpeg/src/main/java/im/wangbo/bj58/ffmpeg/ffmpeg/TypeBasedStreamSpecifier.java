@@ -12,7 +12,7 @@ import java.util.OptionalInt;
 @AutoValue
 abstract class TypeBasedStreamSpecifier implements StreamSpecifier {
     @Override
-    public final String encode() {
+    public final String asString() {
         return additionalIndex().isPresent() ?
                 streamType().specifier() + ":" + additionalIndex().getAsInt() :
                 streamType().specifier();

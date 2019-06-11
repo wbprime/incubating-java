@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @author Elvis Wang
  */
 public interface Value {
-    String encode();
+    String asString();
 
     static Value of(final String value) {
         return StdValue.of(value);

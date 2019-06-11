@@ -9,5 +9,5 @@ import im.wangbo.bj58.ffmpeg.arg.Value;
  */
 public interface MediaDecoder extends Value {
     @Override
-    String encode();
+    String asString();
 }

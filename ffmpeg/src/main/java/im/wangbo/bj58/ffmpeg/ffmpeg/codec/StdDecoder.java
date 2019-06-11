@@ -16,7 +16,7 @@ abstract class StdDecoder implements MediaDecoder {
     }
 
     @Override
-    public final String encode() {
+    public final String asString() {
         return decoderName();
     }
 }

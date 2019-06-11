@@ -21,7 +21,7 @@ class ValueTest {
 
         final String expected = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .format(dt.withOffsetSameInstant(ZoneOffset.UTC));
-        Assertions.assertThat(v.encode()).isEqualTo(expected);
+        Assertions.assertThat(v.asString()).isEqualTo(expected);
     }
     @Test
     void localDatetime() {
@@ -29,6 +29,6 @@ class ValueTest {
         final Value v = Value.datetime(dt);
 
         final String expected = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS").format(dt);
-        Assertions.assertThat(v.encode()).isEqualTo(expected);
+        Assertions.assertThat(v.asString()).isEqualTo(expected);
     }
 }

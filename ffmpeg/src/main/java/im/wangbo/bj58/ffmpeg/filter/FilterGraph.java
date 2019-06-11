@@ -15,7 +15,7 @@ public interface FilterGraph extends Value {
     ImmutableList<FilterChain> chains();
 
     @Override
-    default String encode() {
-        return chains().stream().map(FilterChain::encode).collect(Collectors.joining(";"));
+    default String asString() {
+        return chains().stream().map(FilterChain::asString).collect(Collectors.joining(";"));
     }
 }

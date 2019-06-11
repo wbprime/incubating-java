@@ -12,7 +12,7 @@ class FilterChainTest {
     void encode() {
         final FilterChain chain = StdFilterChain.of();
 
-        final String result = chain.encode();
+        final String result = chain.asString();
         System.out.println(result);
     }
 

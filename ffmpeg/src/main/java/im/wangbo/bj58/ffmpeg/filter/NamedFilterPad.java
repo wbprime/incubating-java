@@ -12,7 +12,7 @@ abstract class NamedFilterPad implements FilterPad {
     abstract String name();
 
     @Override
-    public final String encode() {
+    public final String asString() {
         return "[" + name() + "]";
     }
 

@@ -27,10 +27,10 @@ public interface Filter extends FilterChain {
     }
 
     @Override
-    default String encode() {
+    default String asString() {
         final StringBuilder sb = new StringBuilder();
 
-        inputs().forEach(p -> sb.append(p.encode()));
+        inputs().forEach(p -> sb.append(p.asString()));
 
         sb.append(typeId());
 
@@ -42,7 +42,7 @@ public interface Filter extends FilterChain {
             sb.append(collect);
         }
 
-        outputs().forEach(p -> sb.append(p.encode()));
+        outputs().forEach(p -> sb.append(p.asString()));
 
         return sb.toString();
     }

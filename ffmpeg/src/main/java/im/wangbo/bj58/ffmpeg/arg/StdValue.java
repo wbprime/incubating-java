@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 abstract class StdValue implements Value {
     @Override
-    public abstract String encode();
+    public abstract String asString();
 
     static StdValue of(final String value) {
         return new AutoValue_StdValue(value);

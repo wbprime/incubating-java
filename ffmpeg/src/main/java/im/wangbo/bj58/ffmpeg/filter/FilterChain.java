@@ -18,7 +18,7 @@ public interface FilterChain extends FilterGraph {
     }
 
     @Override
-    default String encode() {
-        return filters().stream().map(FilterChain::encode).collect(Collectors.joining(","));
+    default String asString() {
+        return filters().stream().map(FilterChain::asString).collect(Collectors.joining(","));
     }
 }

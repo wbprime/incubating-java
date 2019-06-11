@@ -16,7 +16,7 @@ abstract class StdEncoder implements MediaEncoder {
     }
 
     @Override
-    public final String encode() {
+    public final String asString() {
         return encoderName();
     }
 }

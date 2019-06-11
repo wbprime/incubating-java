@@ -41,7 +41,7 @@ public final class Args {
         }
 
         @Override
-        public final String encode() {
+        public final String asString() {
             return String.valueOf(code);
         }
     }
@@ -71,7 +71,7 @@ public final class Args {
     }
 
     public static Arg complexFilterGraph(final FilterGraph globalFilterGraph) {
-        return Arg.paired("-filter_complex", globalFilterGraph.encode());
+        return Arg.paired("-filter_complex", globalFilterGraph.asString());
     }
 
 }

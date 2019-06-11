@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 abstract class IndexBasedStreamSpecifier implements StreamSpecifier {
     @Override
-    public final String encode() {
+    public final String asString() {
         return String.valueOf(index());
     }
 

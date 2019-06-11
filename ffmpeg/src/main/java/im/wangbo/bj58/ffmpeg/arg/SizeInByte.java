@@ -10,7 +10,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SizeInByte implements Value {
     @Override
-    public final String encode() {
+    public final String asString() {
         return String.valueOf(bytes());
     }
 

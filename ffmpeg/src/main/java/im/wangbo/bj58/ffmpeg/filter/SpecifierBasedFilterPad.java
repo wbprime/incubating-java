@@ -21,10 +21,10 @@ abstract class SpecifierBasedFilterPad implements FilterPad {
     abstract StreamSpecifier streamSpecifier();
 
     @Override
-    public final String encode() {
+    public final String asString() {
         final String str = uriIndex().isPresent() ?
-                uriIndex().getAsInt() + ":" + streamSpecifier().encode() :
-                streamSpecifier().encode();
+                uriIndex().getAsInt() + ":" + streamSpecifier().asString() :
+                streamSpecifier().asString();
         return "[" + str + "]";
     }
 

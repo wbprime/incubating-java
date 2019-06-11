@@ -1,7 +1,5 @@
 package im.wangbo.bj58.ffmpeg.filter;
 
-import com.google.common.collect.ImmutableList;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,7 +19,7 @@ class FilterTest {
     @ParameterizedTest
     @MethodSource("args")
     void encode(final Filter filter, final String expected) {
-        final String result = filter.encode();
+        final String result = filter.asString();
 
         Assertions.assertThat(result).isEqualTo(expected);
     }

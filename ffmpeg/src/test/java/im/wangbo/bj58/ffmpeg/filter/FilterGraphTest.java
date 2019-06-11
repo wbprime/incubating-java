@@ -12,7 +12,7 @@ class FilterGraphTest {
     void encode() {
         final FilterGraph graph = StdFilterGraph.of();
 
-        final String result = graph.encode();
+        final String result = graph.asString();
         System.out.println(result);
     }
 }
