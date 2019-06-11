@@ -8,6 +8,12 @@ import im.wangbo.bj58.ffmpeg.arg.Value;
  * @author Elvis Wang
  */
 public interface MediaEncoder extends Value {
+    String encoderName();
+
     @Override
     String asString();
+
+    static MediaEncoder named(final String name) {
+        return StdEncoder.of(name);
+    }
 }

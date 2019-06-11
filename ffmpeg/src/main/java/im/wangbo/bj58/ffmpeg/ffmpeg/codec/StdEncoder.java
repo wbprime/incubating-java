@@ -9,7 +9,8 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 abstract class StdEncoder implements MediaEncoder {
-    abstract String encoderName();
+    @Override
+    public abstract String encoderName();
 
     static StdEncoder of(final String name) {
         return new AutoValue_StdEncoder(name);

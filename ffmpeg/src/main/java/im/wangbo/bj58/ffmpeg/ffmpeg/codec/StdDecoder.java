@@ -9,7 +9,8 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 abstract class StdDecoder implements MediaDecoder {
-    abstract String decoderName();
+    @Override
+    public abstract String decoderName();
 
     static StdDecoder of(final String name) {
         return new AutoValue_StdDecoder(name);

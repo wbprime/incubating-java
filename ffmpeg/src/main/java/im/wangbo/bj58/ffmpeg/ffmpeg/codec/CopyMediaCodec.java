@@ -8,11 +8,11 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.codec;
 public class CopyMediaCodec implements MediaCodec {
     @Override
     public MediaEncoder encoder() {
-        return StdEncoder.of("copy");
+        return MediaEncoder.named("copy");
     }
 
     @Override
     public MediaDecoder decoder() {
-        return StdDecoder.of("copy");
+        return MediaDecoder.named("copy");
     }
 }
