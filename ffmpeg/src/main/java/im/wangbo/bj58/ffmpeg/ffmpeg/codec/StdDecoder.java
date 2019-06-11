@@ -11,7 +11,7 @@ import com.google.auto.value.AutoValue;
 abstract class StdDecoder implements MediaDecoder {
     abstract String decoderName();
 
-    static StdDecoder of(String name) {
+    static StdDecoder of(final String name) {
         return new AutoValue_StdDecoder(name);
     }
 

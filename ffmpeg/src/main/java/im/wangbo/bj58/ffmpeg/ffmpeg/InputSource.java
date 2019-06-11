@@ -35,7 +35,7 @@ public interface InputSource {
         }
 
         public Builder decoder(final StreamSpecifier stream, final MediaDecoder decoder) {
-            args.add(Arg.paired("-c:" + stream.decode(), decoder.decode()));
+            args.add(Arg.paired("-c:" + stream.asString(), decoder.asString()));
             return this;
         }
 
