@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
+import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaDecoder;
 
 /**
  * TODO add brief description here
@@ -26,6 +27,16 @@ public interface InputSource {
 
         private Builder(final String path) {
             this.pathToInput = path;
+        }
+
+        public Builder addArg(final Arg arg) {
+            args.add(arg);
+            return this;
+        }
+
+        public Builder decoder(final StreamSpecifier stream, final MediaDecoder decoder) {
+            args.add(Arg.paired("-c:" + stream.decode(), decoder.decode()));
+            return this;
         }
 
         public InputSource build() {
