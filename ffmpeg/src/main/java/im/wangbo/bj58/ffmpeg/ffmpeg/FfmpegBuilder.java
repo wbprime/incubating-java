@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
+import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
 import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterGraph;
 
@@ -38,11 +40,11 @@ public class FfmpegBuilder {
     }
 
     public FfmpegBuilder hideBanner() {
-        return addArg(Args.hideBanner());
+        return addArg(HideBannerArg.of());
     }
 
-    public FfmpegBuilder enableLogLevel(final Args.LogLevel level) {
-        return addArg(Args.logLevel(level));
+    public FfmpegBuilder logLevel(final LogLevelArg arg) {
+        return addArg(arg);
     }
 
     public FfmpegBuilder addArg(final Arg arg) {
@@ -69,7 +71,7 @@ public class FfmpegBuilder {
     }
 
     public FfmpegBuilder addFilterGraph(final FilterGraph filterGraph) {
-        args.add(Arg.paired("-filter_complex", filterGraph));
+//        args.add(Arg.paired("-filter_complex", filterGraph));
         return this;
     }
 

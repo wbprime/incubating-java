@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.StreamSpecifier;
 
 /**
@@ -28,7 +27,7 @@ class FilterTest {
         return Stream.of(
                 Arguments.of(
                         StdFilter.builder("amerge")
-                                .addArg(Arg.paired("inputs", "6"))
+                                .addArg(FilterArg.paired("inputs", "6"))
                                 .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(1)))
                                 .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(2)))
                                 .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(3)))
@@ -40,16 +39,16 @@ class FilterTest {
                         "[0:1][0:2][0:3][0:4][0:5][0:6]amerge=inputs=6"),
                 Arguments.of(
                         StdFilter.builder("amovie")
-                                .addArg(Arg.named("left.wav"))
+                                .addArg(FilterArg.named("left.wav"))
                                 .addInput(FilterPad.unnamed())
                                 .addOutput(FilterPad.named("l"))
                                 .build(),
                         "amovie=left.wav[l]"),
                 Arguments.of(
                         StdFilter.builder("acrossfade")
-                                .addArg(Arg.paired("d", "10"))
-                                .addArg(Arg.paired("c1", "exp"))
-                                .addArg(Arg.paired("c2", "exp"))
+                                .addArg(FilterArg.paired("d", "10"))
+                                .addArg(FilterArg.paired("c1", "exp"))
+                                .addArg(FilterArg.paired("c2", "exp"))
                                 .addInput(FilterPad.unnamed())
                                 .addOutput(FilterPad.unnamed())
                                 .build(),
