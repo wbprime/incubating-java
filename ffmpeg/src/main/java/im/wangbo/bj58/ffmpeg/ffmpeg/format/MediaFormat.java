@@ -6,6 +6,6 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.format;
  * @author Elvis Wang
  */
 public interface MediaFormat {
-    MediaMuxer encoder();
-    MediaDemuxer decoder();
+    MediaMuxer muxer();
+    MediaDemuxer demuxer();
 }

@@ -15,9 +15,4 @@ abstract class StdDemuxer implements MediaDemuxer {
     static StdDemuxer of(final String name) {
         return new AutoValue_StdDemuxer(name);
     }
-
-    @Override
-    public final String asString() {
-        return demuxerName();
-    }
 }
