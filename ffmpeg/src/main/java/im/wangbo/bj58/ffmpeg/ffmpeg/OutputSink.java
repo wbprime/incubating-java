@@ -34,9 +34,13 @@ public interface OutputSink {
             this.pathToOutput = outputPath;
         }
 
-        public Builder mediaFormat(final MediaFormat f) {
-            args.add(MediaFormatArg.asOutput(f));
+        public Builder addArg(final OutputArg arg) {
+            args.add(arg);
             return this;
+        }
+
+        public Builder mediaFormat(final MediaFormat f) {
+            return addArg(MediaFormatArg.asOutput(f));
         }
 
         public Builder mediaEncoder(final MediaCodec codec) {
@@ -44,7 +48,11 @@ public interface OutputSink {
         }
 
         public Builder mediaEncoder(final StreamSpecifier specifier, final MediaCodec codec) {
-            args.add(MediaCodecArg.asOutput(specifier, codec));
+            return addArg(MediaCodecArg.asOutput(specifier, codec));
+        }
+
+        public Builder seeking(final ImmutableList<OutputArg> seeking) {
+            seeking.forEach(this::addArg);
             return this;
         }
 

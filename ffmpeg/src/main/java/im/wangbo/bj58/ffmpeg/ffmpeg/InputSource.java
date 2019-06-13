@@ -12,7 +12,6 @@ import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
-import im.wangbo.bj58.ffmpeg.ffmpeg.seek.Seeking;
 
 /**
  * TODO add brief description here
@@ -41,8 +40,7 @@ public interface InputSource {
         }
 
         public Builder mediaFormat(final MediaFormat f) {
-            args.add(MediaFormatArg.asInput(f));
-            return this;
+            return addArg(MediaFormatArg.asInput(f));
         }
 
         public Builder mediaDecoder(final MediaCodec codec) {
@@ -50,12 +48,11 @@ public interface InputSource {
         }
 
         public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
-            args.add(MediaCodecArg.asInput(specifier, codec));
-            return this;
+            return addArg(MediaCodecArg.asInput(specifier, codec));
         }
 
-        public Builder seeking(final Seeking seeking) {
-//            args.addAll(seeking.asArgs());
+        public Builder seeking(final ImmutableList<InputArg> seeking) {
+            seeking.forEach(this::addArg);
             return this;
         }
 
