@@ -6,10 +6,12 @@ import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.List;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.main.InputUriArg;
-import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaDecoder;
+import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
+import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.ffmpeg.seek.Seeking;
 
 /**
@@ -38,8 +40,17 @@ public interface InputSource {
             return this;
         }
 
-        public Builder decoder(final StreamSpecifier stream, final MediaDecoder decoder) {
-//            args.add(Arg.paired("-c:" + stream.asString(), decoder.asString()));
+        public Builder mediaFormat(final MediaFormat f) {
+            args.add(MediaFormatArg.asInput(f));
+            return this;
+        }
+
+        public Builder mediaDecoder(final MediaCodec codec) {
+            return mediaDecoder(StreamSpecifier.all(), codec);
+        }
+
+        public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
+            args.add(MediaCodecArg.asInput(specifier, codec));
             return this;
         }
 

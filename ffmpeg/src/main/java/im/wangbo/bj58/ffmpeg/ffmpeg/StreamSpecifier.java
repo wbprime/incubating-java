@@ -10,6 +10,10 @@ import im.wangbo.bj58.ffmpeg.arg.Value;
  * @author Elvis Wang
  */
 public interface StreamSpecifier extends Value {
+    static StreamSpecifier all() {
+        return AllStreamSpecifier.of();
+    }
+
     static StreamSpecifier of(int index) {
         return IndexBasedStreamSpecifier.of(index);
     }

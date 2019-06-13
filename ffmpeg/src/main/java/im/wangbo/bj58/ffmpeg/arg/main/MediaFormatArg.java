@@ -4,7 +4,9 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
+import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
+import im.wangbo.bj58.ffmpeg.arg.OutputArg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
 
 /**
@@ -13,7 +15,7 @@ import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class MediaFormatArg implements InputArg {
+public abstract class MediaFormatArg implements InOutputArg {
     @Override
     public final String argName() {
         return "-f";
@@ -38,11 +40,11 @@ public abstract class MediaFormatArg implements InputArg {
         return new AutoValue_MediaFormatArg(f);
     }
 
-    public static MediaFormatArg asInput(final MediaFormat f) {
+    public static InputArg asInput(final MediaFormat f) {
         return create(f.demuxer().demuxerName());
     }
 
-    public static MediaFormatArg asOutput(final MediaFormat f) {
+    public static OutputArg asOutput(final MediaFormat f) {
         return create(f.muxer().muxerName());
     }
 }

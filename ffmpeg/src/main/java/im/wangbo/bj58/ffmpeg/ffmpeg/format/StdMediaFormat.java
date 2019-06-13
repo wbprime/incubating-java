@@ -8,7 +8,7 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class StdMediaFormat implements MediaFormat {
+abstract class StdMediaFormat implements MediaFormat {
     abstract String muxerName();
 
     abstract String demuxerName();
@@ -23,11 +23,7 @@ public abstract class StdMediaFormat implements MediaFormat {
         return StdDemuxer.of(demuxerName());
     }
 
-    public static StdMediaFormat of(final String muxerName, final String demuxerName) {
+    static StdMediaFormat create(final String muxerName, final String demuxerName) {
         return new AutoValue_StdMediaFormat(muxerName, demuxerName);
-    }
-
-    public static StdMediaFormat of(final String name) {
-        return new AutoValue_StdMediaFormat(name, name);
     }
 }
