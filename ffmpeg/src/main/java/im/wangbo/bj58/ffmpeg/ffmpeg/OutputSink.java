@@ -7,8 +7,10 @@ import java.net.URI;
 import java.util.List;
 
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
+import im.wangbo.bj58.ffmpeg.arg.SizeInByte;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.arg.main.OutputFileSizeLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputUriArg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
@@ -54,6 +56,10 @@ public interface OutputSink {
         public Builder seeking(final ImmutableList<OutputArg> seeking) {
             seeking.forEach(this::addArg);
             return this;
+        }
+
+        public Builder limitOutputSize(final SizeInByte size) {
+            return addArg(OutputFileSizeLimitArg.of(size));
         }
 
         public OutputSink build() {
