@@ -5,5 +5,5 @@ package im.wangbo.bj58.ffmpeg.arg;
  *
  * @author Elvis Wang
  */
-public interface GlobalArg extends FfmpegArg {
+public interface GlobalArg extends Arg {
 }
