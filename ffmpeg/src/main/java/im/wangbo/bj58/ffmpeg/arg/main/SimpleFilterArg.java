@@ -27,7 +27,11 @@ public abstract class SimpleFilterArg implements OutputArg {
 
     @Override
     public final String description() {
-        return "Stop writing to the stream after frameCount frames.";
+        return "Create the filtergraph specified by filtergraph and use it to filter the stream. " +
+                "filtergraph is a description of the filtergraph to apply to the stream," +
+                " and must have a single input and a single output of the same type of the stream." +
+                " In the filtergraph, the input is associated to the label in, and the output to the label out." +
+                " See the ffmpeg-filters manual for more information about the filtergraph syntax.";
     }
 
     @Override

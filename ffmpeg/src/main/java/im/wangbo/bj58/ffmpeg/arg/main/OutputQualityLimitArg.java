@@ -26,7 +26,7 @@ public abstract class OutputQualityLimitArg implements OutputArg {
 
     @Override
     public final String description() {
-        return "Stop writing to the stream after frameCount frames.";
+        return "Use fixed quality scale (VBR). The meaning of q/qscale is codec-dependent.";
     }
 
     @Override
