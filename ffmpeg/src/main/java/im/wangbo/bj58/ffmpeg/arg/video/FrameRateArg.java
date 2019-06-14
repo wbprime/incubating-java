@@ -43,7 +43,7 @@ public abstract class FrameRateArg implements InOutputArg {
         return Optional.of(frameRate().asString());
     }
 
-    public static FrameRateArg create(final StreamSpecifier specifier, final FrameRate fps) {
+    private static FrameRateArg create(final StreamSpecifier specifier, final FrameRate fps) {
         return new AutoValue_FrameRateArg(specifier, fps);
     }
 
