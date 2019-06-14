@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.arg.main.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
 import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterGraph;
 
@@ -41,6 +42,10 @@ public class FfmpegBuilder {
 
     public FfmpegBuilder hideBanner() {
         return addArg(HideBannerArg.of());
+    }
+
+    public FfmpegBuilder showProgressStats(final boolean on) {
+        return addArg(on ? ShowProgressStatsArg.on() : ShowProgressStatsArg.off());
     }
 
     public FfmpegBuilder logLevel(final LogLevelArg arg) {
