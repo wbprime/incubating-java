@@ -399,6 +399,11 @@ public class MediaMetaInfo {
          *      "chroma_location": "left"
          *  }
          */
+
+        @Override
+        public String toString() {
+            return "FrameInfo{}";
+        }
     }
 
     public static class PacketInfo {
@@ -417,5 +422,20 @@ public class MediaMetaInfo {
          *  "flags": "K_"
          * }
          */
+
+        @Override
+        public String toString() {
+            return "PacketInfo{}";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "MediaMetaInfo{" +
+                "streams=" + streams +
+                ", format=" + format +
+                ", frames=" + frames +
+                ", packets=" + packets +
+                '}';
     }
 }

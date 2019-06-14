@@ -2,9 +2,9 @@ package im.wangbo.bj58.ffmpeg.ffprobe;
 
 import com.google.auto.value.AutoValue;
 
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
 
 /**
  * TODO add brief description here
@@ -12,25 +12,29 @@ import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SectionSpecifierArg implements FfprobeArg {
-    abstract SectionSpecifier sectionSpecifier();
-
+public abstract class InputUriArg implements FfprobeArg {
     @Override
     public final String argName() {
-        return sectionSpecifier().asString();
+        return uri().toString();
     }
 
     @Override
     public final String description() {
-        return sectionSpecifier().asString();
+        return "Output file url";
     }
+
+    abstract URI uri();
 
     @Override
     public final Optional<String> argValue() {
         return Optional.empty();
     }
 
-    public static SectionSpecifierArg of(SectionSpecifier specifier) {
-        return new AutoValue_SectionSpecifierArg(specifier);
+    public static InputUriArg of(final URI uri) {
+        return new AutoValue_InputUriArg(uri);
+    }
+
+    public static InputUriArg of(final Path path) {
+        return of(path.toUri());
     }
 }

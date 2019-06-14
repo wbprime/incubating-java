@@ -9,7 +9,7 @@ import im.wangbo.bj58.ffmpeg.arg.Value;
  */
 public enum SectionSpecifier implements Value {
     CHAPTERS("-show_chapters"),
-    FORMAT("show_format"),
+    FORMAT("-show_format"),
     FRAMES("-show_frames"),
     PROGRAMS("-show_programs"),
     STREAMS("-show_streams"),
@@ -28,6 +28,6 @@ public enum SectionSpecifier implements Value {
 
     @Override
     public final String asString() {
-        return null;
+        return sectionName;
     }
 }

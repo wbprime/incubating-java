@@ -3,6 +3,7 @@ package im.wangbo.bj58.ffmpeg.ffprobe;
 import com.google.common.collect.Lists;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
 import im.wangbo.bj58.ffmpeg.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
-import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterDescription;
+import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterFormat;
 
 /**
  * TODO add brief description here
@@ -31,9 +32,7 @@ public class FfprobeBuilder {
     @Nullable
     private File pwDir;
 
-    private File input;
-
-    private WriterDescription writerDesc;
+    private WriterFormat writerFormat = WriterFormat.json();
 
     private FfprobeBuilder(final String path) {
         this.pathToExe = path;
@@ -60,17 +59,14 @@ public class FfprobeBuilder {
         return addArg(SectionSpecifierArg.of(specifier));
     }
 
-    public FfprobeBuilder addWriter(final WriterDescription writer) {
-//        return addArg(SectionSpecifierArg.of(specifier));
+    public FfprobeBuilder writerFormat(final WriterFormat writer) {
+        this.writerFormat = writer;
         return this;
     }
 
-    public FfprobeBuilder addInput(final File input) {
-        this.input = input;
-        return this;
-    }
-
-    public NativeExecutable build() {
+    public NativeExecutable build(final URI uri) {
+        args.add(WriterFormatArg.of(writerFormat));
+        args.add(InputUriArg.of(uri));
         final List<String> strArgs = args.stream()
                 .flatMap(arg -> arg.argValue().map(v -> Stream.of(arg.argName(), v)).orElse(Stream.of(arg.argName())))
                 .collect(Collectors.toList());
@@ -78,13 +74,19 @@ public class FfprobeBuilder {
                 .workingDir(pwDir)
                 .command(pathToExe)
                 .addOpts(strArgs)
+                .stderrToFile(true)
+                .stdoutToFile(true)
                 .build();
     }
 
-    public CompletionStage<MediaMetaInfo> buildAndExecute(final StdExecutor executor) {
-        final NativeExecutable executable = build();
+    public CompletionStage<MediaMetaInfo> buildAndExecute(final URI uri, final StdExecutor executor) {
+        final NativeExecutable executable = build(uri);
         return executor.execute(executable)
-                .thenApply(p -> String.join("", p.stdoutLines()))
-                .thenApply(str -> writerDesc.meta().parser().parse(str));
+                .thenApply(p -> {
+                    final String out = String.join("", p.stdoutLines());
+                    p.close();
+                    return out;
+                })
+                .thenApply(str -> writerFormat.meta().parser().parse(str));
     }
 }

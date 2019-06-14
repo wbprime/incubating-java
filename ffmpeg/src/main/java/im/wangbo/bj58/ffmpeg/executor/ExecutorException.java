@@ -13,9 +13,7 @@ public class ExecutorException extends Exception {
     private final List<String> errLines;
 
     private ExecutorException(final String msg, final int code, final List<String> lines) {
-        super("Execution failed with code " + code +
-                (lines.isEmpty() ? "" : ", detail: " + lines.get(0) + " ...")
-        );
+        super(msg);
         this.errCode = code;
         this.errLines = lines;
     }
