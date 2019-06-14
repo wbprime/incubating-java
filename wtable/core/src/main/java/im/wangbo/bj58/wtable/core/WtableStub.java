@@ -6,9 +6,9 @@ public interface WtableStub {
     /**
      * Ping the wtable server.
      *
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    void ping() throws WtableException;
+    void ping() throws WtableCheckedException;
 
     /**
      * Get value from salve.
@@ -16,24 +16,24 @@ public interface WtableStub {
      * @param table table
      * @param rowKey row key
      * @param colKey col key
-     * @return value
-     * @throws WtableException if failed
+     * @return value if found, otherwise {@link Optional#empty()}
+     * @throws WtableCheckedException if failed
      */
     Optional<Value> getMasterSlave(
             final Table table, final RowKey rowKey, final ColKey colKey
-    ) throws WtableException;
+    ) throws WtableCheckedException;
     /**
      * Get value from master.
      *
      * @param table table
      * @param rowKey row key
      * @param colKey col key
-     * @return value
-     * @throws WtableException if failed
+     * @return value if found, otherwise {@link Optional#empty()}
+     * @throws WtableCheckedException if failed
      */
     Optional<Value> getMasterOnly(
             final Table table, final RowKey rowKey, final ColKey colKey
-    ) throws WtableException;
+    ) throws WtableCheckedException;
     /**
      * Get value from master with cas locked.
      *
@@ -41,24 +41,26 @@ public interface WtableStub {
      * @param rowKey row key
      * @param colKey col key
      * @return value with cas
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     CasLockedValue getCasLocked(
             final Table table, final RowKey rowKey, final ColKey colKey
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     /**
      * Set value without cas lock.
+     *
+     * Set a new value for given row key and col key if no value exists, otherwise override it.
      *
      * @param table table
      * @param rowKey row key
      * @param colKey col key
      * @param value value
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     default void set(
             final Table table, final RowKey rowKey, final ColKey colKey, final Value value
-    ) throws WtableException {
+    ) throws WtableCheckedException {
         set(table, rowKey, colKey, value, CasStamp.of(0));
     }
     /**
@@ -69,13 +71,13 @@ public interface WtableStub {
      * @param colKey col key
      * @param value value
      * @param cas cas stamp
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     void set(
             final Table table,
             final RowKey rowKey, final ColKey colKey, final Value value,
             final CasStamp cas
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     /**
      * Delete value without cas lock.
@@ -83,9 +85,9 @@ public interface WtableStub {
      * @param table table
      * @param rowKey row key
      * @param colKey col key
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
-    default void delete(final Table table, final RowKey rowKey, final ColKey colKey) throws WtableException {
+    default void delete(final Table table, final RowKey rowKey, final ColKey colKey) throws WtableCheckedException {
         delete(table, rowKey, colKey, CasStamp.of(0));
     }
     /**
@@ -95,11 +97,11 @@ public interface WtableStub {
      * @param rowKey row key
      * @param colKey col key
      * @param cas cas stamp
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     void delete(
             final Table table, final RowKey rowKey, final ColKey colKey, final CasStamp cas
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     /**
      * Increase value by {@code step} without cas lock.
@@ -108,11 +110,11 @@ public interface WtableStub {
      * @param rowKey row key
      * @param colKey col key
      * @param step increasing step value
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     default long increase(
             final Table table, final RowKey rowKey, final ColKey colKey, final long step
-    ) throws WtableException {
+    ) throws WtableCheckedException {
         return increase(table, rowKey, colKey, CasStamp.of(0), step);
     }
     /**
@@ -123,12 +125,12 @@ public interface WtableStub {
      * @param colKey col key
      * @param cas cas stamp
      * @param step increasing step value
-     * @throws WtableException if failed
+     * @throws WtableCheckedException if failed
      */
     long increase(
             final Table table, final RowKey rowKey, final ColKey colKey,
             final CasStamp cas, final long step
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     /**
      * Scan wtable as an iterable.
@@ -142,6 +144,7 @@ public interface WtableStub {
      * @param ascend sort order
      * @return scanned results
      * @implNote the internal {@code Iterable} may be not thread safe
+     * @implNote the internal {@code Iterable} may throw {@link WtableUncheckedException} if failed
      */
     Iterable<ScannedItem> scan(
             final Table table, final RowKey rowKey, final boolean ascend
@@ -159,6 +162,7 @@ public interface WtableStub {
      * @param ascend sort order
      * @return scanned results
      * @implNote the internal {@code Iterable} may be not thread safe
+     * @implNote the internal {@code Iterable} may throw {@link WtableUncheckedException} if failed
      */
     Iterable<ScannedItem> scan(
             final Table table, final RowKey rowKey, final ColKey colKey, final boolean ascend
@@ -173,6 +177,7 @@ public interface WtableStub {
      *
      * @return dumped results
      * @implNote the internal {@code Iterable} may be not thread safe
+     * @implNote the internal {@code Iterable} may throw {@link WtableUncheckedException} if failed
      */
     Iterable<DumpedItem> dumpAll();
     /**
@@ -185,6 +190,7 @@ public interface WtableStub {
      * @param table table
      * @return dumped results
      * @implNote the internal {@code Iterable} may be not thread safe
+     * @implNote the internal {@code Iterable} may throw {@link WtableUncheckedException} if failed
      */
     Iterable<DumpedItem> dumpTable(final Table table);
 }

@@ -16,6 +16,8 @@
       <module>parent</module>
       <module>wmonitor</module>
       <module>wtable</module>
+      <module>wconfig</module>
       <module>janus</module>
+      <module>ffmpeg</module>
   </modules>
 </project>

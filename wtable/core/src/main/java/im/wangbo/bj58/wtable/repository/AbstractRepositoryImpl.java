@@ -1,19 +1,19 @@
 package im.wangbo.bj58.wtable.repository;
 
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import im.wangbo.bj58.wtable.core.CasLockedValue;
 import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Table;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 
 /**
- * TODO add brief description here
+ * Implement {@link Repository}.
  *
  * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
  *
@@ -35,76 +35,39 @@ abstract class AbstractRepositoryImpl implements Repository {
     // Master-slave or master-only
     abstract Optional<Value> findByKey(
             final WtableStub wtableStub, final Table table, final RowKey r, final ColKey c
-    ) throws WtableException;
+    ) throws WtableCheckedException;
 
     @Override
-    public Optional<Value> find(final RowKey r, final ColKey c) {
-        try {
-            return findByKey(wtable, table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-            return Optional.empty();
-        }
+    public Optional<Value> find(final RowKey r, final ColKey c) throws WtableCheckedException {
+        return findByKey(wtable, table, r, c);
     }
 
     @Override
-    public void overrideInsert(final RowKey r, final ColKey c, final Value val) {
-        try {
-            wtable.set(table, r, c, val);
-        } catch (WtableException ex) {
-            // TODO
-        }
+    public void overrideInsert(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
+        wtable.set(table, r, c, val);
     }
 
     @Override
-    public void delete(final RowKey r, final ColKey c) {
-        try {
-            wtable.delete(table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-        }
+    public void delete(final RowKey r, final ColKey c) throws WtableCheckedException {
+        wtable.delete(table, r, c);
     }
 
     @Override
-    public boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) {
-        final CasLockedValue casLocked;
-        try {
-            casLocked = wtable.getCasLocked(table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-            throw new RuntimeException(ex);
-        }
-
+    public boolean insertOnNotExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
+        final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
         if (casLocked.value().isPresent()) {
             return false;
         } else {
-            try {
-                wtable.set(table, r, c, val, casLocked.casStamp());
-            } catch (WtableException ex) {
-                // TODO
-            }
-
+            wtable.set(table, r, c, val, casLocked.casStamp());
             return true;
         }
     }
 
     @Override
-    public boolean updateOnExists(final RowKey r, final ColKey c, final Value val) {
-        final CasLockedValue casLocked;
-        try {
-            casLocked = wtable.getCasLocked(table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-            throw new RuntimeException(ex);
-        }
-
+    public boolean updateOnExists(final RowKey r, final ColKey c, final Value val) throws WtableCheckedException {
+        final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
         if (casLocked.value().isPresent()) {
-            try {
-                wtable.set(table, r, c, val, casLocked.casStamp());
-            } catch (WtableException ex) {
-                // TODO
-            }
-
+            wtable.set(table, r, c, val, casLocked.casStamp());
             return true;
         } else {
             return false;
@@ -113,24 +76,13 @@ abstract class AbstractRepositoryImpl implements Repository {
 
     @Override
     public boolean compareAndUpdate(
-            final RowKey r, final ColKey c, final Function<Value, Optional<Value>> updater
-    ) {
-        final CasLockedValue casLocked;
-        try {
-            casLocked = wtable.getCasLocked(table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-            throw new RuntimeException(ex);
-        }
+            final RowKey r, final ColKey c, final UnaryOperator<Value> updater
+    ) throws WtableCheckedException {
+        final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
 
-        final Optional<Value> newVal = casLocked.value().flatMap(updater);
+        final Optional<Value> newVal = casLocked.value().map(updater);
         if (newVal.isPresent()) {
-            try {
-                wtable.set(table, r, c, newVal.get(), casLocked.casStamp());
-            } catch (WtableException ex) {
-                // TODO
-            }
-
+            wtable.set(table, r, c, newVal.get(), casLocked.casStamp());
             return true;
         } else {
             return false;
@@ -140,23 +92,12 @@ abstract class AbstractRepositoryImpl implements Repository {
     @Override
     public boolean compareAndDelete(
             final RowKey r, final ColKey c, final Predicate<Value> when
-    ) {
-        final CasLockedValue casLocked;
-        try {
-            casLocked = wtable.getCasLocked(table, r, c);
-        } catch (WtableException ex) {
-            // TODO
-            throw new RuntimeException(ex);
-        }
+    ) throws WtableCheckedException {
+        final CasLockedValue casLocked = wtable.getCasLocked(table, r, c);
 
         final Optional<Value> newVal = casLocked.value().filter(when);
         if (newVal.isPresent()) {
-            try {
-                wtable.delete(table, r, c, casLocked.casStamp());
-            } catch (WtableException ex) {
-                // TODO
-            }
-
+            wtable.delete(table, r, c, casLocked.casStamp());
             return true;
         } else {
             return false;

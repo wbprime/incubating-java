@@ -6,7 +6,7 @@ import im.wangbo.bj58.wtable.core.ColKey;
 import im.wangbo.bj58.wtable.core.RowKey;
 import im.wangbo.bj58.wtable.core.Table;
 import im.wangbo.bj58.wtable.core.Value;
-import im.wangbo.bj58.wtable.core.WtableException;
+import im.wangbo.bj58.wtable.core.WtableCheckedException;
 import im.wangbo.bj58.wtable.core.WtableStub;
 
 /**
@@ -22,7 +22,7 @@ final class SlaveRepository extends AbstractRepositoryImpl {
     }
 
     @Override
-    Optional<Value> findByKey(WtableStub wtableStub, Table table, RowKey r, ColKey c) throws WtableException {
+    Optional<Value> findByKey(WtableStub wtableStub, Table table, RowKey r, ColKey c) throws WtableCheckedException {
         return wtableStub.getMasterSlave(table, r, c);
     }
 
