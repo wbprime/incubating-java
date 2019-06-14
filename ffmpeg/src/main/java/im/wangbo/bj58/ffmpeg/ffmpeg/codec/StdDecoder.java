@@ -15,9 +15,4 @@ abstract class StdDecoder implements MediaDecoder {
     static StdDecoder of(final String name) {
         return new AutoValue_StdDecoder(name);
     }
-
-    @Override
-    public final String asString() {
-        return decoderName();
-    }
 }

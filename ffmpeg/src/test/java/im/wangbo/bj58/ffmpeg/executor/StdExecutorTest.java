@@ -39,7 +39,8 @@ class StdExecutorTest {
                 .stderrToFile(true)
                 .build();
 
-        final NativeProcess process = executor.execute(executable).get();
+        final NativeProcess process = executor.execute(executable)
+                .toCompletableFuture().get();
         process.close();
     }
 
@@ -49,7 +50,8 @@ class StdExecutorTest {
 
         final NativeExecutable executable = NativeExecutable.of("echo", "1", "2");
 
-        final NativeProcess process = executor.execute(executable).get();
+        final NativeProcess process = executor.execute(executable)
+                .toCompletableFuture().get();
         process.close();
     }
 
@@ -59,7 +61,8 @@ class StdExecutorTest {
 
         final NativeExecutable executable = NativeExecutable.of("false");
 
-        final NativeProcess process = executor.execute(executable).get();
+        final NativeProcess process = executor.execute(executable)
+                .toCompletableFuture().get();
         process.close();
     }
 
@@ -70,7 +73,8 @@ class StdExecutorTest {
         final NativeExecutable executable = NativeExecutable.of("grep", "hashdfkasf", "a.txt");
 
         // The stderr of executed command is not empty, and would be outputed to current stderr
-        final NativeProcess process = executor.execute(executable).get();
+        final NativeProcess process = executor.execute(executable)
+                .toCompletableFuture().get();
         process.close();
     }
 
@@ -86,7 +90,8 @@ class StdExecutorTest {
                 .stderrToFile(true)
                 .build();
 
-        final NativeProcess process = executor.execute(executable).get();
+        final NativeProcess process = executor.execute(executable)
+                .toCompletableFuture().get();
         process.close();
     }
 }

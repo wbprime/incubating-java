@@ -3,11 +3,15 @@ package im.wangbo.bj58.ffmpeg.ffmpeg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import java.net.URI;
 import java.util.List;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaDecoder;
-import im.wangbo.bj58.ffmpeg.ffmpeg.seek.Seeking;
+import im.wangbo.bj58.ffmpeg.arg.InputArg;
+import im.wangbo.bj58.ffmpeg.arg.main.InputUriArg;
+import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
+import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
 
 /**
  * TODO add brief description here
@@ -15,7 +19,7 @@ import im.wangbo.bj58.ffmpeg.ffmpeg.seek.Seeking;
  * @author Elvis Wang
  */
 public interface InputSource {
-    List<Arg> asArgs();
+    List<InputArg> asArgs();
 
     static Builder builder(final String path) {
         return new Builder(path);
@@ -24,31 +28,38 @@ public interface InputSource {
     class Builder {
         private final String pathToInput;
 
-        private final List<Arg> args = Lists.newArrayList();
+        private final List<InputArg> args = Lists.newArrayList();
 
         private Builder(final String path) {
             this.pathToInput = path;
         }
 
-        public Builder addArg(final Arg arg) {
+        public Builder addArg(final InputArg arg) {
             args.add(arg);
             return this;
         }
 
-        public Builder decoder(final StreamSpecifier stream, final MediaDecoder decoder) {
-            args.add(Arg.paired("-c:" + stream.asString(), decoder.asString()));
-            return this;
+        public Builder mediaFormat(final MediaFormat f) {
+            return addArg(MediaFormatArg.asInput(f));
         }
 
-        public Builder seeking(final Seeking seeking) {
-            args.addAll(seeking.asArgs());
+        public Builder mediaDecoder(final MediaCodec codec) {
+            return mediaDecoder(StreamSpecifier.all(), codec);
+        }
+
+        public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
+            return addArg(MediaCodecArg.asInput(specifier, codec));
+        }
+
+        public Builder seeking(final ImmutableList<InputArg> seeking) {
+            seeking.forEach(this::addArg);
             return this;
         }
 
         public InputSource build() {
-            final ImmutableList<Arg> inputArgs = ImmutableList.<Arg>builder()
+            final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
                     .addAll(args)
-                    .add(Args.inputUri(pathToInput))
+                    .add(InputUriArg.of(URI.create(pathToInput)))
                     .build();
             return () -> inputArgs;
         }

@@ -1,10 +1,11 @@
-package im.wangbo.bj58.ffmpeg.ffmpeg.seek;
+package im.wangbo.bj58.ffmpeg.arg.main;
 
 import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
+import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.SeekPosition;
 
 /**
@@ -13,12 +14,17 @@ import im.wangbo.bj58.ffmpeg.arg.SeekPosition;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class BackwardStartPositionArg implements Arg {
+abstract class EndPositionArg implements InOutputArg {
     abstract SeekPosition position();
 
     @Override
+    public final String description() {
+        return "Stop writing the output or reading the input at position.";
+    }
+
+    @Override
     public final String argName() {
-        return "-sseof";
+        return "-to";
     }
 
     @Override
@@ -26,7 +32,7 @@ abstract class BackwardStartPositionArg implements Arg {
         return Optional.of(position().asString());
     }
 
-    static BackwardStartPositionArg of(final SeekPosition position) {
-        return new AutoValue_BackwardStartPositionArg(position);
+    static EndPositionArg of(final SeekPosition position) {
+        return new AutoValue_EndPositionArg(position);
     }
 }

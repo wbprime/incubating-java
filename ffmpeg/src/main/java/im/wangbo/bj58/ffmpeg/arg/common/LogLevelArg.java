@@ -1,27 +1,56 @@
-package im.wangbo.bj58.ffmpeg.ffmpeg;
+package im.wangbo.bj58.ffmpeg.arg.common;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.arg.Value;
+import com.google.auto.value.AutoValue;
+
+import java.util.Optional;
+
+import im.wangbo.bj58.ffmpeg.arg.GlobalArg;
 
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
-public final class Args {
-    private Args() {
-        throw new UnsupportedOperationException("Construction forbidden");
+@AutoValue
+public abstract class LogLevelArg implements GlobalArg {
+    @Override
+    public final String argName() {
+        return "-loglevel";
     }
 
-    public static Arg showLicense() {
-        return Arg.named("-L");
+    @Override
+    public final String description() {
+        return "Set logging level";
     }
 
-    public static Arg showVersion() {
-        return Arg.named("-version");
+    abstract LogLevel logLevel();
+
+    @Override
+    public final Optional<String> argValue() {
+        return Optional.of(String.valueOf(logLevel().code));
     }
 
-    public static enum LogLevel implements Value {
+    public static LogLevelArg of(final LogLevel level) {
+        return new AutoValue_LogLevelArg(level);
+    }
+
+    public static LogLevelArg debug() {
+        return of(LogLevel.DEBUG);
+    }
+
+    public static LogLevelArg info() {
+        return of(LogLevel.INFO);
+    }
+
+    public static LogLevelArg warning() {
+        return of(LogLevel.WARNING);
+    }
+
+    public static LogLevelArg error() {
+        return of(LogLevel.ERROR);
+    }
+
+    public enum LogLevel {
         QUIET(-8), // 'quiet, -8'   Show nothing at all; be silent.
         PANIC(0), // 'panic, 0'    Only show fatal errors which could lead the process to crash, such as an assertion failure. This is not currently used for anything.
         FATAL(8), // 'fatal, 8'    Only show fatal errors. These are errors after which the process absolutely cannot continue.
@@ -38,34 +67,5 @@ public final class Args {
         LogLevel(final int code) {
             this.code = code;
         }
-
-        @Override
-        public final String asString() {
-            return String.valueOf(code);
-        }
-    }
-
-    public static Arg logLevel(final LogLevel level) {
-        return Arg.paired("-loglevel", level);
-    }
-
-    public static Arg hideBanner() {
-        return Arg.named("-hide_banner");
-    }
-
-    public static Arg forceOverwrite() {
-        return Arg.named("-y");
-    }
-
-    public static Arg neverOverwrite() {
-        return Arg.named("-n");
-    }
-
-    public static Arg inputUri(final String uri) {
-        return Arg.paired("-i", uri);
-    }
-
-    public static Arg outputUri(final String uri) {
-        return Arg.named(uri);
     }
 }

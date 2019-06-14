@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
 
 /**
@@ -22,8 +24,8 @@ class FfmpegBuilderTest {
         final FfmpegBuilder builder = FfmpegBuilder.builder(ffmpegPath);
 
         builder
-                .addArg(Args.hideBanner())
-                .addArg(Args.logLevel(Args.LogLevel.FATAL))
+                .addArg(HideBannerArg.of())
+                .addArg(LogLevelArg.of(LogLevelArg.LogLevel.FATAL))
                 .addInput(InputSource.builder(inputPath).build())
                 .addOutput(OutputSink.builder(outputPath).build());
 

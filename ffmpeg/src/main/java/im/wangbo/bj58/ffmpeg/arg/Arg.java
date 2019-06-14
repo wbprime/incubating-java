@@ -12,15 +12,7 @@ public interface Arg {
 
     Optional<String> argValue();
 
-    static Arg named(final String name) {
-        return StdArg.of(name);
-    }
-
-    static Arg paired(final String name, final Value value) {
-        return StdArg.of(name, value.asString());
-    }
-
-    static Arg paired(final String name, final String value) {
-        return StdArg.of(name, value);
+    default String description() {
+        return "";
     }
 }

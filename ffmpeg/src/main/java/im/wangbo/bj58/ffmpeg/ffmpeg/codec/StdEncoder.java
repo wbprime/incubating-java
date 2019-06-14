@@ -15,9 +15,4 @@ abstract class StdEncoder implements MediaEncoder {
     static StdEncoder of(final String name) {
         return new AutoValue_StdEncoder(name);
     }
-
-    @Override
-    public final String asString() {
-        return encoderName();
-    }
 }

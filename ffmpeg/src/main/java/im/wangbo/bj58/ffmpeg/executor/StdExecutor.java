@@ -78,7 +78,7 @@ public class StdExecutor {
      * @param exe target executable
      * @return a {@link CompletableFuture} of {@link NativeProcess} instance
      */
-    public CompletableFuture<NativeProcess> execute(final NativeExecutable exe) {
+    public CompletionStage<NativeProcess> execute(final NativeExecutable exe) {
         final String pid = pidGenerator.apply(id.getAndIncrement());
 
         return start(foregroundPool, pid, exe)

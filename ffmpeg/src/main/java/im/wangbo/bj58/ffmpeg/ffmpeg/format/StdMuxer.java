@@ -15,9 +15,5 @@ abstract class StdMuxer implements MediaMuxer {
     static StdMuxer of(final String name) {
         return new AutoValue_StdMuxer(name);
     }
-
-    @Override
-    public final String asString() {
-        return muxerName();
-    }
 }
+
