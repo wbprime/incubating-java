@@ -1,23 +1,22 @@
 package im.wangbo.bj58.ffmpeg.ffmpeg.codec;
 
+import javax.annotation.Nullable;
+
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
 public interface MediaCodec {
+    String name();
+
+    @Nullable
     MediaEncoder encoder();
+
+    @Nullable
     MediaDecoder decoder();
 
-    static MediaCodec of(final String encoder, final String decoder) {
-        return StdMediaCodec.create(encoder, decoder);
-    }
-
-    static MediaCodec of(final String name) {
-        return of(name, name);
-    }
-
     static MediaCodec copying() {
-        return of("copy", "copy");
+        return CopyingCodec.of();
     }
 }
