@@ -10,6 +10,14 @@ import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
  * @author Elvis Wang
  */
 public final class Ffmpegs {
+    private Ffmpegs() {
+        throw new UnsupportedOperationException("Construction forbidden");
+    }
+
+    public final FfmpegBuilder builder(final String ffmpeg) {
+        return FfmpegBuilder.builder(ffmpeg);
+    }
+
     public static NativeExecutable showLicense(final String ffmpeg) {
         return FfmpegBuilder.builder(ffmpeg)
                 .addArg(ShowLicenseArg.of())
