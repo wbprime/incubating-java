@@ -15,7 +15,9 @@ import im.wangbo.bj58.ffmpeg.arg.main.OutputFileSizeLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputFramesLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputQualityLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputUriArg;
+import im.wangbo.bj58.ffmpeg.arg.main.SimpleFilterArg;
 import im.wangbo.bj58.ffmpeg.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterChain;
 import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
 
 /**
@@ -83,6 +85,14 @@ public interface OutputSink {
 
         public Builder addMetadata(final String key, final String val) {
             return addArg(MetadataArg.of(key, val));
+        }
+
+        public Builder filter(final FilterChain chain) {
+            return addArg(SimpleFilterArg.of(StreamSpecifier.all(), chain));
+        }
+
+        public Builder filter(final StreamSpecifier specifier, final FilterChain chain) {
+            return addArg(SimpleFilterArg.of(specifier, chain));
         }
 
         public OutputSink build() {
