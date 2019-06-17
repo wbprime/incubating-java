@@ -2,7 +2,6 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 
 /**
@@ -22,7 +21,7 @@ public abstract class StdFilter implements Filter {
     public abstract ImmutableList<FilterPad> outputs();
 
     @Override
-    public abstract ImmutableList<Arg> args();
+    public abstract ImmutableList<FilterArg> args();
 
     public static Builder builder(final String type) {
         return new AutoValue_StdFilter.Builder().typeId(type);
@@ -44,15 +43,14 @@ public abstract class StdFilter implements Filter {
             return this;
         }
 
-        public abstract Builder args(ImmutableList<Arg> args);
+        public abstract Builder args(ImmutableList<FilterArg> args);
 
-        abstract ImmutableList.Builder<Arg> argsBuilder();
+        abstract ImmutableList.Builder<FilterArg> argsBuilder();
 
-        public final Builder addArg(final Arg arg) {
+        public final Builder addArg(final FilterArg arg) {
             argsBuilder().add(arg);
             return this;
         }
-
 
         public abstract StdFilter build();
     }

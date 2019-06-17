@@ -19,7 +19,7 @@ public interface Filter extends FilterChain {
 
     ImmutableList<FilterPad> outputs();
 
-    List<Arg> args();
+    List<FilterArg> args();
 
     @Override
     default ImmutableList<Filter> filters() {
