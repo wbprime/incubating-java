@@ -1,10 +1,8 @@
 package im.wangbo.bj58.ffmpeg.arg.main;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.Optional;
-
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -25,11 +23,11 @@ public abstract class MetadataArg implements OutputArg {
 
     abstract String key();
 
-    abstract String value();
+    abstract String val();
 
     @Override
     public final Optional<String> argValue() {
-        return Optional.of(key() + "=" + value());
+        return Optional.of(key() + "=" + val());
     }
 
     public static MetadataArg of(final String key, final String value) {

@@ -9,9 +9,9 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class ArgSpec {
-    abstract String name();
+    public abstract String name();
 
-    abstract String description();
+    public abstract String description();
 
     public static ArgSpec of(final String name, final String description) {
         return new AutoValue_ArgSpec(name, description);

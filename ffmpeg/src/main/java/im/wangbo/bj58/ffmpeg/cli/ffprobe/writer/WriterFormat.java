@@ -1,12 +1,10 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.stream.Collectors;
-
 import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.common.Value;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json.JsonBasedWriterFormat;
+import im.wangbo.bj58.ffmpeg.common.Value;
+import java.util.stream.Collectors;
 
 /**
  * TODO add brief description here
@@ -20,7 +18,8 @@ public interface WriterFormat extends Value {
 
     @Override
     default String asString() {
-        final String str = args().stream().map(arg -> arg.argName() + arg.argValue().map(v -> "=" + v).orElse(""))
+        final String str = args().stream()
+            .map(arg -> arg.spec().name() + arg.value().map(v -> "=" + v.asString()).orElse(""))
                 .collect(Collectors.joining(":"));
         return str.isEmpty() ? meta().kind() : meta().kind() + "=" + str;
     }

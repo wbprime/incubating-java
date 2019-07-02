@@ -1,20 +1,17 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.Lists;
-
-import java.io.File;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.arg.main.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ComplexFilterGraph;
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Nullable;
 
 /**
  * TODO add brief description here
@@ -22,6 +19,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
  * @author Elvis Wang
  */
 public class FfmpegBuilder {
+
     private final String pathToExe;
 
     private final List<Arg> args = Lists.newArrayList();
@@ -75,7 +73,7 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addFilterGraph(final FilterGraph filterGraph) {
+    public FfmpegBuilder addFilterGraph(final ComplexFilterGraph filterGraph) {
 //        args.add(Arg.paired("-filter_complex", filterGraph));
         return this;
     }
@@ -88,12 +86,13 @@ public class FfmpegBuilder {
         inputs.forEach(i -> args.addAll(i.asArgs()));
         outputs.forEach(o -> args.addAll(o.asArgs()));
         final List<String> strArgs = args.stream()
-                .flatMap(arg -> arg.argValue().map(v -> Stream.of(arg.argName(), v)).orElse(Stream.of(arg.argName())))
-                .collect(Collectors.toList());
+            .flatMap(arg -> arg.value().map(v -> Stream.of(arg.spec().name(), v.asString()))
+                .orElse(Stream.of(arg.spec().name())))
+            .collect(Collectors.toList());
         return NativeExecutable.builder()
-                .workingDir(pwDir)
-                .command(pathToExe)
-                .addOpts(strArgs)
-                .build();
+            .workingDir(pwDir)
+            .command(pathToExe)
+            .addOpts(strArgs)
+            .build();
     }
 }

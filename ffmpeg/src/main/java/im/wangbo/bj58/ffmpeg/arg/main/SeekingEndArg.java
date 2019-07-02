@@ -31,6 +31,6 @@ public abstract class SeekingEndArg implements InOutputArg {
     }
 
     public static SeekingEndArg of(final SeekPosition position) {
-        return new AutoValue_SeekingEndArg(spec, value, position);
+        return new AutoValue_SeekingEndArg(position);
     }
 }

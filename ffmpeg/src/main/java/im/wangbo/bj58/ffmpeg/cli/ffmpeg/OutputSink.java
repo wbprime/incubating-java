@@ -2,12 +2,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import java.net.URI;
-import java.util.List;
-
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MetadataArg;
@@ -17,8 +12,11 @@ import im.wangbo.bj58.ffmpeg.arg.main.OutputQualityLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputUriArg;
 import im.wangbo.bj58.ffmpeg.arg.main.SimpleFilterArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec.MediaCodec;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterChain;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.format.MediaFormat;
+import im.wangbo.bj58.ffmpeg.common.SizeInByte;
+import java.net.URI;
+import java.util.List;
 
 /**
  * TODO add brief description here
@@ -26,6 +24,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.format.MediaFormat;
  * @author Elvis Wang
  */
 public interface OutputSink {
+
     List<OutputArg> asArgs();
 
     static Builder builder(final String path) {
@@ -33,6 +32,7 @@ public interface OutputSink {
     }
 
     class Builder {
+
         private final String pathToOutput;
 
         private final List<OutputArg> args = Lists.newArrayList();
@@ -87,19 +87,19 @@ public interface OutputSink {
             return addArg(MetadataArg.of(key, val));
         }
 
-        public Builder filter(final FilterChain chain) {
-            return addArg(SimpleFilterArg.of(StreamSpecifier.all(), chain));
+        public Builder filter(final SimpleFilterGraph graph) {
+            return addArg(SimpleFilterArg.of(StreamSpecifier.all(), graph));
         }
 
-        public Builder filter(final StreamSpecifier specifier, final FilterChain chain) {
-            return addArg(SimpleFilterArg.of(specifier, chain));
+        public Builder filter(final StreamSpecifier specifier, final SimpleFilterGraph graph) {
+            return addArg(SimpleFilterArg.of(specifier, graph));
         }
 
         public OutputSink build() {
             final ImmutableList<OutputArg> outputArgs = ImmutableList.<OutputArg>builder()
-                    .addAll(args)
-                    .add(OutputUriArg.of(URI.create(pathToOutput)))
-                    .build();
+                .addAll(args)
+                .add(OutputUriArg.of(URI.create(pathToOutput)))
+                .build();
             return () -> outputArgs;
         }
     }

@@ -31,6 +31,6 @@ abstract class SeekingBackwardOffsetArg implements InputArg {
     }
 
     static SeekingBackwardOffsetArg of(final SeekPosition position) {
-        return new AutoValue_SeekingBackwardOffsetArg(spec, value, position);
+        return new AutoValue_SeekingBackwardOffsetArg(position);
     }
 }
