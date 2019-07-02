@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.arg;
+package im.wangbo.bj58.ffmpeg.common;
 
 import java.util.OptionalInt;
 

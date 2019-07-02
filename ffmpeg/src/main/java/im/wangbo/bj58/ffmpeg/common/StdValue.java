@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.arg;
+package im.wangbo.bj58.ffmpeg.common;
 
 import com.google.auto.value.AutoValue;
 
@@ -9,6 +9,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 abstract class StdValue implements Value {
+
     @Override
     public abstract String asString();
 

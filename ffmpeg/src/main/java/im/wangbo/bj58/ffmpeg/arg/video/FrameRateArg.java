@@ -2,9 +2,9 @@ package im.wangbo.bj58.ffmpeg.arg.video;
 
 import com.google.auto.value.AutoValue;
 
+import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.arg.FrameRate;
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
@@ -16,7 +16,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.StreamSpecifier;
  * an integer number, a float number or a valid video frame rate abbreviation.
  *
  * @author Elvis Wang
- * @see im.wangbo.bj58.ffmpeg.arg.FrameRate
+ * @see FrameRate
  */
 @AutoValue
 public abstract class FrameRateArg implements InOutputArg {

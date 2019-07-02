@@ -4,9 +4,8 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
-import im.wangbo.bj58.ffmpeg.arg.SeekPosition;
+import im.wangbo.bj58.ffmpeg.common.SeekPosition;
 
 /**
  * TODO add brief description here

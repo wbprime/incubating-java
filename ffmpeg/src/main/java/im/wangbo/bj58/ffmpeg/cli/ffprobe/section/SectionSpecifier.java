@@ -1,6 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
 
-import im.wangbo.bj58.ffmpeg.arg.Value;
+import im.wangbo.bj58.ffmpeg.common.Value;
 
 /**
  * TODO add brief description here

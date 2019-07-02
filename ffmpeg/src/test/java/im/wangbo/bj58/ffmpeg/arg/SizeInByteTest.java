@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.arg;
 
+import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.arg;
+package im.wangbo.bj58.ffmpeg.common;
 
 /**
  * TODO add brief description here
@@ -6,6 +6,7 @@ package im.wangbo.bj58.ffmpeg.arg;
  * @author Elvis Wang
  */
 public interface Value {
+
     String asString();
 
     static Value of(final String value) {

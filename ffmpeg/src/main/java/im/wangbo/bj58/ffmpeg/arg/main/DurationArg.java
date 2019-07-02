@@ -5,7 +5,7 @@ import com.google.auto.value.AutoValue;
 import java.util.Optional;
 
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
-import im.wangbo.bj58.ffmpeg.arg.SeekDuration;
+import im.wangbo.bj58.ffmpeg.common.SeekDuration;
 
 /**
  * TODO add brief description here

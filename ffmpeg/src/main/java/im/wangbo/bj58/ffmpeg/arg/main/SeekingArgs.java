@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
-import im.wangbo.bj58.ffmpeg.arg.SeekDuration;
-import im.wangbo.bj58.ffmpeg.arg.SeekPosition;
+import im.wangbo.bj58.ffmpeg.common.SeekDuration;
+import im.wangbo.bj58.ffmpeg.common.SeekPosition;
 
 /**
  * TODO add brief description here

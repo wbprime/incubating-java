@@ -4,11 +4,11 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.arg.FrameRate;
+import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.arg.SizeInPixel;
+import im.wangbo.bj58.ffmpeg.common.SizeInPixel;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.StreamSpecifier;
 
 /**

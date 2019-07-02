@@ -7,7 +7,7 @@ import java.net.URI;
 import java.util.List;
 
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.arg.SizeInByte;
+import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MetadataArg;

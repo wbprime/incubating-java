@@ -2,12 +2,10 @@ package im.wangbo.bj58.ffmpeg.arg.main;
 
 import com.google.auto.value.AutoValue;
 
-import java.net.URI;
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.arg.SizeInByte;
+import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 
 /**
  * TODO add brief description here
