@@ -3,7 +3,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter;
 import com.google.common.graph.ElementOrder;
 import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
-import im.wangbo.bj58.ffmpeg.DescribeTo;
+import im.wangbo.bj58.ffmpeg.common.DescribeTo;
 
 /**
  * TODO more details here.
