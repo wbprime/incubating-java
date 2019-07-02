@@ -1,6 +1,6 @@
-package im.wangbo.bj58.ffmpeg.ffprobe.writer;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer;
 
-import im.wangbo.bj58.ffmpeg.ffprobe.MediaMetaInfo;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.MediaMetaInfo;
 
 /**
  * TODO add brief description here

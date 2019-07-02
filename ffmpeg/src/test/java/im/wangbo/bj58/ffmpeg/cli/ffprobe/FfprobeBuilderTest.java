@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffprobe;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
-import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
-import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterFormat;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 
 /**
  * TODO add brief description here

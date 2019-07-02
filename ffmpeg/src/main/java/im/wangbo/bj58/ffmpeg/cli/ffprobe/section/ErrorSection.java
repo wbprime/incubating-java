@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffprobe.section;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
 
 import javax.json.bind.annotation.JsonbProperty;
 import java.util.Objects;

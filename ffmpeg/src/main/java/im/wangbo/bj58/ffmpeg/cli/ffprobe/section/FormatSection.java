@@ -1,12 +1,10 @@
-package im.wangbo.bj58.ffmpeg.ffprobe.section;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
 
 import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
-
-import im.wangbo.bj58.ffmpeg.ffprobe.MediaMetaInfo;
 
 /**
  * Sample data:

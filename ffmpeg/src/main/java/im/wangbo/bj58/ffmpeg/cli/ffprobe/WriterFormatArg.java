@@ -1,10 +1,10 @@
-package im.wangbo.bj58.ffmpeg.ffprobe;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterFormat;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 
 /**
  * TODO add brief description here

@@ -1,6 +1,6 @@
-package im.wangbo.bj58.ffmpeg.ffprobe;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
-import im.wangbo.bj58.ffmpeg.ffprobe.section.*;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.*;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;

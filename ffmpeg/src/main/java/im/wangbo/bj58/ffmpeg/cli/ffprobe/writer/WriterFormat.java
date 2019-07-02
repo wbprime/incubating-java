@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffprobe.writer;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer;
 
 import com.google.common.collect.ImmutableList;
 
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.Value;
-import im.wangbo.bj58.ffmpeg.ffprobe.writer.json.JsonBasedWriterFormat;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json.JsonBasedWriterFormat;
 
 /**
  * TODO add brief description here

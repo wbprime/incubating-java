@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffprobe;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import java.util.Optional;
 
