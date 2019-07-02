@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.format;
+package im.wangbo.bj58.ffmpeg.format;
 
 import com.google.auto.value.AutoValue;
 
@@ -8,23 +8,23 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class RawHevcFormat implements MediaFormat {
+abstract class HlsFormat implements MediaFormat {
     @Override
     public final String name() {
-        return "Raw H.265/HEVC video";
+        return "Apple HTTP Live Streaming";
     }
 
     @Override
     public final MediaMuxer muxer() {
-        return StdMuxer.of("hevc");
+        return StdMuxer.of("hls");
     }
 
     @Override
     public final MediaDemuxer demuxer() {
-        return StdDemuxer.of("hevc");
+        return StdDemuxer.of("hls");
     }
 
-    static RawHevcFormat of() {
-        return new AutoValue_RawHevcFormat();
+    static HlsFormat of() {
+        return new AutoValue_HlsFormat();
     }
 }
