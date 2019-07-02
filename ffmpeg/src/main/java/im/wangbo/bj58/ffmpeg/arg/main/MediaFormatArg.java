@@ -7,7 +7,7 @@ import java.util.Optional;
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.ffmpeg.format.MediaFormat;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.format.MediaFormat;
 
 /**
  * TODO add brief description here

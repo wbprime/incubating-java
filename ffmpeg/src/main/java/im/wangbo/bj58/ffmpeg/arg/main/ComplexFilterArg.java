@@ -5,7 +5,7 @@ import com.google.auto.value.AutoValue;
 import java.util.Optional;
 
 import im.wangbo.bj58.ffmpeg.arg.GlobalArg;
-import im.wangbo.bj58.ffmpeg.ffmpeg.filter.FilterGraph;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 
 /**
  * TODO add brief description here

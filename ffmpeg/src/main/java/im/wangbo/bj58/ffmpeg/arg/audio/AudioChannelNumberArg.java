@@ -8,7 +8,7 @@ import im.wangbo.bj58.ffmpeg.arg.FrameRate;
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.ffmpeg.StreamSpecifier;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.StreamSpecifier;
 
 /**
  * Set the number of audio channels.
