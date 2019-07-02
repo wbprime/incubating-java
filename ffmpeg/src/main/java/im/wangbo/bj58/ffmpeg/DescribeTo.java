@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
+package im.wangbo.bj58.ffmpeg;
 
 /**
  * TODO Details go here.

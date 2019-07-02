@@ -2,6 +2,7 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import im.wangbo.bj58.ffmpeg.DescribeTo;
 import java.util.List;
 import java.util.stream.Collectors;
 

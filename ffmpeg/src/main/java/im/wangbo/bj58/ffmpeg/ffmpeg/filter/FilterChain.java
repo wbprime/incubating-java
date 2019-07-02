@@ -3,6 +3,7 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.collect.Lists;
+import im.wangbo.bj58.ffmpeg.DescribeTo;
 import java.util.List;
 
 /**

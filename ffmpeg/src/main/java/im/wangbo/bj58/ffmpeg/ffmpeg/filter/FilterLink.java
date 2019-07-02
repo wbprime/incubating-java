@@ -8,6 +8,7 @@ package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
  */
 
 import com.google.auto.value.AutoValue;
+import im.wangbo.bj58.ffmpeg.DescribeTo;
 
 @AutoValue
 public abstract class FilterLink implements DescribeTo {
