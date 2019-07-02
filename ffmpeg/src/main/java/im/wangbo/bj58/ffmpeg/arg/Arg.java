@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.arg;
 
+import im.wangbo.bj58.ffmpeg.common.Value;
 import java.util.Optional;
 
 /**
@@ -8,11 +9,7 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 public interface Arg {
-    String argName();
+    ArgSpec spec();
 
-    Optional<String> argValue();
-
-    default String description() {
-        return "";
-    }
+    Optional<Value> value();
 }

@@ -13,7 +13,7 @@ import im.wangbo.bj58.ffmpeg.common.SeekPosition;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class ForwardStartPositionArg implements InOutputArg {
+abstract class SeekingForwardOffsetArg implements InOutputArg {
     abstract SeekPosition position();
 
     @Override
@@ -34,7 +34,7 @@ abstract class ForwardStartPositionArg implements InOutputArg {
         return Optional.of(position().asString());
     }
 
-    static ForwardStartPositionArg of(final SeekPosition position) {
-        return new AutoValue_ForwardStartPositionArg(position);
+    static SeekingForwardOffsetArg of(final SeekPosition position) {
+        return new AutoValue_SeekingForwardOffsetArg(position);
     }
 }

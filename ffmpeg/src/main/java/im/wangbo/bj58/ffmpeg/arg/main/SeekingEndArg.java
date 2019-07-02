@@ -1,11 +1,9 @@
 package im.wangbo.bj58.ffmpeg.arg.main;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.Optional;
-
 import im.wangbo.bj58.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.common.SeekPosition;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -13,7 +11,8 @@ import im.wangbo.bj58.ffmpeg.common.SeekPosition;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class EndPositionArg implements InOutputArg {
+public abstract class SeekingEndArg implements InOutputArg {
+
     abstract SeekPosition position();
 
     @Override
@@ -31,7 +30,7 @@ abstract class EndPositionArg implements InOutputArg {
         return Optional.of(position().asString());
     }
 
-    static EndPositionArg of(final SeekPosition position) {
-        return new AutoValue_EndPositionArg(position);
+    public static SeekingEndArg of(final SeekPosition position) {
+        return new AutoValue_SeekingEndArg(spec, value, position);
     }
 }

@@ -1,11 +1,9 @@
 package im.wangbo.bj58.ffmpeg.arg.main;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.Optional;
-
 import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.common.SeekPosition;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -13,7 +11,8 @@ import im.wangbo.bj58.ffmpeg.common.SeekPosition;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class BackwardStartPositionArg implements InputArg {
+abstract class SeekingBackwardOffsetArg implements InputArg {
+
     abstract SeekPosition position();
 
     @Override
@@ -31,7 +30,7 @@ abstract class BackwardStartPositionArg implements InputArg {
         return Optional.of(position().asString());
     }
 
-    static BackwardStartPositionArg of(final SeekPosition position) {
-        return new AutoValue_BackwardStartPositionArg(position);
+    static SeekingBackwardOffsetArg of(final SeekPosition position) {
+        return new AutoValue_SeekingBackwardOffsetArg(spec, value, position);
     }
 }

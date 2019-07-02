@@ -13,7 +13,7 @@ import im.wangbo.bj58.ffmpeg.common.SeekDuration;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class DurationArg implements InOutputArg {
+abstract class SeekingDurationArg implements InOutputArg {
     abstract SeekDuration duration();
 
     @Override
@@ -32,7 +32,7 @@ abstract class DurationArg implements InOutputArg {
         return Optional.of(duration().asString());
     }
 
-    static DurationArg of(final SeekDuration d) {
-        return new AutoValue_DurationArg(d);
+    static SeekingDurationArg of(final SeekDuration d) {
+        return new AutoValue_SeekingDurationArg(d);
     }
 }

@@ -1,31 +1,22 @@
 package im.wangbo.bj58.ffmpeg.common;
 
-import com.google.auto.value.AutoValue;
-
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
-@AutoValue
-public abstract class SizeInPixel implements Value {
+public interface SizeInPixel extends Value {
     @Override
-    public final String asString() {
-        return width() + "x" + height();
-    }
+    String asString();
 
-    public abstract int width();
-
-    public abstract int height();
-
-    public static SizeInPixel of(int w, int h) {
-        return new AutoValue_SizeInPixel(w, h);
+    static SizeInPixel of(int w, int h) {
+        return PlainSizeInPixel.of(w, h);
     }
 
     /*
      * See http://ffmpeg.org/ffmpeg-utils.html#Video-size
      */
-    public static enum Predefined {
+    enum Predefined implements SizeInPixel {
         size_ntsc(720, 480),
         size_pal(720, 576),
         size_qntsc(352, 240),
@@ -89,8 +80,13 @@ public abstract class SizeInPixel implements Value {
             this.h = h;
         }
 
-        public SizeInPixel size() {
-            return SizeInPixel.of(w, h);
+        public final SizeInPixel size() {
+            return PlainSizeInPixel.of(w, h);
+        }
+
+        @Override
+        public final String asString() {
+            return w + "x" + h;
         }
     }
 }

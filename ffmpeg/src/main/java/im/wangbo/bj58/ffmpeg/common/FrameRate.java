@@ -11,19 +11,19 @@ public interface FrameRate extends Value {
     @Override
     String asString();
 
-    public static FrameRate of(int frames, int seconds) {
+    static FrameRate of(int frames, int seconds) {
         return FractionalBasedFrameRate.create(frames, OptionalInt.of(seconds));
     }
 
-    public static FrameRate of(int frames) {
+    static FrameRate of(int frames) {
         return FractionalBasedFrameRate.create(frames, OptionalInt.empty());
     }
 
-    public static FrameRate of(double fps) {
+    static FrameRate of(double fps) {
         return FloatingBasedFrameRate.of(fps);
     }
 
-    public static FrameRate of(float fps) {
+    static FrameRate of(float fps) {
         return FloatingBasedFrameRate.of(fps);
     }
 
@@ -32,7 +32,7 @@ public interface FrameRate extends Value {
      *
      * @author Elvis Wang
      */
-    public enum Predefined implements FrameRate {
+    enum Predefined implements FrameRate {
         NTSC(30000, 1001), // ntsc 30000/1001
         PAL(25, 1), // pal 25/1
         QNTSC(30000, 1001), // qntsc 30000/1001
