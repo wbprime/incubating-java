@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.ffmpeg.filter2;
 
+import com.google.common.graph.ElementOrder;
 import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
 
@@ -8,25 +9,29 @@ import com.google.common.graph.ValueGraphBuilder;
  * <p>
  * Created at 2019-06-23, by Elvis Wang
  */
-public class SimpleFilterGraph {
-    private MutableValueGraph<Node, String> graphBuilder = ValueGraphBuilder.directed().allowsSelfLoops(false).build();
-    private Source incoming;
-    private Sink outgoing;
+public class SimpleFilterGraph implements DescribeTo {
 
-    public SimpleFilterGraph add(final Source source, final Filter target) {
-        graphBuilder.putEdgeValue(source, target, source.name());
-        this.incoming = source;
+    private final MutableValueGraph<FilterChain, FilterLink> graph = ValueGraphBuilder.directed()
+        .allowsSelfLoops(false)
+        .nodeOrder(ElementOrder.insertion())
+        .build();
+
+    private SimpleFilterGraph() {
+    }
+
+    public SimpleFilterGraph add(
+        final FilterChain predecessor, final FilterChain successor, final FilterLink link
+    ) {
+        graph.putEdgeValue(predecessor, successor, link);
         return this;
     }
 
-    public SimpleFilterGraph add(final Filter source, final Sink target) {
-        graphBuilder.putEdgeValue(source, target, target.name());
-        this.outgoing = target;
-        return this;
+    @Override
+    public void describeTo(final StringBuilder sb) {
+        graph.nodes().forEach(chain -> chain.describeTo(sb));
     }
 
-    public SimpleFilterGraph add(final Filter source, final Filter target, final String name) {
-        graphBuilder.putEdgeValue(source, target, name);
-        return this;
+    public static SimpleFilterGraph create() {
+        return new SimpleFilterGraph();
     }
 }
