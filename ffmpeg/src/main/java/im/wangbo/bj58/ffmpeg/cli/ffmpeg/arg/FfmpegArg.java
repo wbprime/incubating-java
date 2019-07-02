@@ -1,7 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.arg.ArgSpec;
+import im.wangbo.bj58.ffmpeg.common.Arg;
+import im.wangbo.bj58.ffmpeg.common.ArgSpec;
 import im.wangbo.bj58.ffmpeg.common.Value;
 import java.util.Optional;
 

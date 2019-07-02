@@ -1,15 +1,13 @@
-package im.wangbo.bj58.ffmpeg.arg;
+package im.wangbo.bj58.ffmpeg.common;
 
-import im.wangbo.bj58.ffmpeg.common.SizeInByte;
+import java.util.Random;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.Random;
-import java.util.stream.Stream;
 
 /**
  * TODO add brief description here

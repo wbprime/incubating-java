@@ -2,8 +2,8 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.arg.ArgSpec;
+import im.wangbo.bj58.ffmpeg.common.Arg;
+import im.wangbo.bj58.ffmpeg.common.ArgSpec;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterMeta;
 import im.wangbo.bj58.ffmpeg.common.Value;

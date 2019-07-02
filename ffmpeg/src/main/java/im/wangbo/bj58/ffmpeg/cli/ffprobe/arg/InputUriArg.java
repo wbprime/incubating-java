@@ -1,8 +1,7 @@
-package im.wangbo.bj58.ffmpeg.cli.ffprobe;
+package im.wangbo.bj58.ffmpeg.cli.ffprobe.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.arg.ArgSpec;
-import im.wangbo.bj58.ffmpeg.arg.FfprobeArg;
+import im.wangbo.bj58.ffmpeg.common.ArgSpec;
 import im.wangbo.bj58.ffmpeg.common.Value;
 import java.net.URI;
 import java.nio.file.Path;
