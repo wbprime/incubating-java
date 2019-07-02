@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
 
 /**

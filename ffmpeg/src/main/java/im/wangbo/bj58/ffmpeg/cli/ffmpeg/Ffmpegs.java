@@ -1,7 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import im.wangbo.bj58.ffmpeg.arg.common.ShowLicenseArg;
-import im.wangbo.bj58.ffmpeg.arg.common.ShowVersionArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.ShowLicenseArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.ShowVersionArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
 
 /**

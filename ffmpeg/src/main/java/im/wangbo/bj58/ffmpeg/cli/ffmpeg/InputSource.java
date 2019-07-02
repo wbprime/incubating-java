@@ -6,10 +6,10 @@ import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.List;
 
-import im.wangbo.bj58.ffmpeg.arg.InputArg;
-import im.wangbo.bj58.ffmpeg.arg.main.InputUriArg;
-import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
-import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.InputUriArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaCodecArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaFormatArg;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 

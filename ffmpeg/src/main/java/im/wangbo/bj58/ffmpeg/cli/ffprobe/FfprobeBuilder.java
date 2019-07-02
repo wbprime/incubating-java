@@ -2,8 +2,8 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.arg.Arg;
-import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
 import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
