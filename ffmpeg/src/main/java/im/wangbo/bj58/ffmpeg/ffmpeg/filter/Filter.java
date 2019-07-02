@@ -1,53 +1,45 @@
 package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-
 /**
- * TODO add brief description here
- *
- * @author Elvis Wang
+ * TODO more details here.
+ * <p>
+ * Created at 2019-06-23, by Elvis Wang
  */
-public interface Filter extends FilterChain {
-    String typeId();
+@AutoValue
+public abstract class Filter implements DescribeTo {
 
-    ImmutableList<FilterPad> inputs();
+    public abstract String name();
 
-    ImmutableList<FilterPad> outputs();
+    public abstract FilterSpec spec();
 
-    List<FilterArg> args();
-
-    @Override
-    default ImmutableList<Filter> filters() {
-        return ImmutableList.of(this);
-    }
+    public abstract ImmutableList<FilterArg> args();
 
     @Override
-    default String asString() {
-        final StringBuilder sb = new StringBuilder();
+    public void describeTo(StringBuilder sb) {
+        sb.append(spec().typeId());
+        if (!args().isEmpty()) {
+            sb.append('=');
 
-        inputs().forEach(p -> sb.append(p.asString()));
-
-        sb.append(typeId());
-
-        if (! args().isEmpty()) {
-            sb.append("=");
             final String collect = args().stream()
-                    .map(a -> a.argValue().map(str -> a.argName() + "=" + str).orElse(a.argName()))
-                    .collect(Collectors.joining(":"));
+                .map(arg -> arg.argName() + arg.argValue().map(v -> '=' + v).orElse(""))
+                .collect(Collectors.joining(":"));
             sb.append(collect);
         }
-
-        outputs().forEach(p -> sb.append(p.asString()));
-
-        return sb.toString();
     }
 
-    interface FilterBuilder {
-        Filter build();
+    public static Filter of(
+        final String name, final FilterSpec spec, final List<FilterArg> args
+    ) {
+        return new AutoValue_Filter(name, spec, ImmutableList.copyOf(args));
+    }
+
+    interface Builder {
+
+        Filter build(final String name);
     }
 }

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffmpeg.filter2;
+package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;

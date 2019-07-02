@@ -1,58 +1,26 @@
 package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
-
-import im.wangbo.bj58.ffmpeg.ffmpeg.StreamSpecifier;
 
 /**
- * TODO add brief description here
+ * TODO Details go here.
  *
- * @author Elvis Wang
+ * Created at 2019-07-02 by Elvis Wang
  */
+@Disabled
 class FilterTest {
-    @ParameterizedTest
-    @MethodSource("args")
-    void encode(final Filter filter, final String expected) {
-        final String result = filter.asString();
 
-        Assertions.assertThat(result).isEqualTo(expected);
-    }
+    @Test
+    void describeTo() {
+        final Filter filter = SourceFilterBuilder.builder().build("in");
 
-    private static Stream<Arguments> args() {
-        return Stream.of(
-                Arguments.of(
-                        StdFilter.builder("amerge")
-                                .addArg(FilterArg.paired("inputs", "6"))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(1)))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(2)))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(3)))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(4)))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(5)))
-                                .addInput(FilterPad.streamSpecifier(0, StreamSpecifier.of(6)))
-                                .addOutput(FilterPad.unnamed())
-                                .build(),
-                        "[0:1][0:2][0:3][0:4][0:5][0:6]amerge=inputs=6"),
-                Arguments.of(
-                        StdFilter.builder("amovie")
-                                .addArg(FilterArg.named("left.wav"))
-                                .addInput(FilterPad.unnamed())
-                                .addOutput(FilterPad.named("l"))
-                                .build(),
-                        "amovie=left.wav[l]"),
-                Arguments.of(
-                        StdFilter.builder("acrossfade")
-                                .addArg(FilterArg.paired("d", "10"))
-                                .addArg(FilterArg.paired("c1", "exp"))
-                                .addArg(FilterArg.paired("c2", "exp"))
-                                .addInput(FilterPad.unnamed())
-                                .addOutput(FilterPad.unnamed())
-                                .build(),
-                        "acrossfade=d=10:c1=exp:c2=exp")
-        );
+        final StringBuilder sb = new StringBuilder();
+        filter.describeTo(sb);
+        final String result = sb.toString();
+
+        Assertions.assertThat(result).isEqualTo("");
     }
 }

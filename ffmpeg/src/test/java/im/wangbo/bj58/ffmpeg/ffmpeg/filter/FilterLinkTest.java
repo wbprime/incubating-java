@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.ffmpeg.filter2;
+package im.wangbo.bj58.ffmpeg.ffmpeg.filter;
 
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;

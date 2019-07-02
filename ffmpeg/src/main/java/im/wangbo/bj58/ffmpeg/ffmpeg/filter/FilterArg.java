@@ -4,30 +4,26 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.arg.Arg;
-
 /**
- * TODO add brief description here
- *
- * @author Elvis Wang
+ * TODO more details here.
+ * <p>
+ * Created at 2019-06-23, by Elvis Wang
  */
 @AutoValue
-public abstract class FilterArg implements Arg {
-    @Override
+public abstract class FilterArg {
     public abstract String argName();
 
-    @Override
     public abstract Optional<String> argValue();
 
-    private static FilterArg create(final String argName, final Optional<String> argValue) {
+    private static FilterArg create(String argName, Optional<String> argValue) {
         return new AutoValue_FilterArg(argName, argValue);
     }
 
-    public static FilterArg named(final String opt) {
-        return create(opt, Optional.empty());
+    public static FilterArg of(final String argName, final String argValue) {
+        return create(argName, Optional.of(argValue));
     }
 
-    public static FilterArg paired(final String name, final String value) {
-        return create(name, Optional.of(value));
+    public static FilterArg of(final String argName) {
+        return create(argName, Optional.empty());
     }
 }
