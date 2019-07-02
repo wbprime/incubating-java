@@ -8,7 +8,7 @@ import java.util.Optional;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InOutputArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.StreamSpecifier;
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 /**
  * Specify the frame rate of a video, expressed as the number of frames generated per second.

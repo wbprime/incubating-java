@@ -1,10 +1,9 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common;
+package im.wangbo.bj58.ffmpeg.cli.common.arg;
 
 import com.google.auto.value.AutoValue;
-
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
 
 /**
  * TODO add brief description here
@@ -12,15 +11,15 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class ShowLicenseArg implements GlobalArg {
+public abstract class ShowVersionArg implements FfmpegArg, FfprobeArg {
     @Override
     public final String argName() {
-        return "-L";
+        return "-version";
     }
 
     @Override
     public final String description() {
-        return "Show license";
+        return "Show version";
     }
 
     @Override
@@ -28,7 +27,7 @@ public abstract class ShowLicenseArg implements GlobalArg {
         return Optional.empty();
     }
 
-    public static ShowLicenseArg of() {
-        return new AutoValue_ShowLicenseArg();
+    public static ShowVersionArg of() {
+        return new AutoValue_ShowVersionArg();
     }
 }

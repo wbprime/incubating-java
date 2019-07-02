@@ -9,7 +9,7 @@ import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;

@@ -3,6 +3,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 import java.net.URI;
 import java.util.List;
 

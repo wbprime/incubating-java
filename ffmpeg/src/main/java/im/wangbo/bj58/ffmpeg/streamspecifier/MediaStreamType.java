@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
+package im.wangbo.bj58.ffmpeg.streamspecifier;
 
 /**
  * TODO add brief description here

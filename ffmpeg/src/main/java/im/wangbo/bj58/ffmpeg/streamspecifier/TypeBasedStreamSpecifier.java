@@ -1,7 +1,6 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
+package im.wangbo.bj58.ffmpeg.streamspecifier;
 
 import com.google.auto.value.AutoValue;
-
 import java.util.OptionalInt;
 
 /**
@@ -11,11 +10,12 @@ import java.util.OptionalInt;
  */
 @AutoValue
 abstract class TypeBasedStreamSpecifier implements StreamSpecifier {
+
     @Override
     public final String asString() {
         return additionalIndex().isPresent() ?
-                streamType().specifier() + ":" + additionalIndex().getAsInt() :
-                streamType().specifier();
+            streamType().specifier() + ":" + additionalIndex().getAsInt() :
+            streamType().specifier();
     }
 
     abstract MediaStreamType streamType();

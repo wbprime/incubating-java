@@ -1,11 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.common.Arg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
 import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
+import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.InputUriArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.SectionSpecifierArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.WriterFormatArg;
@@ -28,7 +28,7 @@ public class FfprobeBuilder {
 
     private final String pathToExe;
 
-    private final List<Arg> args = Lists.newArrayList();
+    private final List<FfprobeArg> args = Lists.newArrayList();
 
     @Nullable
     private File pwDir;
@@ -43,7 +43,7 @@ public class FfprobeBuilder {
         return new FfprobeBuilder(path);
     }
 
-    public FfprobeBuilder addArg(final Arg arg) {
+    public FfprobeBuilder addArg(final FfprobeArg arg) {
         args.add(arg);
         return this;
     }
@@ -65,12 +65,17 @@ public class FfprobeBuilder {
         return this;
     }
 
+    private Stream<String> stringifyArg(final FfprobeArg arg) {
+        return arg.value().isPresent() ?
+            Stream.of(arg.spec().name(), arg.value().get().asString()) :
+            Stream.of(arg.spec().name());
+    }
+
     public NativeExecutable build(final URI uri) {
         args.add(WriterFormatArg.of(writerFormat));
         args.add(InputUriArg.of(uri));
         final List<String> strArgs = args.stream()
-            .flatMap(arg -> arg.value().map(v -> Stream.of(arg.spec().name(), v.asString()))
-                .orElse(Stream.of(arg.spec().name())))
+            .flatMap(this::stringifyArg)
             .collect(Collectors.toList());
         return NativeExecutable.builder()
             .workingDir(pwDir)

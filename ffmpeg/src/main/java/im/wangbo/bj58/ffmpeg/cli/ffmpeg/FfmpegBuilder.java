@@ -1,11 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.common.Arg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
+import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ComplexFilterGraph;
 import java.io.File;
 import java.util.List;
@@ -22,7 +22,7 @@ public class FfmpegBuilder {
 
     private final String pathToExe;
 
-    private final List<Arg> args = Lists.newArrayList();
+    private final List<FfmpegArg> args = Lists.newArrayList();
 
     @Nullable
     private File pwDir;
@@ -50,7 +50,7 @@ public class FfmpegBuilder {
         return addArg(arg);
     }
 
-    public FfmpegBuilder addArg(final Arg arg) {
+    public FfmpegBuilder addArg(final FfmpegArg arg) {
         args.add(arg);
         return this;
     }
@@ -82,12 +82,17 @@ public class FfmpegBuilder {
 //        return this;
 //    }
 
+    private Stream<String> stringifyArg(final FfmpegArg arg) {
+        return arg.value().isPresent() ?
+            Stream.of(arg.spec().name(), arg.value().get().asString()) :
+            Stream.of(arg.spec().name());
+    }
+
     public NativeExecutable build() {
         inputs.forEach(i -> args.addAll(i.asArgs()));
         outputs.forEach(o -> args.addAll(o.asArgs()));
         final List<String> strArgs = args.stream()
-            .flatMap(arg -> arg.value().map(v -> Stream.of(arg.spec().name(), v.asString()))
-                .orElse(Stream.of(arg.spec().name())))
+            .flatMap(this::stringifyArg)
             .collect(Collectors.toList());
         return NativeExecutable.builder()
             .workingDir(pwDir)

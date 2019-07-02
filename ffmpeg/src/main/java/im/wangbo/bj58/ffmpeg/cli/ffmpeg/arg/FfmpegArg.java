@@ -12,13 +12,9 @@ import java.util.Optional;
  */
 public interface FfmpegArg extends Arg {
 
-    default String argName() {
-        return "";
-    }
+    String argName();
 
-    default Optional<String> argValue() {
-        return Optional.empty();
-    }
+    Optional<String> argValue();
 
     default String description() {
         return "";

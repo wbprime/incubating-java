@@ -1,10 +1,9 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.common;
+package im.wangbo.bj58.ffmpeg.cli.common.arg;
 
 import com.google.auto.value.AutoValue;
-
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
 
 /**
  * TODO add brief description here
@@ -12,7 +11,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class HideBannerArg implements GlobalArg {
+public abstract class HideBannerArg implements FfmpegArg, FfprobeArg {
     @Override
     public final String argName() {
         return "-hide_banner";

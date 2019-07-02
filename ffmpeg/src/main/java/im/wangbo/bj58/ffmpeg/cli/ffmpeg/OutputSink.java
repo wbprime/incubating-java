@@ -15,6 +15,7 @@ import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 import java.net.URI;
 import java.util.List;
 
