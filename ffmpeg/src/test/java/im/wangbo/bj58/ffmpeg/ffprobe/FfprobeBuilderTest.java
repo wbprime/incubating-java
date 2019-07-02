@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.executor.StdExecutor;
+import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterFormat;
 

@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.executor;
+package im.wangbo.bj58.ffmpeg.cli.executor;
 
 import java.util.Collections;
 import java.util.List;

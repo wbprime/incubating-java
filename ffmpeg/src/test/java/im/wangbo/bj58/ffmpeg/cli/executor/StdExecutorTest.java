@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.executor;
+package im.wangbo.bj58.ffmpeg.cli.executor;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

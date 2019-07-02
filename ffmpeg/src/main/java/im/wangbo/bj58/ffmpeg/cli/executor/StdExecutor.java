@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.executor;
+package im.wangbo.bj58.ffmpeg.cli.executor;
 
 import com.google.common.collect.Maps;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
-import static im.wangbo.bj58.ffmpeg.executor.FilenameGeneratingStrategy.paddingTimestamp;
+import static im.wangbo.bj58.ffmpeg.cli.executor.FilenameGeneratingStrategy.paddingTimestamp;
 
 /**
  * TODO add brief description here

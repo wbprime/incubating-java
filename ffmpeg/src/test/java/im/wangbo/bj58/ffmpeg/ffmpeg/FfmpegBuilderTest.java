@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
+import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
 
 /**
  * TODO add brief description here

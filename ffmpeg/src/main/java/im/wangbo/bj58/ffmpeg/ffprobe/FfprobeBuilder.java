@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 import im.wangbo.bj58.ffmpeg.arg.Arg;
 import im.wangbo.bj58.ffmpeg.arg.common.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.arg.common.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.executor.StdExecutor;
+import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
+import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.ffprobe.writer.WriterFormat;
 
