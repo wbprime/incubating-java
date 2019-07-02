@@ -1,10 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.Optional;
-
+import im.wangbo.bj58.ffmpeg.arg.ArgSpec;
+import im.wangbo.bj58.ffmpeg.arg.FfprobeArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
+import im.wangbo.bj58.ffmpeg.common.Value;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -13,21 +14,19 @@ import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
  */
 @AutoValue
 public abstract class WriterFormatArg implements FfprobeArg {
+
     abstract WriterFormat writerFormat();
 
     @Override
-    public final String argName() {
-        return "-of";
+    public final ArgSpec spec() {
+        return ArgSpec.of(
+            "-of", "Set the output printing format."
+        );
     }
 
     @Override
-    public final String description() {
-        return "Set the output printing format.";
-    }
-
-    @Override
-    public final Optional<String> argValue() {
-        return Optional.of(writerFormat().asString());
+    public Optional<Value> value() {
+        return Optional.of(writerFormat());
     }
 
     public static WriterFormatArg of(final WriterFormat format) {

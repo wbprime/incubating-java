@@ -1,6 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffprobe;
-
-import im.wangbo.bj58.ffmpeg.arg.Arg;
+package im.wangbo.bj58.ffmpeg.arg;
 
 /**
  * TODO add brief description here
