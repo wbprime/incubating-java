@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec;
+package im.wangbo.bj58.ffmpeg.codec;
 
 import com.google.auto.value.AutoValue;
 
@@ -8,23 +8,23 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class HevcCodec implements MediaCodec {
+abstract class H264Codec implements MediaCodec {
     @Override
     public final String name() {
-        return "H.265 / HEVC";
+        return "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10";
     }
 
     @Override
     public final MediaEncoder encoder() {
-        return StdEncoder.of("libx265");
+        return StdEncoder.of("libx264");
     }
 
     @Override
     public final MediaDecoder decoder() {
-        return StdDecoder.of("hevc");
+        return StdDecoder.of("h264");
     }
 
-    static HevcCodec of() {
-        return new AutoValue_HevcCodec();
+    static H264Codec of() {
+        return new AutoValue_H264Codec();
     }
 }

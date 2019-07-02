@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec;
+package im.wangbo.bj58.ffmpeg.codec;
 
 /**
  * TODO add brief description here

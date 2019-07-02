@@ -10,7 +10,7 @@ import im.wangbo.bj58.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.arg.main.InputUriArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaCodecArg;
 import im.wangbo.bj58.ffmpeg.arg.main.MediaFormatArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.format.MediaFormat;
 
 /**

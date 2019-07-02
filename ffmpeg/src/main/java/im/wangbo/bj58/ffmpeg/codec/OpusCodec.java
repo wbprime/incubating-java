@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec;
+package im.wangbo.bj58.ffmpeg.codec;
 
 import com.google.auto.value.AutoValue;
 

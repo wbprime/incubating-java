@@ -11,7 +11,7 @@ import im.wangbo.bj58.ffmpeg.arg.main.OutputFramesLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputQualityLimitArg;
 import im.wangbo.bj58.ffmpeg.arg.main.OutputUriArg;
 import im.wangbo.bj58.ffmpeg.arg.main.SimpleFilterArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
