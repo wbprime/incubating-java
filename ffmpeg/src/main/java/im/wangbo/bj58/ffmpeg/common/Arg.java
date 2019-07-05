@@ -10,5 +10,9 @@ import java.util.Optional;
 public interface Arg {
     ArgSpec spec();
 
+    default String name() {
+        return spec().name();
+    }
+
     Optional<Value> value();
 }

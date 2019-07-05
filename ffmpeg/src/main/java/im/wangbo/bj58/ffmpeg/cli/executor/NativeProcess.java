@@ -63,7 +63,7 @@ public class NativeProcess implements AutoCloseable {
         return executable;
     }
 
-    OptionalInt exitCode() {
+    final OptionalInt exitCode() {
         try {
             return OptionalInt.of(process.exitValue());
         } catch (IllegalThreadStateException ex) {

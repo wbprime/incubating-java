@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.executor;
 
+import im.wangbo.bj58.ffmpeg.cli.executor.ExecutorPool.ExecutableOptions;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,5 +44,13 @@ public class ExecutorException extends Exception {
 
     public List<String> errorMessages() {
         return null == errLines ? Collections.emptyList() : errLines;
+    }
+
+    static Exception startingFailed(final ExecutableOptions opts, final Throwable ex) {
+        return ExeStartingException.create(opts, ex);
+    }
+
+    static Exception runningFailed(final int errorCode, final ExecutableOptions opts) {
+        return ExeRunningException.create(opts, ex);
     }
 }
