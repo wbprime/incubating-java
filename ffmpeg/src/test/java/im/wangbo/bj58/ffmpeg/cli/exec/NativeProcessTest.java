@@ -2,6 +2,7 @@ package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.collect.ImmutableList;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.io.InputStream;
  *
  * @author Elvis Wang
  */
+@Disabled("Check InputStream#available")
 public class NativeProcessTest {
     @Test
     void test() throws Exception {

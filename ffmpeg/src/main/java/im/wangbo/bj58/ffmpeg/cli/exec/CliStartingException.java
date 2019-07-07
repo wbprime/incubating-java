@@ -12,6 +12,8 @@ class CliStartingException extends Exception {
     }
 
     static CliStartingException create(final CliCommand command, final Throwable ex) {
-        return new CliStartingException("Failed to start " + command.toMultiLineString(), ex);
+        final StringBuilder sb = new StringBuilder("Failed to start cli command ");
+        command.collectMultiLineString(sb);
+        return new CliStartingException(sb.toString(), ex);
     }
 }

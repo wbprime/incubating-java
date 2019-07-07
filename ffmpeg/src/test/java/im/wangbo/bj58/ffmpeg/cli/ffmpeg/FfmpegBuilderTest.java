@@ -31,7 +31,7 @@ class FfmpegBuilderTest {
 
         System.out.println(build);
         Assertions.assertThat(build).isNotNull();
-        Assertions.assertThat(build.commandAndArgs()).isNotEmpty()
+        Assertions.assertThat(build.commandLines()).isNotEmpty()
                 .containsExactlyElementsOf(
                         ImmutableList.<String>builder()
                                 .add(ffmpegPath)

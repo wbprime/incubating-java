@@ -1,6 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
 import java.util.StringJoiner;
@@ -103,7 +101,7 @@ public final class RunningProcess implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         try {
             stdoutFile.delete();
             stderrFile.delete();
@@ -150,15 +148,15 @@ public final class RunningProcess implements AutoCloseable {
         final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
         if (successCodes.contains(code)) {
             // Exit code regarded as successful
-            if (lineHandler != null) {
-                try {
+            try {
+                if (lineHandler != null) {
                     Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
                         .forEachLine(lineHandler);
-                } catch (IOException exx) {
-                    future.completeExceptionally(exx); // TODO
                 }
+                future.complete(TerminatedProcess.create(process, code));
+            } catch (IOException exx) {
+                future.completeExceptionally(exx); // TODO
             }
-            return CompletableFuture.completedFuture(TerminatedProcess.create(process, code));
         } else {
             // Exit code regarded as failed
             try {
@@ -168,6 +166,12 @@ public final class RunningProcess implements AutoCloseable {
             } catch (IOException exx) {
                 future.completeExceptionally(exx); // TODO
             }
+        }
+
+        try {
+            process.close();
+        } catch (Exception ex) {
+            // Todo
         }
 
         return future;
@@ -189,16 +193,16 @@ public final class RunningProcess implements AutoCloseable {
         }
     }
 
-    @AutoValue
-    public static abstract class Options {
-        public abstract Duration aliveCheckingInterval();
-
+    void collectMultiLineString(final StringBuilder sb) {
+        command.collectMultiLineString(sb);
+        sb.append("\twith process id: ").append(processId).append(System.lineSeparator())
+            .append("\twith started time: ").append(startedInstant).append(System.lineSeparator());
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", RunningProcess.class.getSimpleName() + "[", "]")
-            .add("process=" + process)
-            .toString();
+        final StringBuilder sb = new StringBuilder(getClass().getName());
+        collectMultiLineString(sb);
+        return sb.toString();
     }
 }

@@ -46,4 +46,17 @@ public final class TerminatedProcess {
     public int exitCode() {
         return exitCode;
     }
+
+    void collectMultiLineString(final StringBuilder sb) {
+        process.collectMultiLineString(sb);
+        sb.append("\twith exited time: ").append(terminatedInstant).append(System.lineSeparator());
+        sb.append("\twith exited code: ").append(exitCode).append(System.lineSeparator());
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(getClass().getName());
+        collectMultiLineString(sb);
+        return sb.toString();
+    }
 }

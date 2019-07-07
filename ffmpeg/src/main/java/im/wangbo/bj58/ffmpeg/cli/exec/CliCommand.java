@@ -1,17 +1,17 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.*;
 import im.wangbo.bj58.ffmpeg.common.Arg;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.time.Clock;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -26,6 +26,7 @@ public final class CliCommand {
 
     private static final File PWD = new File(".").getAbsoluteFile();
 
+    private final String exec;
     private final ImmutableList<String> fullArgs;
     private final ImmutableMap<String, String> env;
 
@@ -55,6 +56,7 @@ public final class CliCommand {
         final Map<String, String> env,
         final Clock clock
     ) {
+        this.exec = exe;
         this.fullArgs = ImmutableList.<String>builder().add(exe).addAll(args).build();
         this.env = ImmutableMap.copyOf(env);
         this.workingDir = workingDir.filter(File::isDirectory).orElse(PWD);
@@ -62,16 +64,15 @@ public final class CliCommand {
     }
 
     public final String command() {
-        return fullArgs.get(0);
+        return exec;
+    }
+
+    public final List<String> commandLines() {
+        return fullArgs;
     }
 
     public final List<String> args() {
-        final int size = fullArgs.size();
-        return fullArgs.subList(1, size);
-    }
-
-    public final List<String> commandAndArgs() {
-        return fullArgs;
+        return ImmutableList.copyOf(Iterables.skip(fullArgs, 1));
     }
 
     public final File workingDir() {
@@ -107,7 +108,15 @@ public final class CliCommand {
                 started.completeExceptionally(CliStartingException.create(this, ex));
             }
         });
-        return started;
+        return started.whenComplete(
+            (re, ex) -> {
+                if (null == re) {
+                    // Starting failed
+                    stderrFile.delete();
+                    stdoutFile.delete();
+                }
+            }
+        );
     }
 
     public static Builder builder() {
@@ -173,34 +182,33 @@ public final class CliCommand {
         }
     }
 
-    String toMultiLineString() {
-        final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
-        sb.append('"').append(command()).append('"');
+    void collectMultiLineString(final StringBuilder sb) {
+        sb.append('"').append(command()).append('"').append(System.lineSeparator());
 
-        if (!fullArgs.isEmpty()) {
-            sb.append("\twith args:").append(System.lineSeparator());
-            fullArgs.forEach(arg -> sb.append("\t  \"").append(arg).append(System.lineSeparator()));
+        final List<String> args = args();
+        if (args.isEmpty()) {
+            sb.append("\twith no args").append(System.lineSeparator());
         } else {
-            sb.append(System.lineSeparator());
+            sb.append("\twith args:").append(System.lineSeparator());
+            args.forEach(arg -> sb.append("\t  \"").append(arg).append('"').append(System.lineSeparator()));
         }
 
-        if (! env.isEmpty()) {
-            sb.append("\twith env map:").append(System.lineSeparator());
+        if (env.isEmpty()) {
+            sb.append("\twith no environments").append(System.lineSeparator());
+        } else {
+            sb.append("\twith environments:").append(System.lineSeparator());
             env.forEach(
                 (k, v) -> sb.append("\t  \"").append(k).append("\" => \"")
                     .append(v).append("\"").append(System.lineSeparator())
             );
         }
-        sb.append("\twith working directory: ").append(workingDir());
-        return sb.toString();
+        sb.append("\twith working directory: \"").append(workingDir()).append('"').append(System.lineSeparator());
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", CliCommand.class.getSimpleName() + "[", "]")
-            .add("fullArgs=" + fullArgs)
-            .add("env=" + env)
-            .add("workingDir=" + workingDir)
-            .toString();
+        final StringBuilder sb = new StringBuilder(getClass().getName());
+        collectMultiLineString(sb);
+        return sb.toString();
     }
 }
