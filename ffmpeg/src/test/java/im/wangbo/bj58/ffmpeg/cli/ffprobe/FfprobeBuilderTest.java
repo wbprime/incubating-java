@@ -1,5 +1,8 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
+import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -8,11 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 
 /**
  * TODO add brief description here
@@ -43,7 +41,7 @@ class FfprobeBuilderTest {
                 .writerFormat(WriterFormat.json())
                 .buildAndExecute(
                         URI.create("http://prod1.wos.58dns.org/IjGfEdCbIlr/ishare/course_ware_1560506548694.flv"),
-                        StdExecutor.create(scheduledExecutorService)
+                        scheduledExecutorService
                 )
                 .thenAccept(System.out::println)
                 .toCompletableFuture().get();

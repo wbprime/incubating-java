@@ -8,15 +8,13 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter;
  */
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.common.DescribeTo;
 
 @AutoValue
-public abstract class FilterLink implements DescribeTo {
+public abstract class FilterLink {
     abstract String prefix();
 
     abstract int weight();
 
-    @Override
     public void describeTo(StringBuilder sb) {
         for (int i = 0; i < weight(); i++) {
             sb.append('[').append(prefix()).append('_').append(i).append(']');

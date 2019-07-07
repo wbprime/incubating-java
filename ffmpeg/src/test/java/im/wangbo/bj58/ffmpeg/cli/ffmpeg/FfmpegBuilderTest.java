@@ -1,13 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.ImmutableList;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
-import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * TODO add brief description here
@@ -29,12 +27,11 @@ class FfmpegBuilderTest {
                 .addInput(InputSource.builder(inputPath).build())
                 .addOutput(OutputSink.builder(outputPath).build());
 
-        NativeExecutable build = builder.build();
+        CliCommand build = builder.build();
 
         System.out.println(build);
         Assertions.assertThat(build).isNotNull();
-        Assertions.assertThat(build.workingDir()).isEmpty();
-        Assertions.assertThat(build.exec()).isNotEmpty()
+        Assertions.assertThat(build.commandAndArgs()).isNotEmpty()
                 .containsExactlyElementsOf(
                         ImmutableList.<String>builder()
                                 .add(ffmpegPath)

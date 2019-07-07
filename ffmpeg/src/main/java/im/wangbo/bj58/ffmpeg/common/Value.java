@@ -5,13 +5,8 @@ package im.wangbo.bj58.ffmpeg.common;
  *
  * @author Elvis Wang
  */
-public interface Value extends DescribeTo {
+public interface Value {
     String asString();
-
-    @Override
-    default void describeTo(final StringBuilder sb) {
-        sb.append(asString());
-    }
 
     static Value of(final String value) {
         return StdValue.of(value);

@@ -1,23 +1,24 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.cli.executor.StdExecutor;
 import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
+import im.wangbo.bj58.ffmpeg.cli.exec.StdoutCollector;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.InputUriArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.SectionSpecifierArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.WriterFormatArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 
 /**
  * TODO add brief description here
@@ -71,30 +72,23 @@ public class FfprobeBuilder {
             Stream.of(arg.spec().name());
     }
 
-    public NativeExecutable build(final URI uri) {
+    public CliCommand build(final URI uri) {
         args.add(WriterFormatArg.of(writerFormat));
         args.add(InputUriArg.of(uri));
-        final List<String> strArgs = args.stream()
-            .flatMap(this::stringifyArg)
-            .collect(Collectors.toList());
-        return NativeExecutable.builder()
-            .workingDir(pwDir)
+        return CliCommand.builder()
             .command(pathToExe)
-            .addOpts(strArgs)
-            .stderrToFile(true)
-            .stdoutToFile(true)
+            .addArgs(args)
+            .workingDirectory(pwDir)
             .build();
     }
 
     public CompletionStage<MediaMetaInfo> buildAndExecute(final URI uri,
-        final StdExecutor executor) {
-        final NativeExecutable executable = build(uri);
-        return executor.execute(executable)
-            .thenApply(p -> {
-                final String out = String.join("", p.stdoutLines());
-                p.close();
-                return out;
-            })
-            .thenApply(str -> writerFormat.meta().parser().parse(str));
+        final ScheduledExecutorService executor) {
+        final CliCommand cli = build(uri);
+
+        final StdoutCollector stdout = StdoutCollector.of();
+        return cli.start(executor)
+            .thenCompose(process ->  process.awaitTerminated(executor, stdout, 0))
+            .thenApply(process -> writerFormat.meta().parser().parse(stdout.collect()));
     }
 }

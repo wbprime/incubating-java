@@ -1,17 +1,17 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.common.DescribeTo;
+
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * TODO Details go here.
- *
+ * <p>
  * Created at 2019-07-01 by Elvis Wang
  */
-public class FilterChain implements DescribeTo {
+public class FilterChain {
 
     private final List<Filter> filters;
     private final List<FilterLink> filterLinks;
@@ -40,7 +40,6 @@ public class FilterChain implements DescribeTo {
         return this;
     }
 
-    @Override
     public void describeTo(final StringBuilder sb) {
         FilterLink lastLink = null;
         for (int i = 0; i < filterLinks.size(); i++) {

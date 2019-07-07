@@ -6,6 +6,7 @@ import com.google.common.io.Files;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,7 +116,14 @@ public final class RunningProcess implements AutoCloseable {
 
     public CompletionStage<TerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
-        final Consumer<String> lineHandler,
+        final int... expectedCodes
+    ) {
+        return awaitTerminated(executor, null, expectedCodes);
+    }
+
+    public CompletionStage<TerminatedProcess> awaitTerminated(
+        final ScheduledExecutorService executor,
+        @Nullable final Consumer<String> lineHandler,
         final int... expectedCodes
     ) {
         final RunningProcess process = this;
@@ -136,17 +144,19 @@ public final class RunningProcess implements AutoCloseable {
 
     private CompletableFuture<TerminatedProcess> terminateProcess(
         final RunningProcess process,
-        final Consumer<String> lineHandler,
+        @Nullable final Consumer<String> lineHandler,
         final int code, final ImmutableIntSet successCodes
     ) {
         final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
         if (successCodes.contains(code)) {
             // Exit code regarded as successful
-            try {
-                Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
-                    .forEachLine(lineHandler);
-            } catch (IOException exx) {
-                future.completeExceptionally(exx); // TODO
+            if (lineHandler != null) {
+                try {
+                    Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
+                        .forEachLine(lineHandler);
+                } catch (IOException exx) {
+                    future.completeExceptionally(exx); // TODO
+                }
             }
             return CompletableFuture.completedFuture(TerminatedProcess.create(process, code));
         } else {

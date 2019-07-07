@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import im.wangbo.bj58.ffmpeg.common.Arg;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.time.Clock;
@@ -37,12 +38,12 @@ public final class CliCommand {
     }
 
     public static CliCommand of(final String exe, final List<String> opts) {
-        return new CliCommand(exe, opts, PWD, ImmutableMap.of());
+        return new CliCommand(exe, opts, Optional.of(PWD), ImmutableMap.of());
     }
 
     private CliCommand(
         final String exe, final List<String> args,
-        final File workingDir,
+        final Optional<File> workingDir,
         final Map<String, String> env
     ) {
         this(exe, args, workingDir, env, Clock.systemUTC());
@@ -50,13 +51,13 @@ public final class CliCommand {
 
     private CliCommand(
         final String exe, final List<String> args,
-        final File workingDir,
+        final Optional<File> workingDir,
         final Map<String, String> env,
         final Clock clock
     ) {
         this.fullArgs = ImmutableList.<String>builder().add(exe).addAll(args).build();
         this.env = ImmutableMap.copyOf(env);
-        this.workingDir = workingDir;
+        this.workingDir = workingDir.filter(File::isDirectory).orElse(PWD);
         this.workingClock = clock;
     }
 
@@ -74,7 +75,7 @@ public final class CliCommand {
     }
 
     public final File workingDir() {
-        return Optional.of(workingDir).filter(File::isDirectory).orElse(PWD);
+        return workingDir;
     }
 
     public final CompletionStage<RunningProcess> start(final Executor executor) {
@@ -120,6 +121,7 @@ public final class CliCommand {
 
         private Map<String, String> env = Maps.newHashMap();
 
+        @Nullable
         private File workingDir = PWD;
 
         public Builder command(final String cmd) {
@@ -127,7 +129,7 @@ public final class CliCommand {
             return this;
         }
 
-        public Builder addArgs(final List<Arg> args) {
+        public Builder addArgs(final List<? extends Arg> args) {
             args.forEach(this::addArg);
             return this;
         }
@@ -159,7 +161,7 @@ public final class CliCommand {
             return this;
         }
 
-        public Builder workingDirectory(final File dir) {
+        public Builder workingDirectory(@Nullable final File dir) {
             this.workingDir = dir;
             return this;
         }
@@ -167,7 +169,7 @@ public final class CliCommand {
         public CliCommand build() {
             Preconditions.checkNotNull(fullExe, "command should not be null but was");
 
-            return new CliCommand(fullExe, opts, workingDir, env);
+            return new CliCommand(fullExe, opts, Optional.ofNullable(workingDir), env);
         }
     }
 
