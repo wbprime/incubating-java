@@ -1,14 +1,23 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.io.ByteStreams;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SourceFilterBuilder;
 import org.assertj.core.api.Assertions;
+import org.eclipse.collections.api.factory.set.primitive.ImmutableIntSetFactory;
+import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.time.Duration;
+import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -19,7 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * @author Elvis Wang
  */
-@Disabled("OS platform dependent")
+@EnabledOnOs({OS.LINUX, OS.MAC})
 class RunningProcessTest {
     private ScheduledExecutorService scheduledPool;
 
@@ -156,5 +165,23 @@ class RunningProcessTest {
             .hasMessageContaining("\"a\"")
             .hasMessageContaining("with no environments")
             .hasMessageContaining("with working directory:");
+    }
+
+    @Disabled("demo usecase")
+    @Test
+    void runCommand_blockingCommand() throws Exception {
+        final CliCommand executable = CliCommand.of("cat");
+
+        final RunningProcess process = executable.start(scheduledPool)
+            .toCompletableFuture().get();
+
+        final ImmutableIntSet expectedCodes = IntSets.immutable.of(0);
+
+        final OptionalInt waitFor = process.waitFor(Duration.ofSeconds(30L));
+        if (waitFor.isPresent() && expectedCodes.contains(waitFor.getAsInt())) {
+            System.out.println("True");
+        } else {
+            process.close();
+        }
     }
 }

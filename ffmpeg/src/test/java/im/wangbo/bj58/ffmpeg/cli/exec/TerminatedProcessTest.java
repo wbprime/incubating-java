@@ -1,23 +1,20 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.common.io.ByteStreams;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 
 /**
  * TODO more details here.
  * <p>
  * Created at 2019-07-07, by Elvis Wang
  */
+@EnabledOnOs({OS.LINUX, OS.MAC})
 class TerminatedProcessTest {
     private ScheduledExecutorService scheduledPool;
 
@@ -113,6 +110,41 @@ class TerminatedProcessTest {
             .hasMessageContaining("with process id:")
             .hasMessageContaining("with started time:")
             .hasMessageContaining("with stderr lines:")
-            ;
+        ;
+    }
+
+    @Test
+    void runCommand_blocking() throws Exception {
+        final CliCommand executable = CliCommand.of("cat");
+
+        final CompletableFuture<TerminatedProcess> future = executable.start(scheduledPool)
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, 0))
+            .toCompletableFuture();
+
+        Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+        System.out.println("To cancel");
+        future.cancel(true);
+        System.out.println("To get");
+        try {
+            future.get(1, TimeUnit.SECONDS);
+        } catch (Exception ex) {
+
+        }
+
+        System.out.println("To wait");
+        Thread.sleep(TimeUnit.MINUTES.toMillis(1));
+
+        Assertions.assertThatThrownBy(future::get)
+            .isInstanceOf(ExecutionException.class)
+            .hasCauseInstanceOf(CliRunningException.class)
+            .hasMessageContaining("Failed to run cli command \"cat\"")
+            .hasMessageContaining("with args:")
+            .hasMessageContaining("\"a\"")
+            .hasMessageContaining("with no environments")
+            .hasMessageContaining("with working directory:")
+            .hasMessageContaining("with process id:")
+            .hasMessageContaining("with started time:")
+            .hasMessageContaining("with stderr lines:")
+        ;
     }
 }

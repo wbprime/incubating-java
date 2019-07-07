@@ -1,9 +1,10 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -11,9 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
-import java.util.StringJoiner;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
  * @author Elvis Wang
  */
 public final class RunningProcess implements AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(RunningProcess.class);
 
     private final String processId;
 
@@ -87,6 +89,7 @@ public final class RunningProcess implements AutoCloseable {
         try {
             return OptionalInt.of(process.exitValue());
         } catch (IllegalThreadStateException ex) {
+            // This is safe
             return OptionalInt.empty();
         }
     }
@@ -95,20 +98,19 @@ public final class RunningProcess implements AutoCloseable {
         return process.waitFor();
     }
 
-    public OptionalInt waitFor(final long n, final TimeUnit unit) throws InterruptedException {
-        final boolean exited = process.waitFor(n, unit);
+    public OptionalInt waitFor(final Duration d) throws InterruptedException {
+        final boolean exited = process.waitFor(d.toMillis(), TimeUnit.MILLISECONDS);
         return exited ? exitCode() : OptionalInt.empty();
     }
 
     @Override
     public void close() {
         try {
+            process.destroy();
             stdoutFile.delete();
             stderrFile.delete();
-            process.destroy();
         } catch (Exception ex) {
-            Throwables.throwIfUnchecked(ex);
-            // TODO Throw exception here
+            LOG.warn("Failed to close {}", this, ex);
         }
     }
 
@@ -133,46 +135,53 @@ public final class RunningProcess implements AutoCloseable {
         );
 
         final ImmutableIntSet successCodes = IntSets.immutable.of(expectedCodes);
-        return future.whenComplete(
-            (code, ex) -> {
-                aliveFuture.cancel(true);
-            }
-        ).thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes));
+        return future
+            .whenComplete(
+                (code, ex) -> {
+                    LOG.trace("AwaitTerminated future determined, step 1");
+//                    aliveFuture.cancel(true);
+                }
+            )
+            .thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes, executor, aliveFuture));
     }
 
     private CompletableFuture<TerminatedProcess> terminateProcess(
         final RunningProcess process,
         @Nullable final Consumer<String> lineHandler,
-        final int code, final ImmutableIntSet successCodes
+        final int code, final ImmutableIntSet successCodes,
+        final Executor executor,
+        final ScheduledFuture<?> aliveChecking
     ) {
+        LOG.trace("AwaitTerminated future determined, step 2");
         final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
-        if (successCodes.contains(code)) {
-            // Exit code regarded as successful
-            try {
-                if (lineHandler != null) {
-                    Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
-                        .forEachLine(lineHandler);
+        executor.execute(
+            () -> {
+                LOG.trace("AwaitTerminated future determined, step 3");
+                if (successCodes.contains(code)) {
+                    // Exit code regarded as successful
+                    try {
+                        if (lineHandler != null) {
+                            Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
+                                .forEachLine(lineHandler);
+                        }
+                        future.complete(TerminatedProcess.create(process, code));
+                    } catch (RuntimeException | IOException exx) {
+                        future.completeExceptionally(CliRunningException.create(process, exx));
+                    }
+                } else {
+                    // Exit code regarded as failed
+                    try {
+                        final String err = Files.asCharSource(process.stderrFile(), StandardCharsets.UTF_8)
+                            .read();
+                        future.completeExceptionally(CliRunningException.create(process, err));
+                    } catch (IOException exx) {
+                        future.completeExceptionally(CliRunningException.create(process, exx));
+                    }
                 }
-                future.complete(TerminatedProcess.create(process, code));
-            } catch (IOException exx) {
-                future.completeExceptionally(exx); // TODO
-            }
-        } else {
-            // Exit code regarded as failed
-            try {
-                final String err = Files.asCharSource(process.stderrFile(), StandardCharsets.UTF_8)
-                    .read();
-                future.completeExceptionally(CliRunningException.create(process, err));
-            } catch (IOException exx) {
-                future.completeExceptionally(exx); // TODO
-            }
-        }
 
-        try {
-            process.close();
-        } catch (Exception ex) {
-            // Todo
-        }
+                process.close();
+            }
+        );
 
         return future;
     }
@@ -189,6 +198,7 @@ public final class RunningProcess implements AutoCloseable {
 
         @Override
         public void run() {
+//            LOG.trace("Alive checked ran ...");
             process.exitCode().ifPresent(onExit::complete);
         }
     }
