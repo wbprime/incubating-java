@@ -84,6 +84,7 @@
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Test -->
