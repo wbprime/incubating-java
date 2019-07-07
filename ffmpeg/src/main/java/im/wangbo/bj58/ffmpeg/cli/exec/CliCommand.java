@@ -6,16 +6,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import im.wangbo.bj58.ffmpeg.common.Arg;
+
+import javax.annotation.concurrent.Immutable;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.time.Clock;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * TODO add brief description here
@@ -31,28 +29,35 @@ public final class CliCommand {
     private final ImmutableMap<String, String> env;
 
     private final File workingDir;
-    private final boolean splitStdout;
-    private final boolean splitStderr;
+
+    private final Clock workingClock;
 
     public static CliCommand of(final String exe, final String... opts) {
         return of(exe, Arrays.asList(opts));
     }
 
     public static CliCommand of(final String exe, final List<String> opts) {
-        return new CliCommand(exe, opts, PWD, ImmutableMap.of(), false, false);
+        return new CliCommand(exe, opts, PWD, ImmutableMap.of());
     }
 
     private CliCommand(
-        final String exe, final List<String> opts,
+        final String exe, final List<String> args,
+        final File workingDir,
+        final Map<String, String> env
+    ) {
+        this(exe, args, workingDir, env, Clock.systemUTC());
+    }
+
+    private CliCommand(
+        final String exe, final List<String> args,
         final File workingDir,
         final Map<String, String> env,
-        final boolean splitStdout, final boolean splitStderr
+        final Clock clock
     ) {
-        this.fullArgs = ImmutableList.<String>builder().add(exe).addAll(opts).build();
+        this.fullArgs = ImmutableList.<String>builder().add(exe).addAll(args).build();
         this.env = ImmutableMap.copyOf(env);
         this.workingDir = workingDir;
-        this.splitStdout = splitStdout;
-        this.splitStderr = splitStderr;
+        this.workingClock = clock;
     }
 
     public final String command() {
@@ -68,41 +73,35 @@ public final class CliCommand {
         return fullArgs;
     }
 
-    public final Optional<File> workingDir() {
-        return Optional.of(workingDir).filter(File::isDirectory);
-    }
-
-    public final boolean splitStdout() {
-        return splitStdout;
-    }
-
-    public final boolean splitStderr() {
-        return splitStderr;
+    public final File workingDir() {
+        return Optional.of(workingDir).filter(File::isDirectory).orElse(PWD);
     }
 
     public final CompletionStage<RunningProcess> start(final Executor executor) {
+        final CliCommand cli = this;
 
+        final String processId = "TODO";
         final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs);
-
-        workingDir().ifPresent(processBuilder::directory);
 
         processBuilder.environment().putAll(env);
 
-        // for stdout redirect
-        if (!splitStdout()) {
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        }
+        final File pwd = workingDir();
+        processBuilder.directory(pwd);
+
         // for stderr redirect
-        if (!splitStderr()) {
-            processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-        }
+        final File stderrFile = new File(pwd, "tmp." + processId + ".stderr." + workingClock.millis());
+        processBuilder.redirectError(stderrFile);
+
+        // for stdout redirect
+        final File stdoutFile = new File(pwd, "tmp." + processId + ".stdout." + workingClock.millis());
+        processBuilder.redirectOutput(stdoutFile);
 
         final CompletableFuture<RunningProcess> started = new CompletableFuture<>();
         executor.execute(() -> {
             final Process p;
             try {
                 p = processBuilder.start();
-                started.complete(new RunningProcess(p));
+                started.complete(new RunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock));
             } catch (Exception ex) {
                 started.completeExceptionally(CliStartingException.create(this, ex));
             }
@@ -122,9 +121,6 @@ public final class CliCommand {
         private Map<String, String> env = Maps.newHashMap();
 
         private File workingDir = PWD;
-
-        private boolean splitStdout = false;
-        private boolean splitStderr = false;
 
         public Builder command(final String cmd) {
             this.fullExe = cmd;
@@ -163,16 +159,6 @@ public final class CliCommand {
             return this;
         }
 
-        public Builder splitStdout(final boolean v) {
-            this.splitStdout = v;
-            return this;
-        }
-
-        public Builder splitStderr(final boolean v) {
-            this.splitStderr = v;
-            return this;
-        }
-
         public Builder workingDirectory(final File dir) {
             this.workingDir = dir;
             return this;
@@ -181,17 +167,38 @@ public final class CliCommand {
         public CliCommand build() {
             Preconditions.checkNotNull(fullExe, "command should not be null but was");
 
-            return new CliCommand(fullExe, opts, workingDir, envs, splitStdout, splitStderr);
+            return new CliCommand(fullExe, opts, workingDir, env);
         }
+    }
+
+    String toMultiLineString() {
+        final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        sb.append('"').append(command()).append('"');
+
+        if (!fullArgs.isEmpty()) {
+            sb.append("\twith args:").append(System.lineSeparator());
+            fullArgs.forEach(arg -> sb.append("\t  \"").append(arg).append(System.lineSeparator()));
+        } else {
+            sb.append(System.lineSeparator());
+        }
+
+        if (! env.isEmpty()) {
+            sb.append("\twith env map:").append(System.lineSeparator());
+            env.forEach(
+                (k, v) -> sb.append("\t  \"").append(k).append("\" => \"")
+                    .append(v).append("\"").append(System.lineSeparator())
+            );
+        }
+        sb.append("\twith working directory: ").append(workingDir());
+        return sb.toString();
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", CliCommand.class.getSimpleName() + "[", "]")
             .add("fullArgs=" + fullArgs)
+            .add("env=" + env)
             .add("workingDir=" + workingDir)
-            .add("splitStdout=" + splitStdout)
-            .add("splitStderr=" + splitStderr)
             .toString();
     }
 }

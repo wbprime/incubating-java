@@ -1,20 +1,21 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.common.collect.Lists;
-import java.io.BufferedReader;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
+import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
+import org.eclipse.collections.impl.factory.primitive.IntSets;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.OptionalInt;
 import java.util.StringJoiner;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 /**
@@ -22,20 +23,65 @@ import java.util.function.Consumer;
  *
  * @author Elvis Wang
  */
-public final class RunningProcess {
+public final class RunningProcess implements AutoCloseable {
+
+    private final String processId;
+
+    private final CliCommand command;
 
     private final Process process;
 
-    RunningProcess(final Process pb) {
+    private final File stdoutFile;
+    private final File stderrFile;
+
+    private final Clock workingClock;
+    private final Instant startedInstant;
+
+    RunningProcess(
+        final CliCommand command,
+        final String id, final Process pb,
+        final File stdoutFile, final File stderrFile,
+        final Clock clock
+    ) {
+        this.command = command;
+        this.processId = id;
         this.process = pb;
+        this.stdoutFile = stdoutFile;
+        this.stderrFile = stderrFile;
+        this.workingClock = clock;
+        this.startedInstant = clock.instant();
     }
 
-    public InputStream stdout() {
-        return process.getInputStream();
+    public String processId() {
+        return processId;
     }
 
-    public InputStream stderr() {
-        return process.getErrorStream();
+    public CliCommand cli() {
+        return command;
+    }
+
+    public Instant startedTime() {
+        return startedInstant;
+    }
+
+    Clock clock() {
+        return workingClock;
+    }
+
+    File stdoutFile() {
+        return stdoutFile;
+    }
+
+    public InputStream stdout() throws IOException {
+        return Files.asByteSource(stdoutFile).openStream();
+    }
+
+    File stderrFile() {
+        return stderrFile;
+    }
+
+    public InputStream stderr() throws IOException {
+        return Files.asByteSource(stderrFile).openStream();
     }
 
     public OptionalInt exitCode() {
@@ -55,92 +101,88 @@ public final class RunningProcess {
         return exited ? exitCode() : OptionalInt.empty();
     }
 
-    public void destroy() {
-        process.destroy();
+    @Override
+    public void close() throws Exception {
+        try {
+            stdoutFile.delete();
+            stderrFile.delete();
+            process.destroy();
+        } catch (Exception ex) {
+            Throwables.throwIfUnchecked(ex);
+            // TODO Throw exception here
+        }
     }
 
     public CompletionStage<TerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
         final Consumer<String> lineHandler,
-        final long aliveChecking,
-        final long ioChecking,
-        final TimeUnit unit
+        final int... expectedCodes
     ) {
-        final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
+        final RunningProcess process = this;
 
-        final RunningProcess p = this;
+        final CompletableFuture<Integer> future = new CompletableFuture<>();
+
         final ScheduledFuture<?> aliveFuture = executor.scheduleAtFixedRate(
-            () -> {
-
-            }, 0L, aliveChecking, unit
+            new AliveChecker(this, future), 0L, 10L, TimeUnit.MILLISECONDS
         );
 
-        final InputStream stdout = stdout();
-        if (null != stdout) {
-            final ScheduledFuture<?> ioFuture = executor.scheduleAtFixedRate(
-                new OutputHandler(stdout, lineHandler),
-                0L, ioChecking, unit
-            );
-        }
-
-        final StderrCollector stderrCollector = new StderrCollector();
-        final InputStream stderr = stderr();
-        if (null != stderr) {
-            final Future<?> ioFuture = executor.submit(
-                new OutputHandler(stderr, stderrCollector)
-            );
-        }
-
+        final ImmutableIntSet successCodes = IntSets.immutable.of(expectedCodes);
         return future.whenComplete(
-            (result, ex) -> {
-                p.destroy();
-                ioFuture.cancel(false);
+            (code, ex) -> {
                 aliveFuture.cancel(true);
             }
-        );
+        ).thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes));
     }
 
-    static class OutputHandler implements Runnable {
+    private CompletableFuture<TerminatedProcess> terminateProcess(
+        final RunningProcess process,
+        final Consumer<String> lineHandler,
+        final int code, final ImmutableIntSet successCodes
+    ) {
+        final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
+        if (successCodes.contains(code)) {
+            // Exit code regarded as successful
+            try {
+                Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
+                    .forEachLine(lineHandler);
+            } catch (IOException exx) {
+                future.completeExceptionally(exx); // TODO
+            }
+            return CompletableFuture.completedFuture(TerminatedProcess.create(process, code));
+        } else {
+            // Exit code regarded as failed
+            try {
+                final String err = Files.asCharSource(process.stderrFile(), StandardCharsets.UTF_8)
+                    .read();
+                future.completeExceptionally(CliRunningException.create(process, err));
+            } catch (IOException exx) {
+                future.completeExceptionally(exx); // TODO
+            }
+        }
 
-        private final InputStream stream;
+        return future;
+    }
 
-        private final Consumer<String> lineHandler;
+    static class AliveChecker implements Runnable {
+        private final RunningProcess process;
 
-        OutputHandler(final InputStream stream, final Consumer<String> lineHandler) {
-            this.stream = stream;
-            this.lineHandler = lineHandler;
+        private CompletableFuture<Integer> onExit;
+
+        AliveChecker(final RunningProcess process, final CompletableFuture<Integer> future) {
+            this.process = process;
+            this.onExit = future;
         }
 
         @Override
         public void run() {
-            try {
-                try (final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        lineHandler.accept(line);
-                    }
-                }
-
-            } catch (IOException ex) {
-                // Do nothing, just return
-            }
+            process.exitCode().ifPresent(onExit::complete);
         }
     }
 
-    static class StderrCollector implements Consumer<String> {
+    @AutoValue
+    public static abstract class Options {
+        public abstract Duration aliveCheckingInterval();
 
-        private final List<String> lines = Lists.newArrayList();
-
-        @Override
-        public void accept(final String line) {
-            lines.add(line);
-        }
-
-        final List<String> lines() {
-            return lines;
-        }
     }
 
     @Override

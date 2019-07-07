@@ -9,7 +9,7 @@
 
     <groupId>im.wangbo.bj58.incubating</groupId>
     <artifactId>incubating-parent</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -56,6 +56,8 @@
         <google_autoservice_version>1.0-rc4</google_autoservice_version>
         <google_autoservice_version>1.0-beta5</google_autoservice_version>
         <google_autocommon_version>0.10</google_autocommon_version>
+
+        <eclipse_collections_version>9.2.0</eclipse_collections_version>
 
         <netty_version>4.1.22.Final</netty_version>
         <vertx_core_version>3.5.4</vertx_core_version>
@@ -175,6 +177,17 @@
                 <groupId>com.google.auto</groupId>
                 <artifactId>auto-common</artifactId>
                 <version>${google_autocommon_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-api</artifactId>
+                <version>${eclipse_collections_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections</artifactId>
+                <version>${eclipse_collections_version}</version>
             </dependency>
 
             <dependency>

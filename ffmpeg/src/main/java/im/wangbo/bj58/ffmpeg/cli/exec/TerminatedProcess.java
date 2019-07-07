@@ -1,62 +1,49 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.common.base.Splitter;
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nullable;
+import java.time.Instant;
 
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
-public class TerminatedProcess {
-
-    private final String id;
+public final class TerminatedProcess {
 
     private final int exitCode;
 
-    private final Optional<String> stdoutStr;
-    private final Optional<String> stderrStr;
+    private final RunningProcess process;
+    private final Instant terminatedInstant;
 
-    TerminatedProcess(
-        final String id, final int exitCode,
-        @Nullable final String stdout,
-        @Nullable final String stderr
+    static TerminatedProcess create(
+        final RunningProcess process,
+        final int exitCode
     ) {
-        this.id = id;
+        return new TerminatedProcess(process, exitCode, process.clock().instant());
+    }
+
+    private TerminatedProcess(
+        final RunningProcess process,
+        final int exitCode,
+        final Instant terminated
+    ) {
+        this.process = process;
         this.exitCode = exitCode;
-        this.stdoutStr = Optional.ofNullable(stdout);
-        this.stderrStr = Optional.ofNullable(stderr);
+        this.terminatedInstant = terminated;
     }
 
-    public final String runningId() {
-        return this.id;
+    public String processId() {
+        return this.process.processId();
     }
 
-    public final Optional<String> stdout() {
-        return stdoutStr;
+    public Instant startedTime() {
+        return this.process.startedTime();
     }
 
-    public final Optional<String> stderr() {
-        return stderrStr;
-    }
-
-    public final Optional<List<String>> stdoutLines(final String sep) {
-        final Splitter splitter = Splitter.on(sep);
-        return stdoutStr.map(splitter::splitToList);
-    }
-
-    public final Optional<List<String>> stderrLines(final String sep) {
-        final Splitter splitter = Splitter.on(sep);
-        return stderrStr.map(splitter::splitToList);
+    public Instant terminatedTime() {
+        return terminatedInstant;
     }
 
     public int exitCode() {
         return exitCode;
-    }
-
-    public boolean isSuccessful() {
-        return exitCode == 0;
     }
 }

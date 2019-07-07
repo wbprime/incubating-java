@@ -1,4 +1,4 @@
-package im.wangbo.bj58.ffmpeg.cli.executor;
+package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import java.util.UUID;
 
