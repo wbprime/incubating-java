@@ -15,7 +15,7 @@ class CliRunningException extends Exception {
         super(msg, ex);
     }
 
-    static CliRunningException create(final RunningProcess process, final Throwable ex) {
+    static CliRunningException create(final CliRunningProcess process, final Throwable ex) {
         final StringBuilder sb = new StringBuilder("Failed to run cli command ");
         process.collectMultiLineString(sb);
         sb.append("\twith unexpected error: (")
@@ -26,7 +26,7 @@ class CliRunningException extends Exception {
         return new CliRunningException(sb.toString(), ex);
     }
 
-    static CliRunningException create(final RunningProcess process, final String stderr) {
+    static CliRunningException create(final CliRunningProcess process, final String stderr) {
         final StringBuilder sb = new StringBuilder("Failed to run cli command ");
         process.collectMultiLineString(sb);
         sb.append("\twith stderr lines: ").append(System.lineSeparator()).append(stderr);

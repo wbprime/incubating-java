@@ -15,7 +15,7 @@ import java.util.concurrent.*;
  * Created at 2019-07-07, by Elvis Wang
  */
 @EnabledOnOs({OS.LINUX, OS.MAC})
-class TerminatedProcessTest {
+class CliTerminatedProcessTest {
     private ScheduledExecutorService scheduledPool;
 
     @BeforeEach
@@ -57,7 +57,7 @@ class TerminatedProcessTest {
         final CliCommand executable = CliCommand.of("false");
 
         final StdoutCollector stdout = StdoutCollector.of();
-        final CompletableFuture<TerminatedProcess> future = executable.start(scheduledPool)
+        final CompletableFuture<CliTerminatedProcess> future = executable.start(scheduledPool)
             .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
             .toCompletableFuture();
 
@@ -95,7 +95,7 @@ class TerminatedProcessTest {
         final CliCommand executable = CliCommand.of("cat", "a", "b");
 
         final StdoutCollector stdout = StdoutCollector.of();
-        final CompletableFuture<TerminatedProcess> future = executable.start(scheduledPool)
+        final CompletableFuture<CliTerminatedProcess> future = executable.start(scheduledPool)
             .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
             .toCompletableFuture();
 
@@ -117,7 +117,7 @@ class TerminatedProcessTest {
     void runCommand_blocking() throws Exception {
         final CliCommand executable = CliCommand.of("cat");
 
-        final CompletableFuture<TerminatedProcess> future = executable.start(scheduledPool)
+        final CompletableFuture<CliTerminatedProcess> future = executable.start(scheduledPool)
             .thenCompose(p -> p.awaitTerminated(scheduledPool, 0))
             .toCompletableFuture();
 

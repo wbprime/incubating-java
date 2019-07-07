@@ -7,22 +7,22 @@ import java.time.Instant;
  *
  * @author Elvis Wang
  */
-public final class TerminatedProcess {
+public final class CliTerminatedProcess {
 
     private final int exitCode;
 
-    private final RunningProcess process;
+    private final CliRunningProcess process;
     private final Instant terminatedInstant;
 
-    static TerminatedProcess create(
-        final RunningProcess process,
+    static CliTerminatedProcess create(
+        final CliRunningProcess process,
         final int exitCode
     ) {
-        return new TerminatedProcess(process, exitCode, process.clock().instant());
+        return new CliTerminatedProcess(process, exitCode, process.clock().instant());
     }
 
-    private TerminatedProcess(
-        final RunningProcess process,
+    private CliTerminatedProcess(
+        final CliRunningProcess process,
         final int exitCode,
         final Instant terminated
     ) {

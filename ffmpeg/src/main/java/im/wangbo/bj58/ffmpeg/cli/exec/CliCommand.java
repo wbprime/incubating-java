@@ -79,7 +79,7 @@ public final class CliCommand {
         return workingDir;
     }
 
-    public final CompletionStage<RunningProcess> start(final Executor executor) {
+    public final CompletionStage<CliRunningProcess> start(final Executor executor) {
         final CliCommand cli = this;
 
         final String processId = "TODO";
@@ -98,12 +98,12 @@ public final class CliCommand {
         final File stdoutFile = new File(pwd, "tmp." + processId + ".stdout." + workingClock.millis());
         processBuilder.redirectOutput(stdoutFile);
 
-        final CompletableFuture<RunningProcess> started = new CompletableFuture<>();
+        final CompletableFuture<CliRunningProcess> started = new CompletableFuture<>();
         executor.execute(() -> {
             final Process p;
             try {
                 p = processBuilder.start();
-                started.complete(new RunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock));
+                started.complete(new CliRunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock));
             } catch (Exception ex) {
                 started.completeExceptionally(CliStartingException.create(this, ex));
             }

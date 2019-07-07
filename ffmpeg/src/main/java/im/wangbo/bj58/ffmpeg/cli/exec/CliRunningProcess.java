@@ -23,8 +23,8 @@ import java.util.function.Consumer;
  *
  * @author Elvis Wang
  */
-public final class RunningProcess implements AutoCloseable {
-    private static final Logger LOG = LoggerFactory.getLogger(RunningProcess.class);
+public final class CliRunningProcess implements AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(CliRunningProcess.class);
 
     private final String processId;
 
@@ -38,7 +38,7 @@ public final class RunningProcess implements AutoCloseable {
     private final Clock workingClock;
     private final Instant startedInstant;
 
-    RunningProcess(
+    CliRunningProcess(
         final CliCommand command,
         final String id, final Process pb,
         final File stdoutFile, final File stderrFile,
@@ -114,19 +114,19 @@ public final class RunningProcess implements AutoCloseable {
         }
     }
 
-    public CompletionStage<TerminatedProcess> awaitTerminated(
+    public CompletionStage<CliTerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
         final int... expectedCodes
     ) {
         return awaitTerminated(executor, null, expectedCodes);
     }
 
-    public CompletionStage<TerminatedProcess> awaitTerminated(
+    public CompletionStage<CliTerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
         @Nullable final Consumer<String> lineHandler,
         final int... expectedCodes
     ) {
-        final RunningProcess process = this;
+        final CliRunningProcess process = this;
 
         final CompletableFuture<Integer> future = new CompletableFuture<>();
 
@@ -145,15 +145,15 @@ public final class RunningProcess implements AutoCloseable {
             .thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes, executor, aliveFuture));
     }
 
-    private CompletableFuture<TerminatedProcess> terminateProcess(
-        final RunningProcess process,
+    private CompletableFuture<CliTerminatedProcess> terminateProcess(
+        final CliRunningProcess process,
         @Nullable final Consumer<String> lineHandler,
         final int code, final ImmutableIntSet successCodes,
         final Executor executor,
         final ScheduledFuture<?> aliveChecking
     ) {
         LOG.trace("AwaitTerminated future determined, step 2");
-        final CompletableFuture<TerminatedProcess> future = new CompletableFuture<>();
+        final CompletableFuture<CliTerminatedProcess> future = new CompletableFuture<>();
         executor.execute(
             () -> {
                 LOG.trace("AwaitTerminated future determined, step 3");
@@ -164,7 +164,7 @@ public final class RunningProcess implements AutoCloseable {
                             Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
                                 .forEachLine(lineHandler);
                         }
-                        future.complete(TerminatedProcess.create(process, code));
+                        future.complete(CliTerminatedProcess.create(process, code));
                     } catch (RuntimeException | IOException exx) {
                         future.completeExceptionally(CliRunningException.create(process, exx));
                     }
@@ -187,11 +187,11 @@ public final class RunningProcess implements AutoCloseable {
     }
 
     static class AliveChecker implements Runnable {
-        private final RunningProcess process;
+        private final CliRunningProcess process;
 
         private CompletableFuture<Integer> onExit;
 
-        AliveChecker(final RunningProcess process, final CompletableFuture<Integer> future) {
+        AliveChecker(final CliRunningProcess process, final CompletableFuture<Integer> future) {
             this.process = process;
             this.onExit = future;
         }

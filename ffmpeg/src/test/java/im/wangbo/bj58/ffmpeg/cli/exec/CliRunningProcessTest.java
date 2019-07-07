@@ -1,11 +1,8 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.io.ByteStreams;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SourceFilterBuilder;
 import org.assertj.core.api.Assertions;
-import org.eclipse.collections.api.factory.set.primitive.ImmutableIntSetFactory;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
-import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.IntSets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * @author Elvis Wang
  */
 @EnabledOnOs({OS.LINUX, OS.MAC})
-class RunningProcessTest {
+class CliRunningProcessTest {
     private ScheduledExecutorService scheduledPool;
 
     @BeforeEach
@@ -46,7 +43,7 @@ class RunningProcessTest {
     void runCommand_succeed_emptyStderr() throws Exception {
         final CliCommand executable = CliCommand.of("true");
 
-        final RunningProcess process = executable.start(scheduledPool)
+        final CliRunningProcess process = executable.start(scheduledPool)
             .toCompletableFuture().get();
 
         Assertions.assertThat(process.waitFor()).isEqualTo(0);
@@ -67,7 +64,7 @@ class RunningProcessTest {
     void runCommand_failed_emptyStderr() throws Exception {
         final CliCommand executable = CliCommand.of("false");
 
-        final RunningProcess process = executable.start(scheduledPool)
+        final CliRunningProcess process = executable.start(scheduledPool)
             .toCompletableFuture().get();
 
         Assertions.assertThat(process.waitFor()).isEqualTo(1);
@@ -92,7 +89,7 @@ class RunningProcessTest {
             .addArg("hajkdfhsadhf")
             .build();
 
-        final RunningProcess process = executable.start(scheduledPool)
+        final CliRunningProcess process = executable.start(scheduledPool)
             .toCompletableFuture().get();
 
         Assertions.assertThat(process.waitFor()).isEqualTo(0);
@@ -115,7 +112,7 @@ class RunningProcessTest {
     void runCommand_failed_linesStderr() throws Exception {
         final CliCommand executable = CliCommand.of("cat", "a");
 
-        final RunningProcess process = executable.start(scheduledPool)
+        final CliRunningProcess process = executable.start(scheduledPool)
             .toCompletableFuture().get();
 
         Assertions.assertThat(process.waitFor()).isEqualTo(1);
@@ -138,7 +135,7 @@ class RunningProcessTest {
     void runCommand_illegalCommand_noArgs() throws Exception {
         final CliCommand executable = CliCommand.of("wo_ting_bu_jian");
 
-        final CompletableFuture<RunningProcess> future = executable.start(scheduledPool)
+        final CompletableFuture<CliRunningProcess> future = executable.start(scheduledPool)
             .toCompletableFuture();
 
         Assertions.assertThatThrownBy(future::get)
@@ -154,7 +151,7 @@ class RunningProcessTest {
     void runCommand_illegalCommand_withArgs() throws Exception {
         final CliCommand executable = CliCommand.of("ni_shuo_shen_me", "a");
 
-        final CompletableFuture<RunningProcess> future = executable.start(scheduledPool)
+        final CompletableFuture<CliRunningProcess> future = executable.start(scheduledPool)
             .toCompletableFuture();
 
         Assertions.assertThatThrownBy(future::get)
@@ -172,7 +169,7 @@ class RunningProcessTest {
     void runCommand_blockingCommand() throws Exception {
         final CliCommand executable = CliCommand.of("cat");
 
-        final RunningProcess process = executable.start(scheduledPool)
+        final CliRunningProcess process = executable.start(scheduledPool)
             .toCompletableFuture().get();
 
         final ImmutableIntSet expectedCodes = IntSets.immutable.of(0);
