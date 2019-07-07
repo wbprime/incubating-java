@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
+import java.util.StringJoiner;
 import java.util.function.Consumer;
 
 /**
@@ -27,4 +28,10 @@ public class StdoutCollector implements Consumer<String> {
         return sb.toString();
     }
 
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", StdoutCollector.class.getSimpleName() + "[", "]")
+            .toString();
+    }
 }

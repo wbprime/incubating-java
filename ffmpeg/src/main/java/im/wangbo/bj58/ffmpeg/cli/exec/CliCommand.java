@@ -25,6 +25,7 @@ import java.util.concurrent.Executor;
 public final class CliCommand {
 
     private static final File PWD = new File(".").getAbsoluteFile();
+    private static final CliPidGeneratingStrategy PID_STRATEGY = CliPidGeneratingStrategy.seqBased();
 
     private final String exec;
     private final ImmutableList<String> fullArgs;
@@ -80,9 +81,13 @@ public final class CliCommand {
     }
 
     public final CompletionStage<CliRunningProcess> start(final Executor executor) {
+        return start(executor, PID_STRATEGY);
+    }
+
+    public final CompletionStage<CliRunningProcess> start(final Executor executor, final CliPidGeneratingStrategy strategy) {
         final CliCommand cli = this;
 
-        final String processId = "TODO";
+        final String processId = strategy.get();
         final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs);
 
         processBuilder.environment().putAll(env);
