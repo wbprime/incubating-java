@@ -1,17 +1,17 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.executor.NativeExecutable;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
 import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ComplexFilterGraph;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 
 /**
  * TODO add brief description here
@@ -88,16 +88,13 @@ public class FfmpegBuilder {
             Stream.of(arg.spec().name());
     }
 
-    public NativeExecutable build() {
+    public CliCommand build() {
         inputs.forEach(i -> args.addAll(i.asArgs()));
         outputs.forEach(o -> args.addAll(o.asArgs()));
-        final List<String> strArgs = args.stream()
-            .flatMap(this::stringifyArg)
-            .collect(Collectors.toList());
-        return NativeExecutable.builder()
-            .workingDir(pwDir)
+        return CliCommand.builder()
             .command(pathToExe)
-            .addOpts(strArgs)
+            .addArgs(args)
+            .workingDirectory(pwDir)
             .build();
     }
 }

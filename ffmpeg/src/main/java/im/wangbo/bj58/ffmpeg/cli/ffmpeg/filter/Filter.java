@@ -2,7 +2,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import im.wangbo.bj58.ffmpeg.common.DescribeTo;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Created at 2019-06-23, by Elvis Wang
  */
 @AutoValue
-public abstract class Filter implements DescribeTo {
+public abstract class Filter {
 
     public abstract String name();
 
@@ -20,7 +20,6 @@ public abstract class Filter implements DescribeTo {
 
     public abstract ImmutableList<FilterArg> args();
 
-    @Override
     public void describeTo(StringBuilder sb) {
         sb.append(spec().typeId());
         if (!args().isEmpty()) {
