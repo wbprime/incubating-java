@@ -1,5 +1,7 @@
 package im.wangbo.bj58.ffmpeg.common;
 
+import java.util.Optional;
+
 /**
  * TODO add brief description here
  *
@@ -7,6 +9,10 @@ package im.wangbo.bj58.ffmpeg.common;
  */
 public interface Value {
     String asString();
+
+    default Optional<String> stringify() {
+        return Optional.of(asString());
+    }
 
     static Value of(final String value) {
         return StdValue.of(value);

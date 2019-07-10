@@ -10,8 +10,6 @@ public interface ArgSpec {
 
     String description();
 
-    ValueFactory<?> valueFactory();
-
     public static ArgSpec of(final String name, final String description) {
         return null;
     }
