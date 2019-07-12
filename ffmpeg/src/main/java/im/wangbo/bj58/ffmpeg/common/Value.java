@@ -14,6 +14,10 @@ public interface Value {
         return Optional.of(asString());
     }
 
+    static Value of() {
+        return EmptyValue.of();
+    }
+
     static Value of(final String value) {
         return StdValue.of(value);
     }
