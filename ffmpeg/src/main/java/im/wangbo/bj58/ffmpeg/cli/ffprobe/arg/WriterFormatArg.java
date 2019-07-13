@@ -29,7 +29,7 @@ public abstract class WriterFormatArg implements FfprobeArg {
     @Override
     public Optional<String> value() {
         final String str = writerFormat().args().stream()
-            .map(arg -> arg.spec().name() + arg.value().map(v -> "=" + v.asString()).orElse(""))
+            .map(arg -> arg.name() + arg.value().map(v -> "=" + v))
             .collect(Collectors.joining(":"));
         return Optional.of(
             str.isEmpty() ? writerFormat().meta().kind() : writerFormat().meta().kind() + "=" + str
