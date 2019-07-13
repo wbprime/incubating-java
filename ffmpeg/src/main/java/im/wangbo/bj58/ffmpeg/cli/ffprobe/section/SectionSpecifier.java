@@ -1,13 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
 
-import im.wangbo.bj58.ffmpeg.common.Value;
-
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
-public enum SectionSpecifier implements Value {
+public enum SectionSpecifier {
     FORMAT("-show_format"),
     STREAMS("-show_streams"),
     FRAMES("-show_frames"),
@@ -26,8 +24,7 @@ public enum SectionSpecifier implements Value {
         this.sectionName = name;
     }
 
-    @Override
-    public final String asString() {
+    public String sectionName() {
         return sectionName;
     }
 }

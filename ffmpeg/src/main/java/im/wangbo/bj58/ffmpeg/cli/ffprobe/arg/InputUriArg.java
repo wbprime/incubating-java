@@ -1,8 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.common.ArgSpec;
-import im.wangbo.bj58.ffmpeg.common.Value;
+
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -14,21 +13,22 @@ import java.util.Optional;
  */
 @AutoValue
 public abstract class InputUriArg implements FfprobeArg {
-
     @Override
-    public final ArgSpec spec() {
-        return ArgSpec.of(
-            uri().toString(),
-            "Output file url."
-        );
+    public String name() {
+        return uri().toString();
     }
 
     @Override
-    public final Optional<Value> value() {
+    public String description() {
+        return "Input file uri/path";
+    }
+
+    @Override
+    public final Optional<String> value() {
         return Optional.empty();
     }
 
-    abstract URI uri();
+    public abstract URI uri();
 
     public static InputUriArg of(final URI uri) {
         return new AutoValue_InputUriArg(uri);

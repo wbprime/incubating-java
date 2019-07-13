@@ -1,9 +1,8 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.common.ArgSpec;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
-import im.wangbo.bj58.ffmpeg.common.Value;
+
 import java.util.Optional;
 
 /**
@@ -13,18 +12,20 @@ import java.util.Optional;
  */
 @AutoValue
 public abstract class SectionSpecifierArg implements FfprobeArg {
-    abstract SectionSpecifier sectionSpecifier();
+    public abstract SectionSpecifier sectionSpecifier();
 
     @Override
-    public final ArgSpec spec() {
-        return ArgSpec.of(
-            sectionSpecifier().asString(),
-            sectionSpecifier().asString()
-        );
+    public String name() {
+        return sectionSpecifier().sectionName();
     }
 
     @Override
-    public final Optional<Value> value() {
+    public String description() {
+        return sectionSpecifier().sectionName();
+    }
+
+    @Override
+    public final Optional<String> value() {
         return Optional.empty();
     }
 
