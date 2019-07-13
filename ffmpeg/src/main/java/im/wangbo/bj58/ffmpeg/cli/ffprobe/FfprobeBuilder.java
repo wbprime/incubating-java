@@ -3,7 +3,9 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.exec.StdoutCollector;
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
+import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
+import im.wangbo.bj58.ffmpeg.cli.ff.arg.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.InputUriArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.SectionSpecifierArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.WriterFormatArg;
@@ -16,7 +18,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Stream;
 
 /**
  * TODO add brief description here
@@ -24,10 +25,9 @@ import java.util.stream.Stream;
  * @author Elvis Wang
  */
 public class FfprobeBuilder {
+    private final List<FfArg> ffArgs = Lists.newArrayList();
 
     private final String pathToExe;
-
-    private final List<FfprobeArg> args = Lists.newArrayList();
 
     @Nullable
     private File pwDir;
@@ -42,18 +42,19 @@ public class FfprobeBuilder {
         return new FfprobeBuilder(path);
     }
 
-    public FfprobeBuilder addArg(final FfprobeArg arg) {
-        args.add(arg);
+    private FfprobeBuilder addArg(final FfArg arg) {
+        ffArgs.add(arg);
         return this;
     }
 
-//    public FfprobeBuilder hideBanner() {
-//        return addArg(HideBannerArg.of());
-//    }
 
-//    public FfprobeBuilder logLevel(final LogLevelArg arg) {
-//        return addArg(arg);
-//    }
+    public FfprobeBuilder hideBanner() {
+        return addArg(HideBannerArg.of());
+    }
+
+    public FfprobeBuilder logLevel(final LogLevelArg arg) {
+        return addArg(arg);
+    }
 
     public FfprobeBuilder addSectionSpecifier(final SectionSpecifier specifier) {
         return addArg(SectionSpecifierArg.of(specifier));
@@ -64,29 +65,23 @@ public class FfprobeBuilder {
         return this;
     }
 
-    private Stream<String> stringifyArg(final FfprobeArg arg) {
-        return arg.value().isPresent() ?
-            Stream.of(arg.spec().name(), arg.value().get().asString()) :
-            Stream.of(arg.spec().name());
-    }
-
     public CliCommand build(final URI uri) {
-        args.add(WriterFormatArg.of(writerFormat));
-        args.add(InputUriArg.of(uri));
+        ffArgs.add(WriterFormatArg.of(writerFormat));
+        ffArgs.add(InputUriArg.of(uri));
         return CliCommand.builder()
             .command(pathToExe)
-            .addArgs(args)
+//            .addArgs(ffArgs)
             .workingDirectory(pwDir)
             .build();
     }
 
     public CompletionStage<MediaMetaInfo> buildAndExecute(final URI uri,
-        final ScheduledExecutorService executor) {
+                                                          final ScheduledExecutorService executor) {
         final CliCommand cli = build(uri);
 
         final StdoutCollector stdout = StdoutCollector.of();
         return cli.start(executor)
-            .thenCompose(process ->  process.awaitTerminated(executor, stdout, 0))
+            .thenCompose(process -> process.awaitTerminated(executor, stdout, 0))
             .thenApply(process -> writerFormat.meta().parser().parse(stdout.collect()));
     }
 }
