@@ -1,21 +1,24 @@
-package im.wangbo.bj58.ffmpeg.cli.common.arg;
+package im.wangbo.bj58.ffmpeg.cli.ff.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
+
 import java.util.Optional;
 
 /**
- * TODO add brief description here
- *
- * @author Elvis Wang
+ * TODO more details here.
+ * <p>
+ * Created at 2019-07-13, by Elvis Wang
  */
 @AutoValue
-public abstract class LogLevelArg implements FfmpegArg, FfprobeArg {
+public abstract class LogLevelArg implements FfArg {
+    @Override
+    public final String name() {
+        return "-loglevel";
+    }
 
     @Override
-    public final String argName() {
-        return "-loglevel";
+    public final Optional<String> value() {
+        return Optional.empty();
     }
 
     @Override
@@ -23,15 +26,10 @@ public abstract class LogLevelArg implements FfmpegArg, FfprobeArg {
         return "Set logging level";
     }
 
-    abstract LogLevel logLevel();
+    public abstract LogLevel logLevel();
 
-    @Override
-    public final Optional<String> argValue() {
-        return Optional.of(String.valueOf(logLevel().code));
-    }
-
-    public static LogLevelArg of(final LogLevel level) {
-        return new AutoValue_LogLevelArg(level);
+    public static LogLevelArg of(final LogLevel logLevel) {
+        return new AutoValue_LogLevelArg(logLevel);
     }
 
     public static LogLevelArg debug() {

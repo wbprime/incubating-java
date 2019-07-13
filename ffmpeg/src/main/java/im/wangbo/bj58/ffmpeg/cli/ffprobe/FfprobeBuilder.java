@@ -1,8 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.exec.StdoutCollector;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
@@ -49,13 +47,13 @@ public class FfprobeBuilder {
         return this;
     }
 
-    public FfprobeBuilder hideBanner() {
-        return addArg(HideBannerArg.of());
-    }
+//    public FfprobeBuilder hideBanner() {
+//        return addArg(HideBannerArg.of());
+//    }
 
-    public FfprobeBuilder logLevel(final LogLevelArg arg) {
-        return addArg(arg);
-    }
+//    public FfprobeBuilder logLevel(final LogLevelArg arg) {
+//        return addArg(arg);
+//    }
 
     public FfprobeBuilder addSectionSpecifier(final SectionSpecifier specifier) {
         return addArg(SectionSpecifierArg.of(specifier));

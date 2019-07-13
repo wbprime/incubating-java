@@ -1,9 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import im.wangbo.bj58.ffmpeg.cli.common.arg.ShowLicenseArg;
-import im.wangbo.bj58.ffmpeg.cli.common.arg.ShowVersionArg;
-import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
-
 /**
  * TODO add brief description here
  *
@@ -18,15 +14,15 @@ public final class Ffmpegs {
         return FfmpegBuilder.builder(ffmpeg);
     }
 
-    public static CliCommand showLicense(final String ffmpeg) {
-        return FfmpegBuilder.builder(ffmpeg)
-            .addArg(ShowLicenseArg.of())
-            .build();
-    }
+//    public static CliCommand showLicense(final String ffmpeg) {
+//        return FfmpegBuilder.builder(ffmpeg)
+//            .addArg(ShowLicenseArg.of())
+//            .build();
+//    }
 
-    public static CliCommand showVersion(final String ffmpeg) {
-        return FfmpegBuilder.builder(ffmpeg)
-            .addArg(ShowVersionArg.of())
-            .build();
-    }
+//    public static CliCommand showVersion(final String ffmpeg) {
+//        return FfmpegBuilder.builder(ffmpeg)
+//            .addArg(ShowVersionArg.of())
+//            .build();
+//    }
 }

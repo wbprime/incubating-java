@@ -14,6 +14,6 @@ abstract class StringValue implements Value {
     public abstract String asString();
 
     static StringValue of(final String value) {
-        return new AutoValue_StdValue(value);
+        return new AutoValue_StringValue(value);
     }
 }

@@ -1,8 +1,7 @@
-package im.wangbo.bj58.ffmpeg.cli.common.arg;
+package im.wangbo.bj58.ffmpeg.cli.ff.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.FfprobeArg;
+
 import java.util.Optional;
 
 /**
@@ -11,9 +10,9 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class ShowLicenseArg implements FfmpegArg, FfprobeArg {
+public abstract class ShowLicenseArg implements FfArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return "-L";
     }
 
@@ -23,7 +22,7 @@ public abstract class ShowLicenseArg implements FfmpegArg, FfprobeArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.empty();
     }
 

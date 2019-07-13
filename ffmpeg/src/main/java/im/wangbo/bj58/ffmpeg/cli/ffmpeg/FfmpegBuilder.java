@@ -1,8 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.common.arg.HideBannerArg;
-import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.ShowProgressStatsArg;
@@ -38,17 +36,17 @@ public class FfmpegBuilder {
         return new FfmpegBuilder(path);
     }
 
-    public FfmpegBuilder hideBanner() {
-        return addArg(HideBannerArg.of());
-    }
-
+//    public FfmpegBuilder hideBanner() {
+//        return addArg(HideBannerArg.of());
+//    }
+//
     public FfmpegBuilder showProgressStats(final boolean on) {
         return addArg(on ? ShowProgressStatsArg.on() : ShowProgressStatsArg.off());
     }
 
-    public FfmpegBuilder logLevel(final LogLevelArg arg) {
-        return addArg(arg);
-    }
+//    public FfmpegBuilder logLevel(final LogLevelArg arg) {
+//        return addArg(arg);
+//    }
 
     public FfmpegBuilder addArg(final FfmpegArg arg) {
         args.add(arg);
