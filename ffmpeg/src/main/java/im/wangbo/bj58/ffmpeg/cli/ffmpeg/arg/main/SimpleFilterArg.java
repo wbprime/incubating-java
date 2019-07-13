@@ -15,7 +15,7 @@ import java.util.Optional;
 public abstract class SimpleFilterArg implements OutputArg {
 
     @Override
-    public final String argName() {
+    public final String name() {
         final String specifier = streamSpecifier().asString();
         return specifier.isEmpty() ? "-filter" : "-filter:" + specifier;
     }
@@ -35,7 +35,7 @@ public abstract class SimpleFilterArg implements OutputArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(filterGraph().toString());
     }
 

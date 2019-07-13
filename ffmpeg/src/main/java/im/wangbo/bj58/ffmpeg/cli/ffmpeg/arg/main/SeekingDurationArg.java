@@ -23,12 +23,12 @@ abstract class SeekingDurationArg implements InOutputArg {
     }
 
     @Override
-    public final String argName(){
+    public final String name(){
         return "-t";
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(duration().asString());
     }
 

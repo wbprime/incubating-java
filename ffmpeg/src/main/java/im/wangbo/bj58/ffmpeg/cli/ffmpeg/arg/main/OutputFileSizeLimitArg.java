@@ -15,7 +15,7 @@ import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 @AutoValue
 public abstract class OutputFileSizeLimitArg implements OutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return "-fs";
     }
 
@@ -28,7 +28,7 @@ public abstract class OutputFileSizeLimitArg implements OutputArg {
     abstract SizeInByte size();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(size().asString());
     }
 

@@ -16,7 +16,7 @@ abstract class SeekingBackwardOffsetArg implements InputArg {
     abstract SeekPosition position();
 
     @Override
-    public final String argName() {
+    public final String name() {
         return "-sseof";
     }
 
@@ -26,7 +26,7 @@ abstract class SeekingBackwardOffsetArg implements InputArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(position().asString());
     }
 

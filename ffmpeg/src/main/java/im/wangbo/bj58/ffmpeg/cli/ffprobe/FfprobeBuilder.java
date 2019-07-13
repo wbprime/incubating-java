@@ -70,7 +70,7 @@ public class FfprobeBuilder {
         ffArgs.add(InputUriArg.of(uri));
         return CliCommand.builder()
             .command(pathToExe)
-//            .addArgs(ffArgs)
+            .addArgs(ffArgs)
             .workingDirectory(pwDir)
             .build();
     }

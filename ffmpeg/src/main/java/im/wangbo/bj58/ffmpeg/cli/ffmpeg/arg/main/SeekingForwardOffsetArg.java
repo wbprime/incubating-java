@@ -17,7 +17,7 @@ abstract class SeekingForwardOffsetArg implements InOutputArg {
     abstract SeekPosition position();
 
     @Override
-    public final String argName() {
+    public final String name() {
         return "-ss";
     }
 
@@ -30,7 +30,7 @@ abstract class SeekingForwardOffsetArg implements InOutputArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(position().asString());
     }
 

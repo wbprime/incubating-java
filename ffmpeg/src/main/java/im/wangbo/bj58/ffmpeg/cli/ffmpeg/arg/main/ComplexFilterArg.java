@@ -14,7 +14,7 @@ import java.util.Optional;
 public abstract class ComplexFilterArg implements GlobalArg {
 
     @Override
-    public final String argName() {
+    public final String name() {
         return "-filter_complex";
     }
 
@@ -31,7 +31,7 @@ public abstract class ComplexFilterArg implements GlobalArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(filterGraph().toString());
     }
 

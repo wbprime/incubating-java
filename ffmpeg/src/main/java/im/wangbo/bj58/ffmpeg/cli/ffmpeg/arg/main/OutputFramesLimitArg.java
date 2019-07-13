@@ -15,7 +15,7 @@ import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 @AutoValue
 public abstract class OutputFramesLimitArg implements OutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         final String specifier = streamSpecifier().asString();
         return specifier.isEmpty() ? "-frames" : "-frames:" + specifier;
     }
@@ -30,7 +30,7 @@ public abstract class OutputFramesLimitArg implements OutputArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(String.valueOf(frameCount()));
     }
 

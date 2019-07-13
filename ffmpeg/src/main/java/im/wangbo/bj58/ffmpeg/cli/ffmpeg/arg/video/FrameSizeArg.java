@@ -20,7 +20,7 @@ import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 @AutoValue
 public abstract class FrameSizeArg implements InOutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         final String specifier = streamSpecifier().asString();
         return specifier.isEmpty() ? "-s" : "-s:" + specifier;
     }
@@ -40,7 +40,7 @@ public abstract class FrameSizeArg implements InOutputArg {
     abstract SizeInPixel sizeInPixel();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(sizeInPixel().asString());
     }
 

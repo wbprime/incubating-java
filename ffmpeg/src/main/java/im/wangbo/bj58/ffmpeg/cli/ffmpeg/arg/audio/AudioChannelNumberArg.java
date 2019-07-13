@@ -23,7 +23,7 @@ import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 @AutoValue
 public abstract class AudioChannelNumberArg implements InOutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         final String specifier = streamSpecifier().asString();
         return specifier.isEmpty() ? "-ac" : "-ac:" + specifier;
     }
@@ -41,7 +41,7 @@ public abstract class AudioChannelNumberArg implements InOutputArg {
     abstract int channelNumber();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(String.valueOf(channelNumber()));
     }
 

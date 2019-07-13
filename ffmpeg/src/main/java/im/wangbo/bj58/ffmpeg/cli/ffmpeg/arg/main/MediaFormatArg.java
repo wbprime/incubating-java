@@ -17,7 +17,7 @@ import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 @AutoValue
 public abstract class MediaFormatArg implements InOutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return "-f";
     }
 
@@ -32,7 +32,7 @@ public abstract class MediaFormatArg implements InOutputArg {
     abstract String format();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(format());
     }
 

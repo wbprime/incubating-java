@@ -21,12 +21,12 @@ public abstract class SeekingEndArg implements InOutputArg {
     }
 
     @Override
-    public final String argName() {
+    public final String name() {
         return "-to";
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(position().asString());
     }
 

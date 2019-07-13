@@ -12,7 +12,7 @@ import java.util.Optional;
 @AutoValue
 public abstract class MetadataArg implements OutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return "-metadata";
     }
 
@@ -26,7 +26,7 @@ public abstract class MetadataArg implements OutputArg {
     abstract String val();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(key() + "=" + val());
     }
 

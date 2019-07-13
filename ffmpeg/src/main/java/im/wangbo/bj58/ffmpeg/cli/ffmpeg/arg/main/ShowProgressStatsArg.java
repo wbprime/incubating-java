@@ -14,7 +14,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
 @AutoValue
 public abstract class ShowProgressStatsArg implements GlobalArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return showsProcessStats() ? "-stats" : "-nostats";
     }
 
@@ -26,7 +26,7 @@ public abstract class ShowProgressStatsArg implements GlobalArg {
     }
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.empty();
     }
 

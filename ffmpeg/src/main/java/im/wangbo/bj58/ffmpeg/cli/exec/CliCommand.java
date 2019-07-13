@@ -2,7 +2,7 @@ package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
-import im.wangbo.bj58.ffmpeg.common.Arg;
+import im.wangbo.bj58.ffmpeg.cli.arg.Arg;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -149,8 +149,7 @@ public final class CliCommand {
         }
 
         public Builder addArg(final Arg arg) {
-            opts.add(arg.name());
-            arg.value().ifPresent(v -> opts.add(v.asString()));
+            arg.collect(opts);
             return this;
         }
 

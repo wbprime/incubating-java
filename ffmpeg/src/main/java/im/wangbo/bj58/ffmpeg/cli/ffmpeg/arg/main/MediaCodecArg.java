@@ -18,7 +18,7 @@ import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 @AutoValue
 public abstract class MediaCodecArg implements InOutputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         final String specifier = streamSpecifier().asString();
         return specifier.isEmpty() ? "-c" : "-c:" + specifier;
     }
@@ -35,7 +35,7 @@ public abstract class MediaCodecArg implements InOutputArg {
     abstract String format();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(format());
     }
 

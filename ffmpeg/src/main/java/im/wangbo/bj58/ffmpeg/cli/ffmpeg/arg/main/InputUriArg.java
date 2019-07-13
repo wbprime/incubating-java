@@ -15,7 +15,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
 @AutoValue
 public abstract class InputUriArg implements InputArg {
     @Override
-    public final String argName() {
+    public final String name() {
         return "-i";
     }
 
@@ -27,7 +27,7 @@ public abstract class InputUriArg implements InputArg {
     abstract URI uri();
 
     @Override
-    public final Optional<String> argValue() {
+    public final Optional<String> value() {
         return Optional.of(uri().toString());
     }
 
