@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class SeekingBackwardOffsetArg implements InputArg {
+abstract class SeekingBackOffsetArg implements InputArg {
 
     abstract SeekPosition position();
 
@@ -30,7 +30,7 @@ abstract class SeekingBackwardOffsetArg implements InputArg {
         return Optional.of(position().asString());
     }
 
-    static SeekingBackwardOffsetArg of(final SeekPosition position) {
-        return new AutoValue_SeekingBackwardOffsetArg(position);
+    static SeekingBackOffsetArg of(final SeekPosition position) {
+        return new AutoValue_SeekingBackOffsetArg(position);
     }
 }
