@@ -150,6 +150,7 @@ public interface InputSource {
         public InputSource build() {
             final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
                 .addAll(args)
+                .addAll(seekingArgs)
                 .add(InputUriArg.of(URI.create(pathToInput)))
                 .build();
             return () -> inputArgs;

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * <p>
  * Created at 2019-07-13, by Elvis Wang
  */
-public class MatchesRegex implements ValueValidator {
+class MatchesRegex implements ValueValidator {
     private final Pattern pattern;
 
     public MatchesRegex(final String pattern) {

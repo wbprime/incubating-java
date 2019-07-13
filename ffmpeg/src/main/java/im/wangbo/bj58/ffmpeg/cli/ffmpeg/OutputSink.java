@@ -151,6 +151,7 @@ public interface OutputSink {
         public OutputSink build() {
             final ImmutableList<OutputArg> outputArgs = ImmutableList.<OutputArg>builder()
                 .addAll(args)
+                .addAll(seekingArgs)
                 .add(OutputUriArg.of(URI.create(pathToOutput)))
                 .build();
             return () -> outputArgs;
