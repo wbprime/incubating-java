@@ -1,11 +1,9 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
+import im.wangbo.bj58.ffmpeg.common.SeekPosition;
 
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InOutputArg;
-import im.wangbo.bj58.ffmpeg.common.SeekPosition;
 
 /**
  * TODO add brief description here
@@ -13,7 +11,7 @@ import im.wangbo.bj58.ffmpeg.common.SeekPosition;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class SeekingOffsetArg implements InOutputArg {
+public abstract class SeekingOffsetArg implements InOutputArg {
     abstract SeekPosition position();
 
     @Override
@@ -24,9 +22,9 @@ abstract class SeekingOffsetArg implements InOutputArg {
     @Override
     public final String description() {
         return "When used as an input option, seeks in this input file to position " +
-                "(in most formats it is not possible to seek exactly, " +
-                "so ffmpeg will seek to the closest seek point before position.)." +
-                "When used as an output option, decodes but discards input until the timestamps reach position.";
+            "(in most formats it is not possible to seek exactly, " +
+            "so ffmpeg will seek to the closest seek point before position.)." +
+            "When used as an output option, decodes but discards input until the timestamps reach position.";
     }
 
     @Override
@@ -34,7 +32,7 @@ abstract class SeekingOffsetArg implements InOutputArg {
         return Optional.of(position().asString());
     }
 
-    static SeekingOffsetArg of(final SeekPosition position) {
+    public static SeekingOffsetArg of(final SeekPosition position) {
         return new AutoValue_SeekingOffsetArg(position);
     }
 }

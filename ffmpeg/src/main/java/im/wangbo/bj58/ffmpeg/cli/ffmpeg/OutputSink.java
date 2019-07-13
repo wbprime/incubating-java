@@ -2,21 +2,15 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaCodecArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaFormatArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MetadataArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.OutputFileSizeLimitArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.OutputFramesLimitArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.OutputQualityLimitArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.OutputUriArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.SimpleFilterArg;
-import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
-import im.wangbo.bj58.ffmpeg.format.MediaFormat;
+import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
+import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
+
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +31,8 @@ public interface OutputSink {
         private final String pathToOutput;
 
         private final List<OutputArg> args = Lists.newArrayList();
+
+        private List<OutputArg> seekingArgs = Collections.emptyList();
 
         private Builder(final String outputPath) {
             this.pathToOutput = outputPath;
@@ -59,11 +55,63 @@ public interface OutputSink {
             return addArg(MediaCodecArg.asOutput(specifier, codec));
         }
 
-        public Builder seeking(final ImmutableList<OutputArg> seeking) {
-            seeking.forEach(this::addArg);
+        /**
+         * Seeking from {@code beg} to {@code end}.
+         *
+         * @param beg beg position offset from beginning
+         * @param end end position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg, final SeekingEndArg end) {
+            seekingArgs = ImmutableList.of(beg, end);
             return this;
         }
 
+        /**
+         * Seeking from {@code beg} with {@code duration}.
+         *
+         * @param beg      beg position offset from beginning
+         * @param duration duration
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg, final SeekingDurationArg duration) {
+            seekingArgs = ImmutableList.of(beg, duration);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} to ending.
+         *
+         * @param beg beg position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg) {
+            seekingArgs = ImmutableList.of(beg);
+            return this;
+        }
+
+        /**
+         * Seeking from beginning to {@code end}.
+         *
+         * @param end end position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingEndArg end) {
+            seekingArgs = ImmutableList.of(end);
+            return this;
+        }
+
+        /**
+         * Seeking from begninning with {@code duration}.
+         *
+         * @param duration duration
+         * @return this
+         */
+        public Builder seeking(final SeekingDurationArg duration) {
+            seekingArgs = ImmutableList.of(duration);
+            return this;
+        }
+       
         public Builder limitOutputSize(final SizeInByte size) {
             return addArg(OutputFileSizeLimitArg.of(size));
         }

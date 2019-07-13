@@ -1,18 +1,14 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.audio;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
+import im.wangbo.bj58.ffmpeg.common.FrameRate;
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.util.Optional;
 
-import im.wangbo.bj58.ffmpeg.common.FrameRate;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InOutputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
-
 /**
  * Set the audio sampling frequency.
- *
+ * <p>
  * For output streams it is set by default to the frequency of the corresponding input stream.
  * For input streams this option only makes sense for audio grabbing devices and raw demuxers and is mapped to the corresponding demuxer options.
  *
@@ -30,9 +26,9 @@ public abstract class SamplingFrequencyArg implements InOutputArg {
     @Override
     public final String description() {
         return "Set the audio sampling frequency. " +
-                "For input streams this option only makes sense for audio grabbing devices and raw demuxers and " +
-                "is mapped to the corresponding demuxer options. " +
-                "For output streams it is set by default to the frequency of the corresponding input stream.";
+            "For input streams this option only makes sense for audio grabbing devices and raw demuxers and " +
+            "is mapped to the corresponding demuxer options. " +
+            "For output streams it is set by default to the frequency of the corresponding input stream.";
     }
 
     abstract StreamSpecifier streamSpecifier();

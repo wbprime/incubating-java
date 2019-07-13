@@ -8,8 +8,7 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SizeInByte implements Value {
-    @Override
+public abstract class SizeInByte {
     public final String asString() {
         return String.valueOf(bytes());
     }
@@ -34,66 +33,77 @@ public abstract class SizeInByte implements Value {
      * @author Elvis Wang
      */
     public enum Unit {
+        // 1000 Bytes
         K {
             @Override
             long bytesPerUnit() {
                 return N_PER_K;
             }
         },
+        // 1000 x 1000 Bytes
         M {
             @Override
             long bytesPerUnit() {
                 return N_PER_M;
             }
         },
+        // 1000 x 1000 x 1000 Bytes
         G {
             @Override
             long bytesPerUnit() {
                 return N_PER_G;
             }
         },
+        // 1000 x 1000 x 1000 x 1000 Bytes
         T {
             @Override
             long bytesPerUnit() {
                 return N_PER_T;
             }
         },
+        // 1000 x 1000 x 1000 x 1000 x 1000 Bytes
         Z {
             @Override
             long bytesPerUnit() {
                 return N_PER_Z;
             }
         },
+        // 1024 Bytes
         Ki {
             @Override
             long bytesPerUnit() {
                 return N_PER_Ki;
             }
         },
+        // 1024 x 1024 Bytes
         Mi {
             @Override
             long bytesPerUnit() {
                 return N_PER_Mi;
             }
         },
+        // 1024 x 1024 x 1024 Bytes
         Gi {
             @Override
             long bytesPerUnit() {
                 return N_PER_Gi;
             }
         },
+        // 1024 x 1024 x 1024 x 1024 Bytes
         Ti {
             @Override
             long bytesPerUnit() {
                 return N_PER_Ti;
             }
         },
+        // 1024 x 1024 x 1024 x 1024 x 1024 Bytes
         Zi {
             @Override
             long bytesPerUnit() {
                 return N_PER_Zi;
             }
         },
+        // 1 Byte
         B {
             @Override
             long bytesPerUnit() {

@@ -1,8 +1,8 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.common.SeekPosition;
+
 import java.util.Optional;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class SeekingBackOffsetArg implements InputArg {
+public abstract class SeekingBackOffsetArg implements InputArg {
 
     abstract SeekPosition position();
 

@@ -1,11 +1,9 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
 
 import java.net.URI;
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
 
 /**
  * TODO add brief description here
@@ -13,25 +11,25 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class OutputUriArg implements OutputArg {
+public abstract class InputUriArg implements InputArg {
     @Override
     public final String name() {
-        return uri().toString();
+        return "-i";
     }
 
     @Override
     public final String description() {
-        return "Output file url";
+        return "Input file url";
     }
 
     abstract URI uri();
 
     @Override
     public final Optional<String> value() {
-        return Optional.empty();
+        return Optional.of(uri().toString());
     }
 
-    public static OutputUriArg of(final URI uri) {
-        return new AutoValue_OutputUriArg(uri);
+    public static InputUriArg of(final URI uri) {
+        return new AutoValue_InputUriArg(uri);
     }
 }

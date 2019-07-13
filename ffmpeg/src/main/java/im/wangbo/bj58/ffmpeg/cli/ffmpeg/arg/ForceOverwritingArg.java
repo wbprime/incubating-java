@@ -1,10 +1,8 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.GlobalArg;
 
 /**
  * TODO add brief description here

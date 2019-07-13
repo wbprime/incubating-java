@@ -11,10 +11,9 @@ import java.util.concurrent.TimeUnit;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SeekDuration implements Value {
+public abstract class SeekDuration {
     abstract Duration duration();
 
-    @Override
     public final String asString() {
         return duration().getSeconds() + "." + (duration().getNano() / 1000_000);
     }

@@ -2,14 +2,14 @@ package im.wangbo.bj58.ffmpeg.streamspecifier;
 
 import java.util.OptionalInt;
 
-import im.wangbo.bj58.ffmpeg.common.Value;
-
 /**
  * TODO add brief description here
  *
  * @author Elvis Wang
  */
-public interface StreamSpecifier extends Value {
+public interface StreamSpecifier {
+    String asString();
+
     static StreamSpecifier all() {
         return AllStreamSpecifier.of();
     }

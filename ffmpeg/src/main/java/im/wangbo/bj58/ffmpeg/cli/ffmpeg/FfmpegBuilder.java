@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.ShowProgressStatsArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ComplexFilterGraph;
 
 import javax.annotation.Nullable;

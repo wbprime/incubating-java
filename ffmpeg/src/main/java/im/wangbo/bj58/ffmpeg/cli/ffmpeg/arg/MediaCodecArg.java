@@ -1,14 +1,10 @@
-package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main;
+package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
+import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.util.Optional;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InOutputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
-import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
-import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 
 /**
  * TODO add brief description here
@@ -26,8 +22,8 @@ public abstract class MediaCodecArg implements InOutputArg {
     @Override
     public final String description() {
         return "Select an encoder (when used before an output file) or " +
-                "a decoder (when used before an input file) for one or more streams. " +
-                "For each stream, the last matching c option is applied";
+            "a decoder (when used before an input file) for one or more streams. " +
+            "For each stream, the last matching c option is applied";
     }
 
     abstract StreamSpecifier streamSpecifier();
