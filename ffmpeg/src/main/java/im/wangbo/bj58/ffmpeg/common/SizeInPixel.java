@@ -5,9 +5,10 @@ package im.wangbo.bj58.ffmpeg.common;
  *
  * @author Elvis Wang
  */
-public interface SizeInPixel extends Value {
-    @Override
-    String asString();
+public interface SizeInPixel {
+    int w();
+
+    int h();
 
     static SizeInPixel of(int w, int h) {
         return PlainSizeInPixel.of(w, h);
@@ -80,13 +81,14 @@ public interface SizeInPixel extends Value {
             this.h = h;
         }
 
-        public final SizeInPixel size() {
-            return PlainSizeInPixel.of(w, h);
+        @Override
+        public int w() {
+            return w;
         }
 
         @Override
-        public final String asString() {
-            return w + "x" + h;
+        public int h() {
+            return h;
         }
     }
 }

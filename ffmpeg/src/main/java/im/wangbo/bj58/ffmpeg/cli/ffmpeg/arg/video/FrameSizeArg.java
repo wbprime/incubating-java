@@ -41,7 +41,7 @@ public abstract class FrameSizeArg implements InOutputArg {
 
     @Override
     public final Optional<String> value() {
-        return Optional.of(sizeInPixel().asString());
+        return Optional.of(sizeInPixel().w() + "x" + sizeInPixel().h());
     }
 
     private static FrameSizeArg create(final StreamSpecifier specifier, final SizeInPixel size) {
