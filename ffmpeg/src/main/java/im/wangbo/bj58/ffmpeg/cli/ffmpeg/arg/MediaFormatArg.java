@@ -1,7 +1,8 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.format.MediaFormat;
+import im.wangbo.bj58.ffmpeg.format.MediaDemuxer;
+import im.wangbo.bj58.ffmpeg.format.MediaMuxer;
 
 import java.util.Optional;
 
@@ -36,11 +37,11 @@ public abstract class MediaFormatArg implements InOutputArg {
         return new AutoValue_MediaFormatArg(f);
     }
 
-    public static InputArg asInput(final MediaFormat f) {
-        return create(f.demuxer().demuxerName());
+    public static InputArg asInput(final MediaDemuxer f) {
+        return create(f.demuxerName());
     }
 
-    public static OutputArg asOutput(final MediaFormat f) {
-        return create(f.muxer().muxerName());
+    public static OutputArg asOutput(final MediaMuxer f) {
+        return create(f.muxerName());
     }
 }

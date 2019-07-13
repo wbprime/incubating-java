@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class HevcCodec implements MediaCodec {
     }
 
     @Override
-    public final MediaEncoder encoder() {
-        return new HevcEncoder();
+    public final Optional<MediaEncoder> encoder() {
+        return Optional.of(new HevcEncoder());
     }
 
     @Override
-    public final MediaDecoder decoder() {
-        return new HevcDecoder();
+    public final Optional<MediaDecoder> decoder() {
+        return Optional.of(new HevcDecoder());
     }
 
     static HevcCodec of() {

@@ -1,7 +1,8 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.codec.MediaDecoder;
+import im.wangbo.bj58.ffmpeg.codec.MediaEncoder;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.util.Optional;
@@ -39,11 +40,11 @@ public abstract class MediaCodecArg implements InOutputArg {
         return new AutoValue_MediaCodecArg(streamSpecifier, format);
     }
 
-    public static InputArg asInput(final StreamSpecifier specifier, final MediaCodec c) {
-        return create(specifier, c.decoder().decoderName());
+    public static InputArg asInput(final StreamSpecifier specifier, final MediaDecoder c) {
+        return create(specifier, c.decoderName());
     }
 
-    public static OutputArg asOutput(final StreamSpecifier specifier, final MediaCodec c) {
-        return create(specifier, c.encoder().encoderName());
+    public static OutputArg asOutput(final StreamSpecifier specifier, final MediaEncoder c) {
+        return create(specifier, c.encoderName());
     }
 }

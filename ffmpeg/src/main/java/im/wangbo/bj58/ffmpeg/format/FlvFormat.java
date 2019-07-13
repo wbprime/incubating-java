@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class FlvFormat implements MediaFormat {
     }
 
     @Override
-    public final MediaMuxer muxer() {
-        return new FlvMuxer();
+    public final Optional<MediaMuxer> muxer() {
+        return Optional.of(new FlvMuxer());
     }
 
     @Override
-    public final MediaDemuxer demuxer() {
-        return new FlvDemuxer();
+    public final Optional<MediaDemuxer> demuxer() {
+        return Optional.of(new FlvDemuxer());
     }
 
     static FlvFormat of() {

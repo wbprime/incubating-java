@@ -40,7 +40,9 @@ public interface InputSource {
         }
 
         public Builder mediaFormat(final MediaFormat f) {
-            return addArg(MediaFormatArg.asInput(f));
+            if (f.demuxer().isPresent())
+                addArg(MediaFormatArg.asInput(f.demuxer().get()));
+            return this;
         }
 
         public Builder mediaDecoder(final MediaCodec codec) {
@@ -48,7 +50,9 @@ public interface InputSource {
         }
 
         public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
-            return addArg(MediaCodecArg.asInput(specifier, codec));
+            if (codec.decoder().isPresent())
+                addArg(MediaCodecArg.asInput(specifier, codec.decoder().get()));
+            return this;
         }
 
         /**
@@ -66,7 +70,7 @@ public interface InputSource {
         /**
          * Seeking from {@code beg} with {@code duration}.
          *
-         * @param beg beg position offset from beginning
+         * @param beg      beg position offset from beginning
          * @param duration duration
          * @return this
          */
@@ -123,7 +127,7 @@ public interface InputSource {
         /**
          * Seeking from {@code beg} with {@code duration}.
          *
-         * @param beg beg position offset from ending
+         * @param beg      beg position offset from ending
          * @param duration duration
          * @return this
          */

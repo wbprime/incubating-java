@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class RawH264Format implements MediaFormat {
     }
 
     @Override
-    public final MediaMuxer muxer() {
-        return new RawH264Muxer();
+    public final Optional<MediaMuxer> muxer() {
+        return Optional.of(new RawH264Muxer());
     }
 
     @Override
-    public final MediaDemuxer demuxer() {
-        return new RawH264Demuxer();
+    public final Optional<MediaDemuxer> demuxer() {
+        return Optional.of(new RawH264Demuxer());
     }
 
     static RawH264Format of() {

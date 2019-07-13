@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class H264Codec implements MediaCodec {
     }
 
     @Override
-    public final MediaEncoder encoder() {
-        return new H264Encoder();
+    public final Optional<MediaEncoder> encoder() {
+        return Optional.of(new H264Encoder());
     }
 
     @Override
-    public final MediaDecoder decoder() {
-        return new H264Decoder();
+    public final Optional<MediaDecoder> decoder() {
+        return Optional.of(new H264Decoder());
     }
 
     static H264Codec of() {

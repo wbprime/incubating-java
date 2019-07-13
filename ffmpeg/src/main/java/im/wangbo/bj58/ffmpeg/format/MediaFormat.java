@@ -1,6 +1,6 @@
 package im.wangbo.bj58.ffmpeg.format;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * See outputs of {@code ffmpeg -formats}.
@@ -10,15 +10,7 @@ import javax.annotation.Nullable;
 public interface MediaFormat {
     String name();
 
-    /**
-     * @return muxer if muxing supported, or null if not supported
-     */
-    @Nullable
-    MediaMuxer muxer();
+    Optional<MediaMuxer> muxer();
 
-    /**
-     * @return demuxer if demuxing supported, or null if not supported
-     */
-    @Nullable
-    MediaDemuxer demuxer();
+    Optional<MediaDemuxer> demuxer();
 }

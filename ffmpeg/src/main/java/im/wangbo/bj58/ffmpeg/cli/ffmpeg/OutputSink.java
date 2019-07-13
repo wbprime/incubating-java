@@ -44,7 +44,9 @@ public interface OutputSink {
         }
 
         public Builder mediaFormat(final MediaFormat f) {
-            return addArg(MediaFormatArg.asOutput(f));
+            if (f.muxer().isPresent())
+                addArg(MediaFormatArg.asOutput(f.muxer().get()));
+            return this;
         }
 
         public Builder mediaEncoder(final MediaCodec codec) {
@@ -52,7 +54,9 @@ public interface OutputSink {
         }
 
         public Builder mediaEncoder(final StreamSpecifier specifier, final MediaCodec codec) {
-            return addArg(MediaCodecArg.asOutput(specifier, codec));
+            if (codec.encoder().isPresent())
+                addArg(MediaCodecArg.asOutput(specifier, codec.encoder().get()));
+            return this;
         }
 
         /**

@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class OpusCodec implements MediaCodec {
     }
 
     @Override
-    public final MediaEncoder encoder() {
-        return new OpusEncoder();
+    public final Optional<MediaEncoder> encoder() {
+        return Optional.of(new OpusEncoder());
     }
 
     @Override
-    public final MediaDecoder decoder() {
-        return new OpusDecoder();
+    public final Optional<MediaDecoder> decoder() {
+        return Optional.of(new OpusDecoder());
     }
 
     static OpusCodec of() {

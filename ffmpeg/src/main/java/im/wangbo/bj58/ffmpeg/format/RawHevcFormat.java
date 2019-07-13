@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -19,13 +20,13 @@ abstract class RawHevcFormat implements MediaFormat {
     }
 
     @Override
-    public final MediaMuxer muxer() {
-        return new RawHevcMuxer();
+    public final Optional<MediaMuxer> muxer() {
+        return Optional.of(new RawHevcMuxer());
     }
 
     @Override
-    public final MediaDemuxer demuxer() {
-        return new RawHevcDemuxer();
+    public final Optional<MediaDemuxer> demuxer() {
+        return Optional.of(new RawHevcDemuxer());
     }
 
     static RawHevcFormat of() {

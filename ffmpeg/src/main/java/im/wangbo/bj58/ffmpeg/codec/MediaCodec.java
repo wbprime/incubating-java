@@ -1,6 +1,6 @@
 package im.wangbo.bj58.ffmpeg.codec;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -10,11 +10,9 @@ import javax.annotation.Nullable;
 public interface MediaCodec {
     String name();
 
-    @Nullable
-    MediaEncoder encoder();
+    Optional<MediaEncoder> encoder();
 
-    @Nullable
-    MediaDecoder decoder();
+    Optional<MediaDecoder> decoder();
 
     static MediaCodec copying() {
         return CopyingCodec.of();
