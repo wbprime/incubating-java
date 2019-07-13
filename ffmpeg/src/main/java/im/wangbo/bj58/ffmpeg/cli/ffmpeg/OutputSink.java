@@ -111,7 +111,7 @@ public interface OutputSink {
             seekingArgs = ImmutableList.of(duration);
             return this;
         }
-       
+
         public Builder limitOutputSize(final SizeInByte size) {
             return addArg(OutputFileSizeLimitArg.of(size));
         }
