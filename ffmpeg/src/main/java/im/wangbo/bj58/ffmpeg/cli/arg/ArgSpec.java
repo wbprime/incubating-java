@@ -1,5 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.arg;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,5 +13,7 @@ public interface ArgSpec {
 
     String description();
 
-    List<ValueValidator> validators();
+    default List<ValueValidator> validators() {
+        return Collections.singletonList(ValueValidator.isTrue());
+    }
 }
