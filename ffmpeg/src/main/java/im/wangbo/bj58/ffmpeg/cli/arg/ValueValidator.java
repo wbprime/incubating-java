@@ -9,30 +9,35 @@ public interface ValueValidator {
     boolean validate(final String str);
 
     static ValueValidator isTrue() {
-        return new AlwaysValid();
+        return AlwaysValid.of();
     }
 
     static ValueValidator isFalse() {
-        return new AlwaysInvalid();
+        return AlwaysInvalid.of();
     }
 
     static ValueValidator isInteger() {
-        return new IntegerPredicate(n -> true);
+        return IntegerPredicate.of(n -> true, "Always LONG integer");
     }
 
     static ValueValidator isPositiveInteger() {
-        return new IntegerPredicate(n -> n > 0L);
+        return IntegerPredicate.of(n -> n > 0L, "Always positive LONG integer");
     }
 
     static ValueValidator isNegativeInteger() {
-        return new IntegerPredicate(n -> n < 0L);
+        return IntegerPredicate.of(n -> n < 0L, "Always negative LONG integer");
     }
 
     static ValueValidator isNonNegativeInteger() {
-        return new IntegerPredicate(n -> n >= 0L);
+        return IntegerPredicate.of(n -> n >= 0L, "Always non-negative LONG integer");
     }
 
     static ValueValidator isIntegerRangeIn(final long inclusiveMin, final long exclusiveMax) {
-        return new IntegerPredicate(n -> n >= inclusiveMin && n < exclusiveMax);
+        return IntegerPredicate.of(n -> n >= inclusiveMin && n < exclusiveMax,
+            String.format("Always as LONG integer range in [%d, %d)", inclusiveMin, exclusiveMax));
+    }
+
+    static ValueValidator matches(final String pattern) {
+        return MatchesRegex.of(pattern);
     }
 }
