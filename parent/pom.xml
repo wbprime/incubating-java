@@ -53,8 +53,8 @@
         <google_guice_version>4.1.0</google_guice_version>
         <google_autovalue_version>1.5</google_autovalue_version>
         <google_autovalue_redacted_version>1.0.1</google_autovalue_redacted_version>
-        <google_autoservice_version>1.0-rc4</google_autoservice_version>
-        <google_autoservice_version>1.0-beta5</google_autoservice_version>
+        <google_autoservice_version>1.0-rc5</google_autoservice_version>
+        <google_autofactory_version>1.0-beta6</google_autofactory_version>
         <google_autocommon_version>0.10</google_autocommon_version>
 
         <eclipse_collections_version>9.2.0</eclipse_collections_version>
@@ -172,6 +172,11 @@
                 <groupId>com.google.auto.service</groupId>
                 <artifactId>auto-service</artifactId>
                 <version>${google_autoservice_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.factory</groupId>
+                <artifactId>auto-factory</artifactId>
+                <version>${google_autofactory_version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.auto</groupId>
