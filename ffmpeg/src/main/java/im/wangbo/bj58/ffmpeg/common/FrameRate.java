@@ -7,8 +7,7 @@ import java.util.OptionalInt;
  *
  * @author Elvis Wang
  */
-public interface FrameRate extends Value {
-    @Override
+public interface FrameRate {
     String asString();
 
     static FrameRate of(int frames, int seconds) {

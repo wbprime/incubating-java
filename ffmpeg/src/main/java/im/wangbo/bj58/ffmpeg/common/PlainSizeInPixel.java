@@ -10,13 +10,10 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 abstract class PlainSizeInPixel implements SizeInPixel {
     @Override
-    public final String asString() {
-        return width() + "x" + height();
-    }
+    public abstract int w();
 
-    abstract int width();
-
-    abstract int height();
+    @Override
+    public abstract int h();
 
     static PlainSizeInPixel of(int w, int h) {
         return new AutoValue_PlainSizeInPixel(w, h);

@@ -2,11 +2,10 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import im.wangbo.bj58.ffmpeg.common.Arg;
-import im.wangbo.bj58.ffmpeg.common.ArgSpec;
+import im.wangbo.bj58.ffmpeg.cli.arg.Arg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterMeta;
-import im.wangbo.bj58.ffmpeg.common.Value;
+
 import java.util.Optional;
 
 /**
@@ -32,17 +31,19 @@ public abstract class JsonBasedWriterFormat implements WriterFormat {
 
     @AutoValue
     static abstract class CompactArg implements Arg {
-
         @Override
-        public ArgSpec spec() {
-            return ArgSpec.of(
-                "compact", "Print compact JSON or not"
-            );
+        public String name() {
+            return "compact";
         }
 
         @Override
-        public Optional<Value> value() {
-            return Optional.of(Value.ofInt(1));
+        public String description() {
+            return "Print compact JSON or not";
+        }
+
+        @Override
+        public Optional<String> value() {
+            return Optional.of("1");
         }
 
         static CompactArg of() {

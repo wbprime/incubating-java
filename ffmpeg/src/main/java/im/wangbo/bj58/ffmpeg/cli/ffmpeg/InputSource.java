@@ -2,17 +2,14 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
-import java.net.URI;
-import java.util.List;
-
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.InputUriArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaCodecArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.main.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
+import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * TODO add brief description here
@@ -31,6 +28,8 @@ public interface InputSource {
 
         private final List<InputArg> args = Lists.newArrayList();
 
+        private List<InputArg> seekingArgs = Collections.emptyList();
+
         private Builder(final String path) {
             this.pathToInput = path;
         }
@@ -41,7 +40,9 @@ public interface InputSource {
         }
 
         public Builder mediaFormat(final MediaFormat f) {
-            return addArg(MediaFormatArg.asInput(f));
+            if (f.demuxer().isPresent())
+                addArg(MediaFormatArg.asInput(f.demuxer().get()));
+            return this;
         }
 
         public Builder mediaDecoder(final MediaCodec codec) {
@@ -49,19 +50,109 @@ public interface InputSource {
         }
 
         public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
-            return addArg(MediaCodecArg.asInput(specifier, codec));
+            if (codec.decoder().isPresent())
+                addArg(MediaCodecArg.asInput(specifier, codec.decoder().get()));
+            return this;
         }
 
-        public Builder seeking(final ImmutableList<InputArg> seeking) {
-            seeking.forEach(this::addArg);
+        /**
+         * Seeking from {@code beg} to {@code end}.
+         *
+         * @param beg beg position offset from beginning
+         * @param end end position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg, final SeekingEndArg end) {
+            seekingArgs = ImmutableList.of(beg, end);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} with {@code duration}.
+         *
+         * @param beg      beg position offset from beginning
+         * @param duration duration
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg, final SeekingDurationArg duration) {
+            seekingArgs = ImmutableList.of(beg, duration);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} to ending.
+         *
+         * @param beg beg position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingOffsetArg beg) {
+            seekingArgs = ImmutableList.of(beg);
+            return this;
+        }
+
+        /**
+         * Seeking from beginning to {@code end}.
+         *
+         * @param end end position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingEndArg end) {
+            seekingArgs = ImmutableList.of(end);
+            return this;
+        }
+
+        /**
+         * Seeking from begninning with {@code duration}.
+         *
+         * @param duration duration
+         * @return this
+         */
+        public Builder seeking(final SeekingDurationArg duration) {
+            seekingArgs = ImmutableList.of(duration);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} to {@code end}.
+         *
+         * @param beg beg position offset from ending
+         * @param end end position offset from beginning
+         * @return this
+         */
+        public Builder seeking(final SeekingBackOffsetArg beg, final SeekingEndArg end) {
+            seekingArgs = ImmutableList.of(beg, end);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} with {@code duration}.
+         *
+         * @param beg      beg position offset from ending
+         * @param duration duration
+         * @return this
+         */
+        public Builder seeking(final SeekingBackOffsetArg beg, final SeekingDurationArg duration) {
+            seekingArgs = ImmutableList.of(beg, duration);
+            return this;
+        }
+
+        /**
+         * Seeking from {@code beg} to ending.
+         *
+         * @param beg beg position offset from ending
+         * @return this
+         */
+        public Builder seeking(final SeekingBackOffsetArg beg) {
+            seekingArgs = ImmutableList.of(beg);
             return this;
         }
 
         public InputSource build() {
             final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
-                    .addAll(args)
-                    .add(InputUriArg.of(URI.create(pathToInput)))
-                    .build();
+                .addAll(args)
+                .addAll(seekingArgs)
+                .add(InputUriArg.of(URI.create(pathToInput)))
+                .build();
             return () -> inputArgs;
         }
     }

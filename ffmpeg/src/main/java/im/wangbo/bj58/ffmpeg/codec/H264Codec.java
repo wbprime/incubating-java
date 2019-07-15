@@ -1,6 +1,11 @@
 package im.wangbo.bj58.ffmpeg.codec;
 
 import com.google.auto.value.AutoValue;
+import im.wangbo.bj58.ffmpeg.cli.arg.ArgSpec;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
@@ -15,16 +20,40 @@ abstract class H264Codec implements MediaCodec {
     }
 
     @Override
-    public final MediaEncoder encoder() {
-        return StdEncoder.of("libx264");
+    public final Optional<MediaEncoder> encoder() {
+        return Optional.of(new H264Encoder());
     }
 
     @Override
-    public final MediaDecoder decoder() {
-        return StdDecoder.of("h264");
+    public final Optional<MediaDecoder> decoder() {
+        return Optional.of(new H264Decoder());
     }
 
     static H264Codec of() {
         return new AutoValue_H264Codec();
+    }
+
+    private static class H264Encoder implements MediaEncoder {
+        @Override
+        public String encoderName() {
+            return "libx264";
+        }
+
+        @Override
+        public List<ArgSpec> args() {
+            return Collections.emptyList();
+        }
+    }
+
+    private static class H264Decoder implements MediaDecoder {
+        @Override
+        public String decoderName() {
+            return "h264";
+        }
+
+        @Override
+        public List<ArgSpec> args() {
+            return Collections.emptyList();
+        }
     }
 }

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SeekPosition implements Value {
+public abstract class SeekPosition {
     /**
      * Minutes per hour.
      */
@@ -31,7 +31,6 @@ public abstract class SeekPosition implements Value {
 
     abstract Duration position();
 
-    @Override
     public final String asString() {
         final long s = position().getSeconds();
         final long n = position().getNano();
@@ -56,11 +55,11 @@ public abstract class SeekPosition implements Value {
         return buf.toString();
     }
 
-    public static SeekDuration of(final Duration duration) {
-        return new AutoValue_SeekDuration(duration);
+    public static SeekPosition of(final Duration duration) {
+        return new AutoValue_SeekPosition(duration);
     }
 
-    public static SeekDuration of(final long duration, final TimeUnit unit) {
+    public static SeekPosition of(final long duration, final TimeUnit unit) {
         return of(Duration.ofNanos(unit.toNanos(duration)));
     }
 }

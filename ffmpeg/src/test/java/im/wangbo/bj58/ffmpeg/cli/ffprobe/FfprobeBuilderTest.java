@@ -1,6 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
-import im.wangbo.bj58.ffmpeg.cli.common.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +34,8 @@ class FfprobeBuilderTest {
     void buildAndRun() throws Exception {
         final FfprobeBuilder builder = FfprobeBuilder.builder("ffprobe");
 
-        builder.hideBanner().logLevel(LogLevelArg.error())
+        builder
+//            .hideBanner().logLevel(LogLevelArg.error())
                 .addSectionSpecifier(SectionSpecifier.FORMAT)
                 .addSectionSpecifier(SectionSpecifier.STREAMS)
                 .writerFormat(WriterFormat.json())
