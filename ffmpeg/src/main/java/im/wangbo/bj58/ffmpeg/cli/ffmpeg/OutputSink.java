@@ -3,6 +3,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
@@ -139,11 +140,11 @@ public interface OutputSink {
             return addArg(MetadataArg.of(key, val));
         }
 
-        public Builder filter(final SimpleFilterGraph graph) {
+        public Builder filter(final FilterGraph graph) {
             return addArg(SimpleFilterArg.of(StreamSpecifier.all(), graph));
         }
 
-        public Builder filter(final StreamSpecifier specifier, final SimpleFilterGraph graph) {
+        public Builder filter(final StreamSpecifier specifier, final FilterGraph graph) {
             return addArg(SimpleFilterArg.of(specifier, graph));
         }
 

@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ShowProgressStatsArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterChain;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -70,7 +71,7 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addFilterGraph(final ComplexFilterGraph filterGraph) {
+    public FfmpegBuilder addFilterGraph(final List<FilterChain> filterGraph) {
 //        args.add(Arg.paired("-filter_complex", filterGraph));
         return this;
     }

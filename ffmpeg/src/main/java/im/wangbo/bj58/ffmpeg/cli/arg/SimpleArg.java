@@ -23,7 +23,7 @@ public abstract class SimpleArg implements Arg {
     }
 
     private static SimpleArg create(final String name, final Optional<String> value) {
-        return new AutoValue_StdArg(name, value);
+        return new AutoValue_SimpleArg(name, value);
     }
 
     public static SimpleArg named(final String name) {
