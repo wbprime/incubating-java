@@ -47,16 +47,15 @@ public class FfprobeBuilder {
         return this;
     }
 
-
     public FfprobeBuilder hideBanner() {
         return addArg(HideBannerArg.of());
     }
 
-    public FfprobeBuilder logLevel(final LogLevelArg arg) {
-        return addArg(arg);
+    public FfprobeBuilder logLevel(final LogLevelArg.LogLevel logLevel) {
+        return addArg(LogLevelArg.of(logLevel));
     }
 
-    public FfprobeBuilder addSectionSpecifier(final SectionSpecifier specifier) {
+    public FfprobeBuilder showSection(final SectionSpecifier specifier) {
         return addArg(SectionSpecifierArg.of(specifier));
     }
 

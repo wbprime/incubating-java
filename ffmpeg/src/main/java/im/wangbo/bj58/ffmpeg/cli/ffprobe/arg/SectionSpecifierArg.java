@@ -16,12 +16,35 @@ public abstract class SectionSpecifierArg implements FfprobeArg {
 
     @Override
     public String name() {
-        return sectionSpecifier().sectionName();
+        switch (sectionSpecifier()) {
+            case FORMAT:
+                return "-show_format";
+            case STREAMS:
+                return "-show_streams";
+            case FRAMES:
+                return "-show_frames";
+            case PACKETS:
+                return "-show_packets";
+            case CHAPTERS:
+                return "-show_chapters";
+            case PROGRAMS:
+                return "-show_programs";
+            case PIXEL_FORMATS:
+                return "-show_pixel_formats";
+            case ERROR:
+                return "-show_error";
+            case PROGRAM_VERSION:
+                return "-show_program_version";
+            case LIBRARY_VERSIONS:
+                return "-show_library_versions";
+            default:
+                throw new IllegalStateException("Unexpected error");
+        }
     }
 
     @Override
     public String description() {
-        return sectionSpecifier().sectionName();
+        return "Show section for " + sectionSpecifier().sectionName();
     }
 
     @Override

@@ -19,7 +19,7 @@ public abstract class SimpleArg implements Arg {
 
     @Override
     public final String description() {
-        return null;
+        return "";
     }
 
     private static SimpleArg create(final String name, final Optional<String> value) {

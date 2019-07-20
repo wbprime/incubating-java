@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * TODO add brief description here
@@ -80,14 +81,18 @@ public final class CliCommand {
         return workingDir;
     }
 
-    public final CompletionStage<CliRunningProcess> start(final Executor executor) {
-        return start(executor, PID_STRATEGY);
+    public final CompletionStage<CliRunningProcess> start(final ScheduledExecutorService executor) {
+        return start(executor, PID_STRATEGY, CliProcessTimeoutingStrategy.unlimited());
     }
 
-    public final CompletionStage<CliRunningProcess> start(final Executor executor, final CliPidGeneratingStrategy strategy) {
+    public final CompletionStage<CliRunningProcess> start(
+        final ScheduledExecutorService executor,
+        final CliPidGeneratingStrategy pidStrategy,
+        final CliProcessTimeoutingStrategy timeoutingStrategy) {
+
         final CliCommand cli = this;
 
-        final String processId = strategy.get();
+        final String processId = pidStrategy.get();
         final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs);
 
         processBuilder.environment().putAll(env);
@@ -119,6 +124,10 @@ public final class CliCommand {
                     // Starting failed
                     stderrFile.delete();
                     stdoutFile.delete();
+                } else {
+                    timeoutingStrategy.millis().ifPresent(n -> {
+                        executor.schedule(re::close, n, TimeUnit.MILLISECONDS);
+                    });
                 }
             }
         );
@@ -164,12 +173,12 @@ public final class CliCommand {
             return this;
         }
 
-        public Builder addEnv(final Map<String, String> env) {
+        public Builder addEnvironments(final Map<String, String> env) {
             this.env.putAll(env);
             return this;
         }
 
-        public Builder addEnv(final String k, final String v) {
+        public Builder addEnvironment(final String k, final String v) {
             this.env.put(k, v);
             return this;
         }
