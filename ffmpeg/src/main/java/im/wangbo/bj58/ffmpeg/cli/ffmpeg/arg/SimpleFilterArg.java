@@ -1,7 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.util.Optional;

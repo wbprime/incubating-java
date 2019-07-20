@@ -11,19 +11,19 @@ import java.util.Optional;
  */
 @AutoValue
 public abstract class FilterArg {
-    public abstract String argName();
+    public abstract String name();
 
-    public abstract Optional<String> argValue();
+    public abstract Optional<String> value();
 
-    private static FilterArg create(String argName, Optional<String> argValue) {
+    private static FilterArg create(final String argName, final Optional<String> argValue) {
         return new AutoValue_FilterArg(argName, argValue);
     }
 
-    public static FilterArg of(final String argName, final String argValue) {
+    public static FilterArg paired(final String argName, final String argValue) {
         return create(argName, Optional.of(argValue));
     }
 
-    public static FilterArg of(final String argName) {
+    public static FilterArg named(final String argName) {
         return create(argName, Optional.empty());
     }
 }

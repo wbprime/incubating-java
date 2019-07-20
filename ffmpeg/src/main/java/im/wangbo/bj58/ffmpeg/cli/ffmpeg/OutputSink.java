@@ -3,7 +3,6 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.SimpleFilterGraph;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
