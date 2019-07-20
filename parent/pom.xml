@@ -9,7 +9,7 @@
 
     <groupId>im.wangbo.bj58.incubating</groupId>
     <artifactId>incubating-parent</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -57,7 +57,7 @@
         <google_autofactory_version>1.0-beta6</google_autofactory_version>
         <google_autocommon_version>0.10</google_autocommon_version>
 
-        <eclipse_collections_version>9.2.0</eclipse_collections_version>
+        <eclipse_collections_version>10.0.0</eclipse_collections_version>
 
         <netty_version>4.1.22.Final</netty_version>
         <vertx_core_version>3.5.4</vertx_core_version>
@@ -192,6 +192,16 @@
             <dependency>
                 <groupId>org.eclipse.collections</groupId>
                 <artifactId>eclipse-collections</artifactId>
+                <version>${eclipse_collections_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-forkjoin</artifactId>
+                <version>${eclipse_collections_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-testutils</artifactId>
                 <version>${eclipse_collections_version}</version>
             </dependency>
 
