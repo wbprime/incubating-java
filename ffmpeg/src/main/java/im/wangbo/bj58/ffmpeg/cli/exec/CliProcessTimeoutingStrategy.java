@@ -23,6 +23,14 @@ public interface CliProcessTimeoutingStrategy {
         return NoTimeouting.of();
     }
 
+    static CliProcessTimeoutingStrategy limitedInMillis(final long millis) {
+        return TimedTimeouting.of(millis, TimeUnit.MILLISECONDS);
+    }
+
+    static CliProcessTimeoutingStrategy limitedInSeconds(final long seconds) {
+        return TimedTimeouting.of(seconds, TimeUnit.SECONDS);
+    }
+
     static CliProcessTimeoutingStrategy limited(final long n, final TimeUnit unit) {
         return TimedTimeouting.of(n, unit);
     }

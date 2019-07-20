@@ -15,8 +15,11 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
+import java.util.StringJoiner;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+
+import static im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy.unlimited;
 
 /**
  * TODO add brief description here
@@ -103,79 +106,145 @@ public final class CliRunningProcess implements AutoCloseable {
         return exited ? exitCode() : OptionalInt.empty();
     }
 
-    @Override
-    public void close() {
+    final void destroy() {
         try {
             process.destroy();
-            stdoutFile.delete();
-            stderrFile.delete();
         } catch (Exception ex) {
-            LOG.warn("Failed to close {}", this, ex);
+            LOG.warn("Failed to destroy {}", this, ex);
         }
+    }
+
+    @Override
+    public synchronized void close() {
+        this.destroy();
+        stdoutFile.delete();
+        stderrFile.delete();
     }
 
     public CompletionStage<CliTerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
         final int... expectedCodes
     ) {
-        return awaitTerminated(executor, null, expectedCodes);
+        return awaitTerminated(executor,
+            unlimited(),
+            expectedCodes);
     }
 
     public CompletionStage<CliTerminatedProcess> awaitTerminated(
         final ScheduledExecutorService executor,
+        final CliProcessTimeoutingStrategy timeouting,
+        final int... expectedCodes
+    ) {
+        return awaitTerminated(executor,
+            timeouting,
+            null, expectedCodes);
+    }
+
+    public CompletionStage<CliTerminatedProcess> awaitTerminated(
+        final ScheduledExecutorService executor,
+        final CliProcessTimeoutingStrategy timeouting,
+        @Nullable final Consumer<String> lineHandler,
+        final int... expectedCodes
+    ) {
+        return awaitTerminated(executor,
+            timeouting,
+            CliProcessAliveCheckingStrategy.of(10L, TimeUnit.MILLISECONDS),
+            lineHandler, expectedCodes);
+    }
+
+    public CompletionStage<CliTerminatedProcess> awaitTerminated(
+        final ScheduledExecutorService executor,
+        final CliProcessTimeoutingStrategy timeouting,
+        final CliProcessAliveCheckingStrategy aliveChecking,
         @Nullable final Consumer<String> lineHandler,
         final int... expectedCodes
     ) {
         final CliRunningProcess process = this;
 
-        final CompletableFuture<Integer> future = new CompletableFuture<>();
+        // A future set by alive check or timeout checker
+        // If absent, meaning process is timeouted and should be destroyed
+        // If present, meaning process is terminated with given exit code
+        final CompletableFuture<OptionalInt> future = new CompletableFuture<>();
 
-        final ScheduledFuture<?> aliveFuture = executor.scheduleAtFixedRate(
-            new AliveChecker(this, future), 0L, 10L, TimeUnit.MILLISECONDS
+        final ScheduledFuture<?> aliveChecker = executor.scheduleAtFixedRate(
+            new AliveChecker(this, future), 0L, aliveChecking.millis(), TimeUnit.MILLISECONDS
+        );
+        LOG.trace("{} scheduled for {} every {} millis", AliveChecker.class.getSimpleName(),
+            processId(), aliveChecking.millis());
+
+        final ScheduledFuture<?> timeoutChecker = timeouting.millis().isPresent() ?
+            executor.schedule(
+                new TimeoutChecker(this, future), timeouting.millis().getAsLong(),
+                TimeUnit.MILLISECONDS
+            ) : null;
+        timeouting.millis().ifPresent(
+            n -> LOG.trace("{} scheduled for {} after {} millis",
+                TimeoutChecker.class.getSimpleName(), processId(), n)
         );
 
         final ImmutableIntSet successCodes = IntSets.immutable.of(expectedCodes);
         return future
-            .whenComplete(
-                (code, ex) -> {
-                    LOG.trace("AwaitTerminated future determined, step 1");
-//                    aliveFuture.cancel(true);
-                }
-            )
-            .thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes, executor, aliveFuture));
+            .whenComplete((re, ex) -> {
+                aliveChecker.cancel(true);
+                if (null != timeoutChecker) timeoutChecker.cancel(true);
+            })
+            .thenCompose(c -> terminateProcess(process, lineHandler, c, successCodes, executor));
     }
 
     private CompletableFuture<CliTerminatedProcess> terminateProcess(
         final CliRunningProcess process,
         @Nullable final Consumer<String> lineHandler,
-        final int code, final ImmutableIntSet successCodes,
-        final Executor executor,
-        final ScheduledFuture<?> aliveChecking
+        final OptionalInt codeOpt, final ImmutableIntSet successCodes,
+        final Executor executor
     ) {
-        LOG.trace("AwaitTerminated future determined, step 2");
         final CompletableFuture<CliTerminatedProcess> future = new CompletableFuture<>();
         executor.execute(
             () -> {
-                LOG.trace("AwaitTerminated future determined, step 3");
-                if (successCodes.contains(code)) {
-                    // Exit code regarded as successful
-                    try {
-                        if (lineHandler != null) {
-                            Files.asCharSource(process.stdoutFile(), StandardCharsets.UTF_8)
-                                .forEachLine(lineHandler);
+                if (codeOpt.isPresent()) {
+                    // Process is terminated from OS
+                    final int code = codeOpt.getAsInt();
+                    if (successCodes.contains(code)) {
+                        // Exit code regarded as successful
+                        final File f = process.stdoutFile();
+                        if (lineHandler != null && f.canRead()) {
+                            try {
+                                Files.asCharSource(f, StandardCharsets.UTF_8).forEachLine(lineHandler);
+                            } catch (RuntimeException | IOException exx) {
+                                LOG.warn("Failed to process stdout file for {}", process.processId, exx);
+                            }
                         }
                         future.complete(CliTerminatedProcess.create(process, code));
-                    } catch (RuntimeException | IOException exx) {
-                        future.completeExceptionally(CliRunningException.create(process, exx));
+                    } else {
+                        // Exit code regarded as failed
+                        final File f = process.stdoutFile();
+                        if (f.canRead()) {
+                            try {
+                                final String err = Files.asCharSource(process.stderrFile(),
+                                    StandardCharsets.UTF_8).read();
+                                future.completeExceptionally(CliRunningException.create(process, code, err));
+                            } catch (IOException exx) {
+                                LOG.warn("Failed to process stderr file for {}", process.processId, exx);
+                                future.completeExceptionally(CliRunningException.create(process, code));
+                            }
+                        } else {
+                            future.completeExceptionally(CliRunningException.create(process, code));
+                        }
                     }
                 } else {
-                    // Exit code regarded as failed
-                    try {
-                        final String err = Files.asCharSource(process.stderrFile(), StandardCharsets.UTF_8)
-                            .read();
-                        future.completeExceptionally(CliRunningException.create(process, err));
-                    } catch (IOException exx) {
-                        future.completeExceptionally(CliRunningException.create(process, exx));
+                    // Process should be terminated caused by timeout
+
+                    final File f = process.stdoutFile();
+                    if (f.canRead()) {
+                        try {
+                            final String err = Files.asCharSource(process.stderrFile(),
+                                StandardCharsets.UTF_8).read();
+                            future.completeExceptionally(CliInterruptedException.create(process, err));
+                        } catch (IOException exx) {
+                            LOG.warn("Failed to process stderr file for {}", process.processId, exx);
+                            future.completeExceptionally(CliInterruptedException.create(process));
+                        }
+                    } else {
+                        future.completeExceptionally(CliInterruptedException.create(process));
                     }
                 }
 
@@ -189,24 +258,54 @@ public final class CliRunningProcess implements AutoCloseable {
     static class AliveChecker implements Runnable {
         private final CliRunningProcess process;
 
-        private CompletableFuture<Integer> onExit;
+        private final CompletableFuture<OptionalInt> onExit;
 
-        AliveChecker(final CliRunningProcess process, final CompletableFuture<Integer> future) {
+        AliveChecker(final CliRunningProcess process, final CompletableFuture<OptionalInt> future) {
             this.process = process;
             this.onExit = future;
         }
 
         @Override
         public void run() {
-//            LOG.trace("Alive checked ran ...");
-            process.exitCode().ifPresent(onExit::complete);
+            LOG.trace("{} ran for {}", getClass().getSimpleName(), process.processId());
+            process.exitCode().ifPresent(n -> onExit.complete(OptionalInt.of(n)));
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", AliveChecker.class.getSimpleName() + "[", "]")
+                .toString();
+        }
+    }
+
+    static class TimeoutChecker implements Runnable {
+        private final CliRunningProcess process;
+
+        private CompletableFuture<OptionalInt> onExit;
+
+        TimeoutChecker(final CliRunningProcess process, final CompletableFuture<OptionalInt> future) {
+            this.process = process;
+            this.onExit = future;
+        }
+
+        @Override
+        public void run() {
+            LOG.trace("{} ran for {}", getClass().getSimpleName(), process.processId());
+            onExit.complete(OptionalInt.empty());
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", AliveChecker.class.getSimpleName() + "[", "]")
+                .toString();
         }
     }
 
     void collectMultiLineString(final StringBuilder sb) {
         command.collectMultiLineString(sb);
-        sb.append("\twith process id: ").append(processId).append(System.lineSeparator())
-            .append("\twith started time: ").append(startedInstant).append(System.lineSeparator());
+        sb.append(System.lineSeparator())
+            .append("\twith process id: ").append(processId).append(System.lineSeparator())
+            .append("\twith started time: ").append(startedInstant);
     }
 
     @Override

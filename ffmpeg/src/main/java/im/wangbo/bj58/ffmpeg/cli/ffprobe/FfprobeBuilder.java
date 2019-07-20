@@ -2,6 +2,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliPidGeneratingStrategy;
 import im.wangbo.bj58.ffmpeg.cli.exec.StdoutCollector;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.HideBannerArg;
@@ -18,6 +19,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
+
+import static im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy.unlimited;
 
 /**
  * TODO add brief description here
@@ -79,8 +82,8 @@ public class FfprobeBuilder {
         final CliCommand cli = build(uri);
 
         final StdoutCollector stdout = StdoutCollector.of();
-        return cli.start(executor)
-            .thenCompose(process -> process.awaitTerminated(executor, stdout, 0))
+        return cli.start(executor, CliPidGeneratingStrategy.seqBased("ffprobe_"))
+            .thenCompose(process -> process.awaitTerminated(executor, unlimited(), stdout, 0))
             .thenApply(process -> writerFormat.meta().parser().parse(stdout.collect()));
     }
 }

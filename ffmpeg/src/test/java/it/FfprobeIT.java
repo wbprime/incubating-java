@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.exec.CliRunningProcess;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.FfprobeBuilder;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,7 @@ class FfprobeIT {
             .logLevel(LogLevelArg.LogLevel.WARNING)
             .showSection(SectionSpecifier.FORMAT)
             .showSection(SectionSpecifier.STREAMS)
+            .writerFormat(WriterFormat.json())
             .build(video.toUri());
 
         final CliRunningProcess started = command.start(threadPool)

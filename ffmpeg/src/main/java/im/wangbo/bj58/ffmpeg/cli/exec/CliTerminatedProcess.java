@@ -47,10 +47,11 @@ public final class CliTerminatedProcess {
         return exitCode;
     }
 
-    void collectMultiLineString(final StringBuilder sb) {
+    private void collectMultiLineString(final StringBuilder sb) {
         process.collectMultiLineString(sb);
-        sb.append("\twith exited time: ").append(terminatedInstant).append(System.lineSeparator());
-        sb.append("\twith exited code: ").append(exitCode).append(System.lineSeparator());
+        sb.append(System.lineSeparator())
+            .append("\twith exited time: ").append(terminatedInstant).append(System.lineSeparator())
+            .append("\twith exited code: ").append(exitCode).append(System.lineSeparator());
     }
 
     @Override

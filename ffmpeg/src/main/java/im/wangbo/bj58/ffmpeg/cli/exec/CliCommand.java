@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * TODO add brief description here
@@ -82,13 +82,12 @@ public final class CliCommand {
     }
 
     public final CompletionStage<CliRunningProcess> start(final ScheduledExecutorService executor) {
-        return start(executor, PID_STRATEGY, CliProcessTimeoutingStrategy.unlimited());
+        return start(executor, PID_STRATEGY);
     }
 
     public final CompletionStage<CliRunningProcess> start(
-        final ScheduledExecutorService executor,
-        final CliPidGeneratingStrategy pidStrategy,
-        final CliProcessTimeoutingStrategy timeoutingStrategy) {
+        final Executor executor,
+        final CliPidGeneratingStrategy pidStrategy) {
 
         final CliCommand cli = this;
 
@@ -108,28 +107,18 @@ public final class CliCommand {
         final File stdoutFile = new File(pwd, "tmp." + processId + ".stdout." + workingClock.millis());
         processBuilder.redirectOutput(stdoutFile);
 
-        final CompletableFuture<CliRunningProcess> started = new CompletableFuture<>();
-        executor.execute(() -> {
-            final Process p;
-            try {
-                p = processBuilder.start();
-                started.complete(new CliRunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock));
-            } catch (Exception ex) {
-                started.completeExceptionally(CliStartingException.create(this, ex));
-            }
-        });
-        return started.whenComplete(
-            (re, ex) -> {
-                if (null == re) {
-                    // Starting failed
+        return CompletableFuture.supplyAsync(
+            () -> {
+                final Process p;
+                try {
+                    p = processBuilder.start();
+                    return new CliRunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock);
+                } catch (Exception ex) {
                     stderrFile.delete();
                     stdoutFile.delete();
-                } else {
-                    timeoutingStrategy.millis().ifPresent(n -> {
-                        executor.schedule(re::close, n, TimeUnit.MILLISECONDS);
-                    });
+                    throw CliStartingException.create(this, ex);
                 }
-            }
+            }, executor
         );
     }
 
@@ -215,7 +204,7 @@ public final class CliCommand {
                     .append(v).append("\"").append(System.lineSeparator())
             );
         }
-        sb.append("\twith working directory: \"").append(workingDir()).append('"').append(System.lineSeparator());
+        sb.append("\twith working directory: \"").append(workingDir()).append('"');
     }
 
     @Override

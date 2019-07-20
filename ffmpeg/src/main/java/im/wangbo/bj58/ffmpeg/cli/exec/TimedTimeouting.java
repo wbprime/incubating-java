@@ -21,11 +21,11 @@ abstract class TimedTimeouting implements CliProcessTimeoutingStrategy {
     }
 
     static TimedTimeouting of(final long duration, final TimeUnit unit) {
-        return of(Duration.ofNanos(unit.toMillis(duration)));
+        return create(unit.toMillis(duration));
     }
 
     static TimedTimeouting of(final Duration duration) {
-        return of(Duration.ofNanos(duration.toMillis()));
+        return create(duration.toMillis());
     }
 
     private static TimedTimeouting create(final long millis) {
