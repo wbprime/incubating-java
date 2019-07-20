@@ -11,7 +11,7 @@ import java.util.OptionalInt;
  * <p>
  * Created at 2019-07-20, by Elvis Wang
  */
-public final class ScaleFilterBuilder extends Builder<ScaleFilterBuilder> {
+public final class ScaleFilterBuilder extends FilterBuilder<ScaleFilterBuilder> {
     private final MutableList<String> in = Lists.mutable.withInitialCapacity(1);
     private final MutableList<String> out = Lists.mutable.withInitialCapacity(1);
 

@@ -14,7 +14,7 @@ import java.util.OptionalInt;
  * Created at 2019-07-20, by Elvis Wang
  */
 @SuppressWarnings("unchecked")
-public abstract class Builder<BUILDER extends Builder<BUILDER>> {
+public abstract class FilterBuilder<BUILDER extends FilterBuilder<BUILDER>> {
     private final MutableList<String> in = Lists.mutable.withInitialCapacity(1);
     private final MutableList<String> out = Lists.mutable.withInitialCapacity(1);
 
