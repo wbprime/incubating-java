@@ -1,9 +1,7 @@
 package it;
 
-import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
-import im.wangbo.bj58.ffmpeg.cli.exec.CliProcessAliveCheckingStrategy;
-import im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy;
-import im.wangbo.bj58.ffmpeg.cli.exec.CliTerminatedProcess;
+import im.wangbo.bj58.ffmpeg.cli.exec.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -47,15 +47,13 @@ class FfplayIT {
     void play() throws Exception {
         final CliCommand command = CliCommand.of("ffplay", video.toString());
 
-        final CliTerminatedProcess process = command.start(threadPool)
+        final CompletableFuture<CliTerminatedProcess> future = command.start(threadPool)
             .thenCompose(p -> p.awaitTerminated(threadPool,
                 CliProcessTimeoutingStrategy.limitedInSeconds(5), 0))
-            .toCompletableFuture().get();
+            .toCompletableFuture();
 
-//        try {
-//            if (started.ge)
-//        } finally {
-//            started.close();
-//        }
+        Assertions.assertThatThrownBy( future::get )
+            .isInstanceOf(ExecutionException.class)
+            .hasCauseInstanceOf(CliInterruptedException.class);
     }
 }

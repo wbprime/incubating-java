@@ -5,7 +5,7 @@ package im.wangbo.bj58.ffmpeg.cli.exec;
  *
  * @author Elvis Wang
  */
-class CliInterruptedException extends RuntimeException {
+public class CliInterruptedException extends RuntimeException {
 
     private CliInterruptedException(final String msg) {
         super(msg);

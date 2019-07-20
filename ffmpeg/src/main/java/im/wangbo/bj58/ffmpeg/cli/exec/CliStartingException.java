@@ -5,7 +5,7 @@ package im.wangbo.bj58.ffmpeg.cli.exec;
  *
  * @author Elvis Wang
  */
-class CliStartingException extends RuntimeException {
+public class CliStartingException extends RuntimeException {
 
     private CliStartingException(final String msg, final Throwable ex) {
         super(msg, ex);
