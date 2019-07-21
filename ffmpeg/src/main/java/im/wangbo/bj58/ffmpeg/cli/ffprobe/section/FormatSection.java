@@ -1,10 +1,9 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
 
-import java.util.Map;
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Sample data:
@@ -110,11 +109,11 @@ public class FormatSection {
         if (o == null || getClass() != o.getClass()) return false;
         FormatSection that = (FormatSection) o;
         return Objects.equals(duration, that.duration) &&
-                Objects.equals(formatName, that.formatName) &&
-                Objects.equals(fileSize, that.fileSize) &&
-                Objects.equals(bitRate, that.bitRate) &&
-                Objects.equals(startTime, that.startTime) &&
-                Objects.equals(tags, that.tags);
+            Objects.equals(formatName, that.formatName) &&
+            Objects.equals(fileSize, that.fileSize) &&
+            Objects.equals(bitRate, that.bitRate) &&
+            Objects.equals(startTime, that.startTime) &&
+            Objects.equals(tags, that.tags);
     }
 
     @Override
@@ -125,12 +124,12 @@ public class FormatSection {
     @Override
     public String toString() {
         return "FormatSection{" +
-                "duration='" + duration + '\'' +
-                ", formatName='" + formatName + '\'' +
-                ", fileSize='" + fileSize + '\'' +
-                ", bitRate='" + bitRate + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", tags=" + tags +
-                '}';
+            "duration='" + duration + '\'' +
+            ", formatName='" + formatName + '\'' +
+            ", fileSize='" + fileSize + '\'' +
+            ", bitRate='" + bitRate + '\'' +
+            ", startTime='" + startTime + '\'' +
+            ", tags=" + tags +
+            '}';
     }
 }

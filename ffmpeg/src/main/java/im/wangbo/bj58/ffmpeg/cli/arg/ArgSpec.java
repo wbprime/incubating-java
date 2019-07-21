@@ -1,6 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.arg;
 
-import com.google.common.collect.Lists;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface ArgSpec {
     default Arg create(final String str) {
         if (nameOnly()) return SimpleArg.named(name());
 
-        final List<String> errors = Lists.newArrayList();
+        final MutableList<String> errors = Lists.mutable.empty();
         for (ValueValidator validator : validators()) {
             if (validator.validate(str)) {
                 errors.add("discarded by " + validator);

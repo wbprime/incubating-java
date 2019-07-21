@@ -19,6 +19,7 @@ public interface CliPidGeneratingStrategy extends Supplier<String> {
     static CliPidGeneratingStrategy seqBased() {
         return seqBased("DEFAULT_");
     }
+
     static CliPidGeneratingStrategy seqBased(final String prefix) {
         return new SeqNumberAsPidStrategy(prefix);
     }

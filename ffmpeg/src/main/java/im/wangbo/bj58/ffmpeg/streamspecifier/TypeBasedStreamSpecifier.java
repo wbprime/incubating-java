@@ -1,6 +1,7 @@
 package im.wangbo.bj58.ffmpeg.streamspecifier;
 
 import com.google.auto.value.AutoValue;
+
 import java.util.OptionalInt;
 
 /**

@@ -1,10 +1,10 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import com.google.common.collect.ImmutableList;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import org.assertj.core.api.Assertions;
+import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -35,15 +35,14 @@ class FfmpegBuilderTest {
         Assertions.assertThat(build).isNotNull();
         Assertions.assertThat(build.commandLines()).isNotEmpty()
             .containsExactlyElementsOf(
-                ImmutableList.<String>builder()
-                    .add(ffmpegPath)
-                    .add("-hide_banner")
-                    .add("-loglevel").add("8")
+                Lists.mutable.<String>empty()
+                    .with(ffmpegPath)
+                    .with("-hide_banner")
+                    .with("-loglevel").with("8")
                     // Input
-                    .add("-i").add(inputPath)
+                    .with("-i").with(inputPath)
                     // Output
-                    .add(outputPath)
-                    .build()
+                    .with(outputPath)
             );
     }
 }

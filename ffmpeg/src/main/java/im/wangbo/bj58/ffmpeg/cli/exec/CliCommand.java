@@ -1,14 +1,20 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
 import im.wangbo.bj58.ffmpeg.cli.arg.Arg;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.time.Clock;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +47,7 @@ public final class CliCommand {
     }
 
     public static CliCommand of(final String exe, final List<String> opts) {
-        return new CliCommand(exe, opts, Optional.of(PWD), ImmutableMap.of());
+        return new CliCommand(exe, opts, Optional.of(PWD), Collections.emptyMap());
     }
 
     private CliCommand(
@@ -59,8 +65,8 @@ public final class CliCommand {
         final Clock clock
     ) {
         this.exec = exe;
-        this.fullArgs = ImmutableList.<String>builder().add(exe).addAll(args).build();
-        this.env = ImmutableMap.copyOf(env);
+        this.fullArgs = Lists.mutable.of(exe).withAll(args).toImmutable();
+        this.env = Maps.immutable.ofMap(env);
         this.workingDir = workingDir.filter(File::isDirectory).orElse(PWD);
         this.workingClock = clock;
     }
@@ -70,11 +76,11 @@ public final class CliCommand {
     }
 
     public final List<String> commandLines() {
-        return fullArgs;
+        return fullArgs.castToList();
     }
 
     public final List<String> args() {
-        return ImmutableList.copyOf(Iterables.skip(fullArgs, 1));
+        return fullArgs.drop(1).castToList();
     }
 
     public final File workingDir() {
@@ -92,9 +98,9 @@ public final class CliCommand {
         final CliCommand cli = this;
 
         final String processId = pidStrategy.get();
-        final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs);
+        final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs.castToList());
 
-        processBuilder.environment().putAll(env);
+        processBuilder.environment().putAll(env.castToMap());
 
         final File pwd = workingDir();
         processBuilder.directory(pwd);
@@ -129,9 +135,9 @@ public final class CliCommand {
     public static final class Builder {
 
         private String fullExe;
-        private List<String> opts = Lists.newArrayList();
+        private MutableList<String> opts = Lists.mutable.empty();
 
-        private Map<String, String> env = Maps.newHashMap();
+        private MutableMap<String, String> env = Maps.mutable.empty();
 
         @Nullable
         private File workingDir = PWD;
@@ -199,7 +205,7 @@ public final class CliCommand {
             sb.append("\twith no environments").append(System.lineSeparator());
         } else {
             sb.append("\twith environments:").append(System.lineSeparator());
-            env.forEach(
+            env.forEachKeyValue(
                 (k, v) -> sb.append("\t  \"").append(k).append("\" => \"")
                     .append(v).append("\"").append(System.lineSeparator())
             );

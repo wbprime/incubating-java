@@ -1,7 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json;
 
 import com.google.auto.value.AutoValue;
-
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.Parser;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterMeta;
 

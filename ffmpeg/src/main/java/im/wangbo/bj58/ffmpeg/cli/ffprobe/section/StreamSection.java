@@ -8,64 +8,64 @@ import java.util.StringJoiner;
 
 /**
  * Sample data:
- *
+ * <p>
  * "streams": [                                                                                                                               [83/46941]
- *    {
- *      "index": 0,
- *      "codec_name": "h264",
- *      "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
- *      "profile": "High",
- *      "codec_type": "video",
- *      "codec_time_base": "1/48",
- *      "codec_tag_string": "avc1",
- *      "codec_tag": "0x31637661",
- *      "width": 544,
- *      "height": 960,
- *      "coded_width": 544,
- *      "coded_height": 960,
- *      "has_b_frames": 2,
- *      "sample_aspect_ratio": "0:1",
- *      "display_aspect_ratio": "0:1",
- *      "pix_fmt": "yuv420p",
- *      "level": 31,
- *      "chroma_location": "left",
- *      "refs": 1,
- *      "is_avc": "true",
- *      "nal_length_size": "4",
- *      "r_frame_rate": "24/1",
- *      "avg_frame_rate": "24/1",
- *      "time_base": "1/12288",
- *      "start_pts": 0,
- *      "start_time": "0.000000",
- *      "duration_ts": 798720,
- *      "duration": "65.000000",
- *      "bit_rate": "1107035"
- *    },
- *    {
- *      "index": 1,
- *      "codec_name": "aac",
- *      "codec_long_name": "AAC (Advanced Audio Coding)",
- *      "profile": "LC",
- *      "codec_type": "audio",
- *      "codec_time_base": "1/44100",
- *      "codec_tag_string": "mp4a",
- *      "codec_tag": "0x6134706d",
- *      "sample_fmt": "fltp",
- *      "sample_rate": "44100",
- *      "channels": 2,
- *      "channel_layout": "stereo",
- *      "bits_per_sample": 0,
- *      "r_frame_rate": "0/0",
- *      "avg_frame_rate": "0/0",
- *      "time_base": "1/44100",
- *      "start_pts": 0,
- *      "start_time": "0.000000",
- *      "duration_ts": 2860017,
- *      "duration": "64.852993",
- *      "bit_rate": "128724",
- *      "max_bit_rate": "128724",
- *      "nb_frames": "2794"
- *    }
+ * {
+ * "index": 0,
+ * "codec_name": "h264",
+ * "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+ * "profile": "High",
+ * "codec_type": "video",
+ * "codec_time_base": "1/48",
+ * "codec_tag_string": "avc1",
+ * "codec_tag": "0x31637661",
+ * "width": 544,
+ * "height": 960,
+ * "coded_width": 544,
+ * "coded_height": 960,
+ * "has_b_frames": 2,
+ * "sample_aspect_ratio": "0:1",
+ * "display_aspect_ratio": "0:1",
+ * "pix_fmt": "yuv420p",
+ * "level": 31,
+ * "chroma_location": "left",
+ * "refs": 1,
+ * "is_avc": "true",
+ * "nal_length_size": "4",
+ * "r_frame_rate": "24/1",
+ * "avg_frame_rate": "24/1",
+ * "time_base": "1/12288",
+ * "start_pts": 0,
+ * "start_time": "0.000000",
+ * "duration_ts": 798720,
+ * "duration": "65.000000",
+ * "bit_rate": "1107035"
+ * },
+ * {
+ * "index": 1,
+ * "codec_name": "aac",
+ * "codec_long_name": "AAC (Advanced Audio Coding)",
+ * "profile": "LC",
+ * "codec_type": "audio",
+ * "codec_time_base": "1/44100",
+ * "codec_tag_string": "mp4a",
+ * "codec_tag": "0x6134706d",
+ * "sample_fmt": "fltp",
+ * "sample_rate": "44100",
+ * "channels": 2,
+ * "channel_layout": "stereo",
+ * "bits_per_sample": 0,
+ * "r_frame_rate": "0/0",
+ * "avg_frame_rate": "0/0",
+ * "time_base": "1/44100",
+ * "start_pts": 0,
+ * "start_time": "0.000000",
+ * "duration_ts": 2860017,
+ * "duration": "64.852993",
+ * "bit_rate": "128724",
+ * "max_bit_rate": "128724",
+ * "nb_frames": "2794"
+ * }
  * ]
  *
  * @author Elvis Wang
@@ -192,15 +192,15 @@ public class StreamSection {
         if (o == null || getClass() != o.getClass()) return false;
         StreamSection that = (StreamSection) o;
         return Objects.equals(index, that.index) &&
-                Objects.equals(codecName, that.codecName) &&
-                Objects.equals(codecType, that.codecType) &&
-                Objects.equals(width, that.width) &&
-                Objects.equals(height, that.height) &&
-                Objects.equals(duration, that.duration) &&
-                Objects.equals(bitRate, that.bitRate) &&
-                Objects.equals(frameRate, that.frameRate) &&
-                Objects.equals(sampleRate, that.sampleRate) &&
-                Objects.equals(tags, that.tags);
+            Objects.equals(codecName, that.codecName) &&
+            Objects.equals(codecType, that.codecType) &&
+            Objects.equals(width, that.width) &&
+            Objects.equals(height, that.height) &&
+            Objects.equals(duration, that.duration) &&
+            Objects.equals(bitRate, that.bitRate) &&
+            Objects.equals(frameRate, that.frameRate) &&
+            Objects.equals(sampleRate, that.sampleRate) &&
+            Objects.equals(tags, that.tags);
     }
 
     @Override
@@ -211,16 +211,16 @@ public class StreamSection {
     @Override
     public String toString() {
         return new StringJoiner(", ", StreamSection.class.getSimpleName() + "[", "]")
-                .add("index=" + index)
-                .add("codecName='" + codecName + "'")
-                .add("codecType='" + codecType + "'")
-                .add("width=" + width)
-                .add("height=" + height)
-                .add("duration='" + duration + "'")
-                .add("bitRate='" + bitRate + "'")
-                .add("frameRate='" + frameRate + "'")
-                .add("sampleRate='" + sampleRate + "'")
-                .add("tags=" + tags)
-                .toString();
+            .add("index=" + index)
+            .add("codecName='" + codecName + "'")
+            .add("codecType='" + codecType + "'")
+            .add("width=" + width)
+            .add("height=" + height)
+            .add("duration='" + duration + "'")
+            .add("bitRate='" + bitRate + "'")
+            .add("frameRate='" + frameRate + "'")
+            .add("sampleRate='" + sampleRate + "'")
+            .add("tags=" + tags)
+            .toString();
     }
 }

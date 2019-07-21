@@ -16,7 +16,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
 import java.util.StringJoiner;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy.unlimited;

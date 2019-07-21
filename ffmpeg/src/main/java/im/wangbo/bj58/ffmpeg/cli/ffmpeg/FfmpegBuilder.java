@@ -1,6 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliPidGeneratingStrategy;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy;
@@ -10,12 +9,12 @@ import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ComplexFilterArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -28,13 +27,13 @@ public class FfmpegBuilder {
 
     private final String pathToExe;
 
-    private final List<FfArg> args = Lists.newArrayList();
+    private final MutableList<FfArg> args = Lists.mutable.empty();
 
     @Nullable
     private File pwDir;
 
-    private final List<InputSource> inputs = Lists.newArrayList();
-    private final List<OutputSink> outputs = Lists.newArrayList();
+    private final MutableList<InputSource> inputs = Lists.mutable.empty();
+    private final MutableList<OutputSink> outputs = Lists.mutable.empty();
 
     private FfmpegBuilder(final String path) {
         this.pathToExe = path;
@@ -104,8 +103,8 @@ public class FfmpegBuilder {
     }
 
     public CliCommand build() {
-        inputs.forEach(i -> args.addAll(i.asArgs()));
-        outputs.forEach(o -> args.addAll(o.asArgs()));
+        inputs.forEach(i -> args.addAllIterable(i.asArgs()));
+        outputs.forEach(o -> args.addAllIterable(o.asArgs()));
         return CliCommand.builder()
             .command(pathToExe)
             .addArgs(args)

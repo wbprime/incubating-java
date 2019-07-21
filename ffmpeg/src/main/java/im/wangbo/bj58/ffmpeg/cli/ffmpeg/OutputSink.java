@@ -1,19 +1,30 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FrameRateArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.MediaCodecArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.MetadataArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputFileSizeLimitArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputFramesLimitArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputQualityLimitArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.OutputUriArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingDurationArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingEndArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingOffsetArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SimpleFilterArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.common.SizeInByte;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * TODO add brief description here
@@ -22,7 +33,7 @@ import java.util.List;
  */
 public interface OutputSink {
 
-    List<OutputArg> asArgs();
+    ImmutableList<OutputArg> asArgs();
 
     static Builder builder(final URI uri) {
         return new Builder(uri);
@@ -36,9 +47,9 @@ public interface OutputSink {
 
         private final OutputUriArg outputUri;
 
-        private final List<OutputArg> args = Lists.newArrayList();
+        private final MutableList<OutputArg> args = Lists.mutable.empty();
 
-        private List<OutputArg> seekingArgs = Collections.emptyList();
+        private ImmutableList<OutputArg> seekingArgs = Lists.immutable.empty();
 
         private Builder(final URI uri) {
             this.outputUri = OutputUriArg.of(uri);
@@ -96,7 +107,7 @@ public interface OutputSink {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg, final SeekingEndArg end) {
-            seekingArgs = ImmutableList.of(beg, end);
+            seekingArgs = Lists.immutable.of(beg, end);
             return this;
         }
 
@@ -108,7 +119,7 @@ public interface OutputSink {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg, final SeekingDurationArg duration) {
-            seekingArgs = ImmutableList.of(beg, duration);
+            seekingArgs = Lists.immutable.of(beg, duration);
             return this;
         }
 
@@ -119,7 +130,7 @@ public interface OutputSink {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg) {
-            seekingArgs = ImmutableList.of(beg);
+            seekingArgs = Lists.immutable.of(beg);
             return this;
         }
 
@@ -130,7 +141,7 @@ public interface OutputSink {
          * @return this
          */
         public Builder seeking(final SeekingEndArg end) {
-            seekingArgs = ImmutableList.of(end);
+            seekingArgs = Lists.immutable.of(end);
             return this;
         }
 
@@ -141,7 +152,7 @@ public interface OutputSink {
          * @return this
          */
         public Builder seeking(final SeekingDurationArg duration) {
-            seekingArgs = ImmutableList.of(duration);
+            seekingArgs = Lists.immutable.of(duration);
             return this;
         }
 
@@ -254,12 +265,11 @@ public interface OutputSink {
          * @return a new {@link OutputSink} instance
          */
         public OutputSink build() {
-            final ImmutableList<OutputArg> outputArgs = ImmutableList.<OutputArg>builder()
-                .addAll(args)
-                .addAll(seekingArgs)
-                .add(outputUri)
-                .build();
-            return () -> outputArgs;
+            final MutableList<OutputArg> outputArgs = Lists.mutable.<OutputArg>empty()
+                .withAll(args)
+                .withAll(seekingArgs)
+                .with(outputUri);
+            return outputArgs::toImmutable;
         }
     }
 }
