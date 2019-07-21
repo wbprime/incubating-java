@@ -8,52 +8,53 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-codecs.html#libopus-1">libopus</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
 abstract class OpusCodec implements MediaCodec {
     @Override
-    public final String name() {
-        return "Opus";
-    }
-
-    @Override
     public final Optional<MediaEncoder> encoder() {
-        return Optional.of(new OpusEncoder());
+        return Optional.of(Encoder.create("libopus"));
     }
 
     @Override
     public final Optional<MediaDecoder> decoder() {
-        return Optional.of(new OpusDecoder());
+        return Optional.of(Decoder.create("libopus"));
     }
 
     static OpusCodec of() {
         return new AutoValue_OpusCodec();
     }
 
-    private static class OpusEncoder implements MediaEncoder {
+    @AutoValue
+    static abstract class Encoder implements MediaEncoder {
         @Override
-        public String encoderName() {
-            return "libopus";
-        }
+        public abstract String encoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        static Encoder create(String encoderName) {
+            return new AutoValue_OpusCodec_Encoder(encoderName);
         }
     }
 
-    private static class OpusDecoder implements MediaDecoder {
+    @AutoValue
+    static abstract class Decoder implements MediaDecoder {
         @Override
-        public String decoderName() {
-            return "libopus";
-        }
+        public abstract String decoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        static Decoder create(String decoderName) {
+            return new AutoValue_OpusCodec_Decoder(decoderName);
         }
     }
 }

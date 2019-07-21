@@ -8,52 +8,38 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg.html#Stream-copy">Stream Copy</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
 abstract class CopyingCodec implements MediaCodec {
     @Override
-    public final String name() {
-        return "Copy as is";
-    }
-
-    @Override
     public final Optional<MediaEncoder> encoder() {
-        return Optional.of(new CopyingEncoder());
+        return Optional.of(Encoder.create("copy"));
     }
 
     @Override
     public final Optional<MediaDecoder> decoder() {
-        return Optional.of(new CopyingDecoder());
+        return Optional.empty();
     }
 
     static CopyingCodec of() {
         return new AutoValue_CopyingCodec();
     }
 
-    private static class CopyingEncoder implements MediaEncoder {
+    @AutoValue
+    static abstract class Encoder implements MediaEncoder {
         @Override
-        public String encoderName() {
-            return "copy";
-        }
+        public abstract String encoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
         }
-    }
 
-    private static class CopyingDecoder implements MediaDecoder {
-        @Override
-        public String decoderName() {
-            return "copy";
-        }
-
-        @Override
-        public List<ArgSpec> args() {
-            return Collections.emptyList();
+        static Encoder create(String encoderName) {
+            return new AutoValue_CopyingCodec_Encoder(encoderName);
         }
     }
 }

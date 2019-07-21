@@ -8,52 +8,53 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-codecs.html#libx265">libx265</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
 abstract class HevcCodec implements MediaCodec {
     @Override
-    public final String name() {
-        return "H.265 / HEVC";
-    }
-
-    @Override
     public final Optional<MediaEncoder> encoder() {
-        return Optional.of(new HevcEncoder());
+        return Optional.of(Encoder.create("libx265"));
     }
 
     @Override
     public final Optional<MediaDecoder> decoder() {
-        return Optional.of(new HevcDecoder());
+        return Optional.of(Decoder.create("hevc"));
     }
 
     static HevcCodec of() {
         return new AutoValue_HevcCodec();
     }
 
-    private static class HevcEncoder implements MediaEncoder {
+    @AutoValue
+    static abstract class Encoder implements MediaEncoder {
         @Override
-        public String encoderName() {
-            return "libx265";
-        }
+        public abstract String encoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        public static Encoder create(String encoderName) {
+            return new AutoValue_HevcCodec_Encoder(encoderName);
         }
     }
 
-    private static class HevcDecoder implements MediaDecoder {
+    @AutoValue
+    static abstract class Decoder implements MediaDecoder {
         @Override
-        public String decoderName() {
-            return "hevc";
-        }
+        public abstract String decoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        public static Decoder create(String decoderName) {
+            return new AutoValue_HevcCodec_Decoder(decoderName);
         }
     }
 }
