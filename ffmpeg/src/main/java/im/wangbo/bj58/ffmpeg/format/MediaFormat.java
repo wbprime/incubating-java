@@ -20,6 +20,10 @@ public interface MediaFormat {
         return GifFormat.of();
     }
 
+    static MediaFormat webp() {
+        return WebpFormat.of();
+    }
+
     static MediaFormat mp3() {
         return Mp3Format.of();
     }

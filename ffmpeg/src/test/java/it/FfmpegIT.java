@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,7 +53,6 @@ class FfmpegIT {
     @AfterEach
     void tearDown() throws Exception {
         Files.delete(video);
-        /*
         Files.list(tmpDir).forEach(p -> {
             try {
                 Files.delete(p);
@@ -61,7 +61,6 @@ class FfmpegIT {
             }
         });
         Files.delete(tmpDir);
-        */
 
         threadPool.shutdown();
     }
