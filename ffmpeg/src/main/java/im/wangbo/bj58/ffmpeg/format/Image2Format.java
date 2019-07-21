@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#image2-1">image2 demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#image2-2">image2 muxer</a> for details.
  *
  * @author Elvis Wang
  */

@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#flv_002c-live_005fflv">flv demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#flv">flv muxer</a> for details.
  *
  * @author Elvis Wang
  */

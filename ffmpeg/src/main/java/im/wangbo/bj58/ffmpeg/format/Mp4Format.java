@@ -8,30 +8,31 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#mov_002fmp4_002f3gp_002fQuickTime">mov/mp4 demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#mov_002c-mp4_002c-ismv">mov/mp4 muxer</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
-abstract class RawH264Format implements MediaFormat {
+abstract class Mp4Format implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new RawH264Muxer());
+        return Optional.of(new Mp4Muxer());
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new RawH264Demuxer());
+        return Optional.of(new Mp4Demuxer());
     }
 
-    static RawH264Format of() {
-        return new AutoValue_RawH264Format();
+    static Mp4Format of() {
+        return new AutoValue_Mp4Format();
     }
 
-    private static class RawH264Muxer implements MediaMuxer {
+    private static class Mp4Muxer implements MediaMuxer {
         @Override
         public String muxerName() {
-            return "h264";
+            return "mp4";
         }
 
         @Override
@@ -41,10 +42,10 @@ abstract class RawH264Format implements MediaFormat {
         }
     }
 
-    private static class RawH264Demuxer implements MediaDemuxer {
+    private static class Mp4Demuxer implements MediaDemuxer {
         @Override
         public String demuxerName() {
-            return "h264";
+            return "mp4";
         }
 
         @Override

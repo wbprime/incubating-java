@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#hls-1">hls demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#hls-2">hls muxer</a> for details.
  *
  * @author Elvis Wang
  */
