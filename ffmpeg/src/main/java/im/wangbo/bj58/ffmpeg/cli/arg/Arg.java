@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * TODO Details go here.
- *
+ * <p>
  * Created at 2019-07-10 by Elvis Wang
  */
 public interface Arg {

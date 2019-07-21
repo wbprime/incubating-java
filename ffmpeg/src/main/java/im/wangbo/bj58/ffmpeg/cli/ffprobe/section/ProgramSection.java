@@ -11,6 +11,6 @@ public class ProgramSection {
     @Override
     public String toString() {
         return new StringJoiner(", ", ProgramSection.class.getSimpleName() + "[", "]")
-                .toString();
+            .toString();
     }
 }

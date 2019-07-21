@@ -1,7 +1,11 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import im.wangbo.bj58.ffmpeg.cli.arg.Arg;
 
 import javax.annotation.Nullable;

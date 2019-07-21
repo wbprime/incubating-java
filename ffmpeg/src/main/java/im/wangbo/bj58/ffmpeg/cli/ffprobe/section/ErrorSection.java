@@ -5,11 +5,11 @@ import java.util.Objects;
 
 /**
  * Sample data:
- *
- *  "error": {
- *    "code": -1094995529,
- *    "string": "Invalid data found when processing input"
- *  }
+ * <p>
+ * "error": {
+ * "code": -1094995529,
+ * "string": "Invalid data found when processing input"
+ * }
  *
  * @author Elvis Wang
  */
@@ -42,7 +42,7 @@ public class ErrorSection {
         if (o == null || getClass() != o.getClass()) return false;
         ErrorSection that = (ErrorSection) o;
         return code == that.code &&
-                message.equals(that.message);
+            message.equals(that.message);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class ErrorSection {
     @Override
     public String toString() {
         return "ErrorSection{" +
-                "code=" + code +
-                ", message='" + message + '\'' +
-                '}';
+            "code=" + code +
+            ", message='" + message + '\'' +
+            '}';
     }
 }

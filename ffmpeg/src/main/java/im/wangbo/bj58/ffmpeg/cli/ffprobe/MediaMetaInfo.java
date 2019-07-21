@@ -1,6 +1,15 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
-import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.*;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.ChapterSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.ErrorSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.FormatSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.FrameSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.LibraryVersionSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.PacketSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.PixelFormatSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.ProgramSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.ProgramVersionSection;
+import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.StreamSection;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
@@ -152,15 +161,15 @@ public class MediaMetaInfo {
         if (o == null || getClass() != o.getClass()) return false;
         MediaMetaInfo that = (MediaMetaInfo) o;
         return Objects.equals(streams, that.streams) &&
-                Objects.equals(format, that.format) &&
-                Objects.equals(frames, that.frames) &&
-                Objects.equals(packets, that.packets) &&
-                Objects.equals(programs, that.programs) &&
-                Objects.equals(chapters, that.chapters) &&
-                Objects.equals(pixelFormats, that.pixelFormats) &&
-                Objects.equals(error, that.error) &&
-                Objects.equals(programVersion, that.programVersion) &&
-                Objects.equals(libraryVersions, that.libraryVersions);
+            Objects.equals(format, that.format) &&
+            Objects.equals(frames, that.frames) &&
+            Objects.equals(packets, that.packets) &&
+            Objects.equals(programs, that.programs) &&
+            Objects.equals(chapters, that.chapters) &&
+            Objects.equals(pixelFormats, that.pixelFormats) &&
+            Objects.equals(error, that.error) &&
+            Objects.equals(programVersion, that.programVersion) &&
+            Objects.equals(libraryVersions, that.libraryVersions);
     }
 
     @Override
@@ -171,16 +180,16 @@ public class MediaMetaInfo {
     @Override
     public String toString() {
         return new StringJoiner(", ", MediaMetaInfo.class.getSimpleName() + "[", "]")
-                .add("streams=" + streams)
-                .add("format=" + format)
-                .add("frames=" + frames)
-                .add("packets=" + packets)
-                .add("programs=" + programs)
-                .add("chapters=" + chapters)
-                .add("pixelFormats=" + pixelFormats)
-                .add("error=" + error)
-                .add("programVersion=" + programVersion)
-                .add("libraryVersions=" + libraryVersions)
-                .toString();
+            .add("streams=" + streams)
+            .add("format=" + format)
+            .add("frames=" + frames)
+            .add("packets=" + packets)
+            .add("programs=" + programs)
+            .add("chapters=" + chapters)
+            .add("pixelFormats=" + pixelFormats)
+            .add("error=" + error)
+            .add("programVersion=" + programVersion)
+            .add("libraryVersions=" + libraryVersions)
+            .toString();
     }
 }

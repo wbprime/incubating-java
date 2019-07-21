@@ -2,7 +2,15 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FrameRateArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputUriArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.MediaCodecArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.MediaFormatArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingBackOffsetArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingDurationArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingEndArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.SeekingOffsetArg;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;

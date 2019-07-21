@@ -29,7 +29,7 @@ final class FilterGraphs {
         // Remove trailing ';' character
         int n = sb.length();
         while (n > 0 && sb.charAt(n - 1) == ';') {
-            n --;
+            n--;
         }
         sb.setLength(n);
     }

@@ -1,9 +1,9 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.json;
 
-import javax.json.bind.JsonbBuilder;
-
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.MediaMetaInfo;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.Parser;
+
+import javax.json.bind.JsonbBuilder;
 
 /**
  * TODO add brief description here

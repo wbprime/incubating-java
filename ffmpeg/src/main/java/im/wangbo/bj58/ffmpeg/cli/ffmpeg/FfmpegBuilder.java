@@ -13,7 +13,6 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
