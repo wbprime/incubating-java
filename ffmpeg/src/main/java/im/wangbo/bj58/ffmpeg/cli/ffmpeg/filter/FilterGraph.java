@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 public abstract class FilterGraph {
     public abstract ImmutableList<FilterChain> chains();
 
-    static FilterGraph of(final ImmutableList<FilterChain> chains) {
+    public static FilterGraph of(final ImmutableList<FilterChain> chains) {
         return new AutoValue_FilterGraph(chains);
     }
 }

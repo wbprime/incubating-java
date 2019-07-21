@@ -14,6 +14,10 @@ public final class FilterGraphBuilder {
 
     private final MutableList<Filter> curChain = Lists.mutable.empty();
 
+    public static FilterGraphBuilder of() {
+        return new FilterGraphBuilder(Lists.immutable.empty());
+    }
+
     private FilterGraphBuilder(final ImmutableList<FilterChain> chains) {
         this.chains = chains;
     }

@@ -30,7 +30,7 @@ public abstract class ComplexFilterArg implements GlobalArg {
 
     @Override
     public final Optional<String> value() {
-        return Optional.of(filterGraph().toString());
+        return Optional.of(FilterGraphs.describe(filterGraph()));
     }
 
     public static ComplexFilterArg of(final FilterGraph graph) {

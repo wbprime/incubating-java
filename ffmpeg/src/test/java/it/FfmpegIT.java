@@ -5,6 +5,7 @@ import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.FfmpegBuilder;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.InputSource;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.OutputSink;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraphBuilder;
 import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.MediaStreamType;
@@ -50,6 +51,7 @@ class FfmpegIT {
     @AfterEach
     void tearDown() throws Exception {
         Files.delete(video);
+        /*
         Files.list(tmpDir).forEach(p -> {
             try {
                 Files.delete(p);
@@ -58,6 +60,7 @@ class FfmpegIT {
             }
         });
         Files.delete(tmpDir);
+        */
 
         threadPool.shutdown();
     }
@@ -72,11 +75,15 @@ class FfmpegIT {
                 .outputFrames(StreamSpecifier.of(MediaStreamType.VIDEO), 10)
                 .frameRate(FrameRate.of(2))
                 .mediaFormat(MediaFormat.image2())
+                .filter(
+                    FilterGraphBuilder.of()
+                    .next().next().next().build()
+                )
                 .build())
             .build();
 
 //        System.out.println(runCommand(command));
-//        System.out.println(command);
+        System.out.println(command);
     }
 
     private Duration runCommand(final CliCommand command) throws Exception {

@@ -36,7 +36,7 @@ public abstract class SimpleFilterArg implements OutputArg {
 
     @Override
     public final Optional<String> value() {
-        return Optional.of(filterGraph().toString());
+        return Optional.of(FilterGraphs.describe(filterGraph()));
     }
 
     public static SimpleFilterArg of(final StreamSpecifier streamSpecifier,
