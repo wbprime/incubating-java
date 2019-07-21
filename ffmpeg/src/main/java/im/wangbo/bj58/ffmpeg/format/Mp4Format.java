@@ -17,41 +17,47 @@ import java.util.Optional;
 abstract class Mp4Format implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new Mp4Muxer());
+        return Optional.of(Muxer.create("mp4"));
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new Mp4Demuxer());
+        return Optional.of(Demuxer.create("mp4"));
     }
 
     static Mp4Format of() {
         return new AutoValue_Mp4Format();
     }
 
-    private static class Mp4Muxer implements MediaMuxer {
+    @AutoValue
+    static abstract class Muxer implements MediaMuxer {
         @Override
-        public String muxerName() {
-            return "mp4";
-        }
+        public abstract String muxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Muxer create(String muxerName) {
+            return new AutoValue_Mp4Format_Muxer(muxerName);
         }
     }
 
-    private static class Mp4Demuxer implements MediaDemuxer {
+    @AutoValue
+    static abstract class Demuxer implements MediaDemuxer {
         @Override
-        public String demuxerName() {
-            return "mp4";
-        }
+        public abstract String demuxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Demuxer create(String demuxerName) {
+            return new AutoValue_Mp4Format_Demuxer(demuxerName);
         }
     }
 }

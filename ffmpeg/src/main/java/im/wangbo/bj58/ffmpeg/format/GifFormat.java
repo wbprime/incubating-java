@@ -17,41 +17,47 @@ import java.util.Optional;
 abstract class GifFormat implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new GifMuxer());
+        return Optional.of(Muxer.create("gif"));
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new GifDemuxer());
+        return Optional.of(Demuxer.create("gif"));
     }
 
     static GifFormat of() {
         return new AutoValue_GifFormat();
     }
 
-    private static class GifMuxer implements MediaMuxer {
+    @AutoValue
+    static abstract class Muxer implements MediaMuxer {
         @Override
-        public String muxerName() {
-            return "gif";
-        }
+        public abstract String muxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Muxer create(String muxerName) {
+            return new AutoValue_GifFormat_Muxer(muxerName);
         }
     }
 
-    private static class GifDemuxer implements MediaDemuxer {
+    @AutoValue
+    static abstract class Demuxer implements MediaDemuxer {
         @Override
-        public String demuxerName() {
-            return "gif";
-        }
+        public abstract String demuxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Demuxer create(String demuxerName) {
+            return new AutoValue_GifFormat_Demuxer(demuxerName);
         }
     }
 }

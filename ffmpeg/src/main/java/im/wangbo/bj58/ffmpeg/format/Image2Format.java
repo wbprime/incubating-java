@@ -17,41 +17,47 @@ import java.util.Optional;
 abstract class Image2Format implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new Image2Muxer());
+        return Optional.of(Muxer.create("image2"));
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new Image2Demuxer());
+        return Optional.of(Demuxer.create("image2"));
     }
 
     static Image2Format of() {
         return new AutoValue_Image2Format();
     }
 
-    private static class Image2Muxer implements MediaMuxer {
+    @AutoValue
+    static abstract class Muxer implements MediaMuxer {
         @Override
-        public String muxerName() {
-            return "image2";
-        }
+        public abstract String muxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Muxer create(String muxerName) {
+            return new AutoValue_Image2Format_Muxer(muxerName);
         }
     }
 
-    private static class Image2Demuxer implements MediaDemuxer {
+    @AutoValue
+    static abstract class Demuxer implements MediaDemuxer {
         @Override
-        public String demuxerName() {
-            return "image2";
-        }
+        public abstract String demuxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Demuxer create(String demuxerName) {
+            return new AutoValue_Image2Format_Demuxer(demuxerName);
         }
     }
 }

@@ -17,41 +17,47 @@ import java.util.Optional;
 abstract class HlsFormat implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new HlsMuxer());
+        return Optional.of(Muxer.create("hls"));
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new HlsDemuxer());
+        return Optional.of(Demuxer.create("hls"));
     }
 
     static HlsFormat of() {
         return new AutoValue_HlsFormat();
     }
 
-    private static class HlsMuxer implements MediaMuxer {
+    @AutoValue
+    static abstract class Muxer implements MediaMuxer {
         @Override
-        public String muxerName() {
-            return "hls";
-        }
+        public abstract String muxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Muxer create(String muxerName) {
+            return new AutoValue_HlsFormat_Muxer(muxerName);
         }
     }
 
-    private static class HlsDemuxer implements MediaDemuxer {
+    @AutoValue
+    static abstract class Demuxer implements MediaDemuxer {
         @Override
-        public String demuxerName() {
-            return "hls";
-        }
+        public abstract String demuxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Demuxer create(String demuxerName) {
+            return new AutoValue_HlsFormat_Demuxer(demuxerName);
         }
     }
 }

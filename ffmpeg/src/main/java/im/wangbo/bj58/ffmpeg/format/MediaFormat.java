@@ -12,15 +12,23 @@ public interface MediaFormat {
 
     Optional<MediaDemuxer> demuxer();
 
+    static MediaFormat image2() {
+        return Image2Format.of();
+    }
+
+    static MediaFormat gif() {
+        return GifFormat.of();
+    }
+
     static MediaFormat flv() {
         return FlvFormat.of();
     }
 
     static MediaFormat hls() {
-        return FlvFormat.of();
+        return HlsFormat.of();
     }
 
-    static MediaFormat image2() {
-        return Image2Format.of();
+    static MediaFormat mp4() {
+        return Mp4Format.of();
     }
 }
