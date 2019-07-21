@@ -61,11 +61,11 @@ public final class ScaleFilterBuilder extends FilterBuilder<ScaleFilterBuilder> 
 
     @Override
     protected OptionalInt maxIncomings() {
-        return OptionalInt.of(2);
+        return OptionalInt.of(1);
     }
 
     @Override
     protected OptionalInt maxOutgoings() {
-        return OptionalInt.of(2);
+        return OptionalInt.of(1);
     }
 }
