@@ -19,11 +19,11 @@ public abstract class SimpleArg implements Arg {
 
     @Override
     public final String description() {
-        return null;
+        return "";
     }
 
     private static SimpleArg create(final String name, final Optional<String> value) {
-        return new AutoValue_StdArg(name, value);
+        return new AutoValue_SimpleArg(name, value);
     }
 
     public static SimpleArg named(final String name) {

@@ -34,7 +34,7 @@ class CliTerminatedProcessTest {
 
         final StdoutCollector stdout = StdoutCollector.of();
         executable.start(scheduledPool)
-            .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, CliProcessTimeoutingStrategy.unlimited(), stdout, 0))
             .toCompletableFuture().get();
 
         Assertions.assertThat(stdout.collect()).isEqualTo("");
@@ -46,7 +46,7 @@ class CliTerminatedProcessTest {
 
         final StdoutCollector stdout = StdoutCollector.of();
         executable.start(scheduledPool)
-            .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 1))
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, CliProcessTimeoutingStrategy.unlimited(), stdout, 1))
             .toCompletableFuture().get();
 
         Assertions.assertThat(stdout.collect()).isEqualTo("");
@@ -58,7 +58,7 @@ class CliTerminatedProcessTest {
 
         final StdoutCollector stdout = StdoutCollector.of();
         final CompletableFuture<CliTerminatedProcess> future = executable.start(scheduledPool)
-            .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, CliProcessTimeoutingStrategy.unlimited(), stdout, 0))
             .toCompletableFuture();
 
         Assertions.assertThatThrownBy(future::get)
@@ -84,7 +84,7 @@ class CliTerminatedProcessTest {
 
         final StdoutCollector stdout = StdoutCollector.of();
         executable.start(scheduledPool)
-            .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, CliProcessTimeoutingStrategy.unlimited(), stdout, 0))
             .toCompletableFuture().get();
 
         Assertions.assertThat(stdout.collect()).isEqualTo("jfjasfkjasf hajkdfhsadhf");
@@ -96,7 +96,7 @@ class CliTerminatedProcessTest {
 
         final StdoutCollector stdout = StdoutCollector.of();
         final CompletableFuture<CliTerminatedProcess> future = executable.start(scheduledPool)
-            .thenCompose(p -> p.awaitTerminated(scheduledPool, stdout, 0))
+            .thenCompose(p -> p.awaitTerminated(scheduledPool, CliProcessTimeoutingStrategy.unlimited(), stdout, 0))
             .toCompletableFuture();
 
         Assertions.assertThatThrownBy(future::get)

@@ -17,14 +17,21 @@ public interface CliPidGeneratingStrategy extends Supplier<String> {
     }
 
     static CliPidGeneratingStrategy seqBased() {
-        return new SeqNumberAsPidStrategy();
+        return seqBased("DEFAULT_");
+    }
+    static CliPidGeneratingStrategy seqBased(final String prefix) {
+        return new SeqNumberAsPidStrategy(prefix);
     }
 
-    static CliPidGeneratingStrategy timestampsBased(final Clock clock) {
-        return new TimeStampsAsPidStrategy(clock);
+    static CliPidGeneratingStrategy timestampsBased(final String prefix, final Clock clock) {
+        return new TimeStampsAsPidStrategy(prefix, clock);
+    }
+
+    static CliPidGeneratingStrategy timestampsBased(final String prefix) {
+        return timestampsBased(prefix, Clock.systemUTC());
     }
 
     static CliPidGeneratingStrategy timestampsBased() {
-        return timestampsBased(Clock.systemUTC());
+        return timestampsBased("DEFAULT_");
     }
 }

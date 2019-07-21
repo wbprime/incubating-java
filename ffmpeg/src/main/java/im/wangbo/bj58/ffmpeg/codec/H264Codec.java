@@ -8,52 +8,53 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-codecs.html#libx264_002c-libx264rgb">libx264</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
 abstract class H264Codec implements MediaCodec {
     @Override
-    public final String name() {
-        return "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10";
-    }
-
-    @Override
     public final Optional<MediaEncoder> encoder() {
-        return Optional.of(new H264Encoder());
+        return Optional.of(Encoder.create("libx264"));
     }
 
     @Override
     public final Optional<MediaDecoder> decoder() {
-        return Optional.of(new H264Decoder());
+        return Optional.of(Decoder.create("h264"));
     }
 
     static H264Codec of() {
         return new AutoValue_H264Codec();
     }
 
-    private static class H264Encoder implements MediaEncoder {
+    @AutoValue
+    static abstract class Encoder implements MediaEncoder {
         @Override
-        public String encoderName() {
-            return "libx264";
-        }
+        public abstract String encoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        static Encoder create(String encoderName) {
+            return new AutoValue_H264Codec_Encoder(encoderName);
         }
     }
 
-    private static class H264Decoder implements MediaDecoder {
+    @AutoValue
+    static abstract class Decoder implements MediaDecoder {
         @Override
-        public String decoderName() {
-            return "h264";
-        }
+        public abstract String decoderName();
 
         @Override
         public List<ArgSpec> args() {
             return Collections.emptyList();
+        }
+
+        static Decoder create(String decoderName) {
+            return new AutoValue_H264Codec_Decoder(decoderName);
         }
     }
 }

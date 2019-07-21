@@ -6,16 +6,16 @@ package im.wangbo.bj58.ffmpeg.cli.ffprobe.section;
  * @author Elvis Wang
  */
 public enum SectionSpecifier {
-    FORMAT("-show_format"),
-    STREAMS("-show_streams"),
-    FRAMES("-show_frames"),
-    PACKETS("-show_packets"),
-    CHAPTERS("-show_chapters"),
-    PROGRAMS("-show_programs"),
-    PIXEL_FORMATS("-show_pixel_formats"),
-    ERROR("-show_error"),
-    PROGRAM_VERSION("-show_program_version"),
-    LIBRARY_VERSIONS("-show_library_versions"),
+    FORMAT("format"),
+    STREAMS("streams"),
+    FRAMES("frames"),
+    PACKETS("packets"),
+    CHAPTERS("chapters"),
+    PROGRAMS("programs"),
+    PIXEL_FORMATS("pixel_formats"),
+    ERROR("error"),
+    PROGRAM_VERSION("program_version"),
+    LIBRARY_VERSIONS("library_versions"),
     ;
 
     private final String sectionName;

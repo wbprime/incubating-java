@@ -1,7 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 
 import com.google.auto.value.AutoValue;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ComplexFilterGraph;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 
 import java.util.Optional;
 
@@ -18,24 +18,22 @@ public abstract class ComplexFilterArg implements GlobalArg {
         return "-filter_complex";
     }
 
-    abstract ComplexFilterGraph filterGraph();
+    abstract FilterGraph filterGraph();
 
     @Override
     public final String description() {
-        return
-            "Define a complex filtergraph, i.e. one with arbitrary number of inputs and/or outputs."
-                +
-                "Input link labels must refer to input streams using the [file_index:stream_specifier] syntax. "
-                +
-                "Output link labels are referred to with -map. Unlabeled outputs are added to the first output file.";
+        return "Define a complex filtergraph, i.e. one with arbitrary number of inputs and/or" +
+            " outputs.  Input link labels must refer to input streams using the" +
+            " [file_index:stream_specifier] syntax.  Output link labels are referred to" +
+            " with -map. Unlabeled outputs are added to the first output file.";
     }
 
     @Override
     public final Optional<String> value() {
-        return Optional.of(filterGraph().toString());
+        return Optional.of(FilterGraphs.describe(filterGraph()));
     }
 
-    public static ComplexFilterArg of(final ComplexFilterGraph graph) {
+    public static ComplexFilterArg of(final FilterGraph graph) {
         return new AutoValue_ComplexFilterArg(graph);
     }
 }

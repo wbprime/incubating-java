@@ -8,9 +8,43 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 public interface MediaFormat {
-    String name();
-
     Optional<MediaMuxer> muxer();
 
     Optional<MediaDemuxer> demuxer();
+
+    static MediaFormat image2() {
+        return Image2Format.of();
+    }
+
+    static MediaFormat gif() {
+        return GifFormat.of();
+    }
+
+    static MediaFormat webp() {
+        return WebpFormat.of();
+    }
+
+    static MediaFormat mp3() {
+        return Mp3Format.of();
+    }
+
+    static MediaFormat ogg() {
+        return OggFormat.of();
+    }
+
+    static MediaFormat flv() {
+        return FlvFormat.of();
+    }
+
+    static MediaFormat mp4() {
+        return Mp4Format.of();
+    }
+
+    static MediaFormat avi() {
+        return AviFormat.of();
+    }
+
+    static MediaFormat hls() {
+        return HlsFormat.of();
+    }
 }

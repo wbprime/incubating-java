@@ -8,54 +8,56 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#flv_002c-live_005fflv">flv demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#flv">flv muxer</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
 abstract class FlvFormat implements MediaFormat {
     @Override
-    public final String name() {
-        return "FLV (Flash Video)";
-    }
-
-    @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new FlvMuxer());
+        return Optional.of(Muxer.create("flv"));
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new FlvDemuxer());
+        return Optional.of(Demuxer.create("flv"));
     }
 
     static FlvFormat of() {
         return new AutoValue_FlvFormat();
     }
 
-    private static class FlvMuxer implements MediaMuxer {
+    @AutoValue
+    static abstract class Muxer implements MediaMuxer {
         @Override
-        public String muxerName() {
-            return "flv";
-        }
+        public abstract String muxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Muxer create(final String name) {
+            return new AutoValue_FlvFormat_Muxer(name);
         }
     }
 
-    private static class FlvDemuxer implements MediaDemuxer {
+    @AutoValue
+    static abstract class Demuxer implements MediaDemuxer {
         @Override
-        public String demuxerName() {
-            return "flv";
-        }
+        public abstract String demuxerName();
 
         @Override
         public List<ArgSpec> args() {
             // TODO
             return Collections.emptyList();
+        }
+
+        static Demuxer create(final String name) {
+            return new AutoValue_FlvFormat_Demuxer(name);
         }
     }
 }

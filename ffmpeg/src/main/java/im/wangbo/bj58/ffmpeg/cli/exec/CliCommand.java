@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * TODO add brief description here
@@ -80,14 +81,17 @@ public final class CliCommand {
         return workingDir;
     }
 
-    public final CompletionStage<CliRunningProcess> start(final Executor executor) {
+    public final CompletionStage<CliRunningProcess> start(final ScheduledExecutorService executor) {
         return start(executor, PID_STRATEGY);
     }
 
-    public final CompletionStage<CliRunningProcess> start(final Executor executor, final CliPidGeneratingStrategy strategy) {
+    public final CompletionStage<CliRunningProcess> start(
+        final Executor executor,
+        final CliPidGeneratingStrategy pidStrategy) {
+
         final CliCommand cli = this;
 
-        final String processId = strategy.get();
+        final String processId = pidStrategy.get();
         final ProcessBuilder processBuilder = new ProcessBuilder(fullArgs);
 
         processBuilder.environment().putAll(env);
@@ -103,24 +107,18 @@ public final class CliCommand {
         final File stdoutFile = new File(pwd, "tmp." + processId + ".stdout." + workingClock.millis());
         processBuilder.redirectOutput(stdoutFile);
 
-        final CompletableFuture<CliRunningProcess> started = new CompletableFuture<>();
-        executor.execute(() -> {
-            final Process p;
-            try {
-                p = processBuilder.start();
-                started.complete(new CliRunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock));
-            } catch (Exception ex) {
-                started.completeExceptionally(CliStartingException.create(this, ex));
-            }
-        });
-        return started.whenComplete(
-            (re, ex) -> {
-                if (null == re) {
-                    // Starting failed
+        return CompletableFuture.supplyAsync(
+            () -> {
+                final Process p;
+                try {
+                    p = processBuilder.start();
+                    return new CliRunningProcess(cli, processId, p, stdoutFile, stderrFile, workingClock);
+                } catch (Exception ex) {
                     stderrFile.delete();
                     stdoutFile.delete();
+                    throw CliStartingException.create(this, ex);
                 }
-            }
+            }, executor
         );
     }
 
@@ -164,12 +162,12 @@ public final class CliCommand {
             return this;
         }
 
-        public Builder addEnv(final Map<String, String> env) {
+        public Builder addEnvironments(final Map<String, String> env) {
             this.env.putAll(env);
             return this;
         }
 
-        public Builder addEnv(final String k, final String v) {
+        public Builder addEnvironment(final String k, final String v) {
             this.env.put(k, v);
             return this;
         }
@@ -206,12 +204,13 @@ public final class CliCommand {
                     .append(v).append("\"").append(System.lineSeparator())
             );
         }
-        sb.append("\twith working directory: \"").append(workingDir()).append('"').append(System.lineSeparator());
+        sb.append("\twith working directory: \"").append(workingDir()).append('"');
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append(' ');
         collectMultiLineString(sb);
         return sb.toString();
     }

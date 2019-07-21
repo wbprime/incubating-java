@@ -4,10 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,19 +21,27 @@ import java.util.List;
 public interface InputSource {
     List<InputArg> asArgs();
 
-    static Builder builder(final String path) {
+    static Builder builder(final URI uri) {
+        return new Builder(uri);
+    }
+
+    static Builder builder(final Path path) {
         return new Builder(path);
     }
 
     class Builder {
-        private final String pathToInput;
+        private final InputUriArg inputUri;
 
         private final List<InputArg> args = Lists.newArrayList();
 
         private List<InputArg> seekingArgs = Collections.emptyList();
 
-        private Builder(final String path) {
-            this.pathToInput = path;
+        private Builder(final URI uri) {
+            this.inputUri = InputUriArg.of(uri);
+        }
+
+        private Builder(final Path path) {
+            this.inputUri = InputUriArg.of(path);
         }
 
         public Builder addArg(final InputArg arg) {
@@ -39,16 +49,35 @@ public interface InputSource {
             return this;
         }
 
-        public Builder mediaFormat(final MediaFormat f) {
-            if (f.demuxer().isPresent())
-                addArg(MediaFormatArg.asInput(f.demuxer().get()));
+        /**
+         * "-f" option
+         *
+         * @param format muxer
+         * @return this
+         */
+        public Builder mediaFormat(final MediaFormat format) {
+            if (format.demuxer().isPresent())
+                addArg(MediaFormatArg.asInput(format.demuxer().get()));
             return this;
         }
 
+        /**
+         * "-c" option
+         *
+         * @param codec encoder
+         * @return this
+         */
         public Builder mediaDecoder(final MediaCodec codec) {
             return mediaDecoder(StreamSpecifier.all(), codec);
         }
 
+        /**
+         * "-c:v" - like option
+         *
+         * @param specifier stream specifier
+         * @param codec     encoder
+         * @return this
+         */
         public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
             if (codec.decoder().isPresent())
                 addArg(MediaCodecArg.asInput(specifier, codec.decoder().get()));
@@ -147,11 +176,35 @@ public interface InputSource {
             return this;
         }
 
+        /**
+         * "-r" option
+         *
+         * @param fps frame rate
+         * @return this
+         */
+        public Builder frameRate(final FrameRate fps) {
+            return frameRate(StreamSpecifier.all(), fps);
+        }
+
+        /**
+         * "-r:v" - like option
+         *
+         * @param specifier stream specifier
+         * @param fps       frame rate
+         * @return this
+         */
+        public Builder frameRate(final StreamSpecifier specifier, final FrameRate fps) {
+            return addArg(FrameRateArg.asInput(specifier, fps));
+        }
+
+        /**
+         * @return a new {@link InputSource} instance
+         */
         public InputSource build() {
             final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
                 .addAll(args)
                 .addAll(seekingArgs)
-                .add(InputUriArg.of(URI.create(pathToInput)))
+                .add(inputUri)
                 .build();
             return () -> inputArgs;
         }

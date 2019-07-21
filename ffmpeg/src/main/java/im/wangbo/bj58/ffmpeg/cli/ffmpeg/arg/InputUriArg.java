@@ -3,6 +3,7 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg;
 import com.google.auto.value.AutoValue;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -22,14 +23,23 @@ public abstract class InputUriArg implements InputArg {
         return "Input file url";
     }
 
-    abstract URI uri();
+    // Use String instead of URI here to avoid url encode
+    abstract String uri();
 
     @Override
     public final Optional<String> value() {
-        return Optional.of(uri().toString());
+        return Optional.of(uri());
+    }
+
+    public static InputUriArg of(final Path path) {
+        return of(path.toString());
     }
 
     public static InputUriArg of(final URI uri) {
+        return of(uri.toString());
+    }
+
+    public static InputUriArg of(final String uri) {
         return new AutoValue_InputUriArg(uri);
     }
 }

@@ -9,16 +9,22 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Elvis Wang
  */
 class SeqNumberAsPidStrategy implements CliPidGeneratingStrategy {
+    private final String prefix;
     private final AtomicLong id = new AtomicLong(0L);
+
+    SeqNumberAsPidStrategy(final String prefix) {
+        this.prefix = prefix;
+    }
 
     @Override
     public String get() {
-        return String.valueOf(id.getAndIncrement());
+        return prefix + id.getAndIncrement();
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", SeqNumberAsPidStrategy.class.getSimpleName() + "[", "]")
+            .add("prefix='" + prefix + "'")
             .toString();
     }
 }

@@ -1,10 +1,7 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * TODO more details here.
@@ -14,32 +11,18 @@ import java.util.stream.Collectors;
 @AutoValue
 public abstract class Filter {
 
-    public abstract String name();
-
-    public abstract FilterSpec spec();
+    public abstract String type();
 
     public abstract ImmutableList<FilterArg> args();
 
-    public void describeTo(StringBuilder sb) {
-        sb.append(spec().typeId());
-        if (!args().isEmpty()) {
-            sb.append('=');
+    public abstract ImmutableList<String> incomings();
 
-            final String collect = args().stream()
-                .map(arg -> arg.argName() + arg.argValue().map(v -> '=' + v).orElse(""))
-                .collect(Collectors.joining(":"));
-            sb.append(collect);
-        }
-    }
+    public abstract ImmutableList<String> outgoings();
 
-    public static Filter of(
-        final String name, final FilterSpec spec, final List<FilterArg> args
-    ) {
-        return new AutoValue_Filter(name, spec, ImmutableList.copyOf(args));
-    }
-
-    interface Builder {
-
-        Filter build(final String name);
+    public static Filter of(final String type,
+                            final ImmutableList<FilterArg> args,
+                            final ImmutableList<String> incomings,
+                            final ImmutableList<String> outgoings) {
+        return new AutoValue_Filter(type, args, incomings, outgoings);
     }
 }
