@@ -20,6 +20,14 @@ public interface MediaFormat {
         return GifFormat.of();
     }
 
+    static MediaFormat mp3() {
+        return Mp3Format.of();
+    }
+
+    static MediaFormat ogg() {
+        return OggFormat.of();
+    }
+
     static MediaFormat flv() {
         return FlvFormat.of();
     }
