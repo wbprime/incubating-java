@@ -24,11 +24,15 @@ public interface MediaFormat {
         return FlvFormat.of();
     }
 
-    static MediaFormat hls() {
-        return HlsFormat.of();
-    }
-
     static MediaFormat mp4() {
         return Mp4Format.of();
+    }
+
+    static MediaFormat avi() {
+        return AviFormat.of();
+    }
+
+    static MediaFormat hls() {
+        return HlsFormat.of();
     }
 }
