@@ -68,6 +68,13 @@ public class FfprobeBuilder {
         return this;
     }
 
+    public FfprobeBuilder workingDirectory(final File pwd) {
+        if (!pwd.isDirectory())
+            throw new IllegalArgumentException("pwd should be a valid directory path but was not: " + pwd);
+        this.pwDir = pwd;
+        return this;
+    }
+
     private CliCommand build(final InputUriArg inputUriArg) {
         ffArgs.add(WriterFormatArg.of(writerFormat));
         ffArgs.add(inputUriArg);

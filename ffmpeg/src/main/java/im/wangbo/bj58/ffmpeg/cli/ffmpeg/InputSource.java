@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.*;
 import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
+import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
@@ -48,16 +49,35 @@ public interface InputSource {
             return this;
         }
 
-        public Builder mediaFormat(final MediaFormat f) {
-            if (f.demuxer().isPresent())
-                addArg(MediaFormatArg.asInput(f.demuxer().get()));
+        /**
+         * "-f" option
+         *
+         * @param format muxer
+         * @return this
+         */
+        public Builder mediaFormat(final MediaFormat format) {
+            if (format.demuxer().isPresent())
+                addArg(MediaFormatArg.asInput(format.demuxer().get()));
             return this;
         }
 
+        /**
+         * "-c" option
+         *
+         * @param codec encoder
+         * @return this
+         */
         public Builder mediaDecoder(final MediaCodec codec) {
             return mediaDecoder(StreamSpecifier.all(), codec);
         }
 
+        /**
+         * "-c:v" - like option
+         *
+         * @param specifier stream specifier
+         * @param codec     encoder
+         * @return this
+         */
         public Builder mediaDecoder(final StreamSpecifier specifier, final MediaCodec codec) {
             if (codec.decoder().isPresent())
                 addArg(MediaCodecArg.asInput(specifier, codec.decoder().get()));
@@ -156,6 +176,30 @@ public interface InputSource {
             return this;
         }
 
+        /**
+         * "-r" option
+         *
+         * @param fps frame rate
+         * @return this
+         */
+        public Builder frameRate(final FrameRate fps) {
+            return frameRate(StreamSpecifier.all(), fps);
+        }
+
+        /**
+         * "-r:v" - like option
+         *
+         * @param specifier stream specifier
+         * @param fps       frame rate
+         * @return this
+         */
+        public Builder frameRate(final StreamSpecifier specifier, final FrameRate fps) {
+            return addArg(FrameRateArg.asInput(specifier, fps));
+        }
+
+        /**
+         * @return a new {@link InputSource} instance
+         */
         public InputSource build() {
             final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
                 .addAll(args)

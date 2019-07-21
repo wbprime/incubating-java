@@ -79,7 +79,7 @@ public interface OutputSink {
          * "-c:v" - like option
          *
          * @param specifier stream specifier
-         * @param codec encoder
+         * @param codec     encoder
          * @return this
          */
         public Builder mediaEncoder(final StreamSpecifier specifier, final MediaCodec codec) {
@@ -159,7 +159,7 @@ public interface OutputSink {
          * "-r:v" - like option
          *
          * @param specifier stream specifier
-         * @param fps frame rate
+         * @param fps       frame rate
          * @return this
          */
         public Builder frameRate(final StreamSpecifier specifier, final FrameRate fps) {
@@ -172,7 +172,7 @@ public interface OutputSink {
          * @param size number of bytes
          * @return this
          */
-        public Builder limitOutputSize(final SizeInByte size) {
+        public Builder outputSize(final SizeInByte size) {
             return addArg(OutputFileSizeLimitArg.of(size));
         }
 
@@ -182,18 +182,18 @@ public interface OutputSink {
          * @param n number of frames
          * @return this
          */
-        public Builder limitOutputFrames(final int n) {
-            return limitOutputFrames(StreamSpecifier.all(), n);
+        public Builder outputFrames(final int n) {
+            return outputFrames(StreamSpecifier.all(), n);
         }
 
         /**
          * "-frames:v" - like option
          *
          * @param specifier stream specifier
-         * @param n number of frames
+         * @param n         number of frames
          * @return this
          */
-        public Builder limitOutputFrames(final StreamSpecifier specifier, final int n) {
+        public Builder outputFrames(final StreamSpecifier specifier, final int n) {
             return addArg(OutputFramesLimitArg.of(specifier, n));
         }
 
@@ -203,18 +203,18 @@ public interface OutputSink {
          * @param n output quality
          * @return this
          */
-        public Builder limitOutputQuality(final int n) {
-            return addArg(OutputQualityLimitArg.of(StreamSpecifier.all(), n));
+        public Builder outputQuality(final int n) {
+            return outputQuality(StreamSpecifier.all(), n);
         }
 
         /**
          * "-q:v" - like option
          *
          * @param specifier stream specifier
-         * @param n output quality
+         * @param n         output quality
          * @return this
          */
-        public Builder limitOutputQuality(final StreamSpecifier specifier, final int n) {
+        public Builder outputQuality(final StreamSpecifier specifier, final int n) {
             return addArg(OutputQualityLimitArg.of(specifier, n));
         }
 
@@ -243,13 +243,16 @@ public interface OutputSink {
          * "-filter:v" - like option
          *
          * @param specifier stream specifier
-         * @param graph filter graph
+         * @param graph     filter graph
          * @return this
          */
         public Builder filter(final StreamSpecifier specifier, final FilterGraph graph) {
             return addArg(SimpleFilterArg.of(specifier, graph));
         }
 
+        /**
+         * @return a new {@link OutputSink} instance
+         */
         public OutputSink build() {
             final ImmutableList<OutputArg> outputArgs = ImmutableList.<OutputArg>builder()
                 .addAll(args)

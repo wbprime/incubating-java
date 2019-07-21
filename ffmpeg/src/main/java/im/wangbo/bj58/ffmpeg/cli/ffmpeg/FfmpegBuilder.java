@@ -7,11 +7,13 @@ import im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.HideBannerArg;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ComplexFilterArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ShowProgressStatsArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterChain;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraph;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -42,15 +44,29 @@ public class FfmpegBuilder {
         return new FfmpegBuilder(path);
     }
 
+    /**
+     * "-hide_banner" option
+     *
+     * @return this
+     */
     public FfmpegBuilder hideBanner() {
         return addArg(HideBannerArg.of());
     }
 
-    //
+    /**
+     * "-stats" or "-nostats" option
+     *
+     * @return this
+     */
     public FfmpegBuilder showProgressStats(final boolean on) {
         return addArg(on ? ShowProgressStatsArg.on() : ShowProgressStatsArg.off());
     }
 
+    /**
+     * "-loglevel" option
+     *
+     * @return this
+     */
     public FfmpegBuilder logLevel(final LogLevelArg.LogLevel logLevel) {
         return addArg(LogLevelArg.of(logLevel));
     }
@@ -70,14 +86,22 @@ public class FfmpegBuilder {
         return this;
     }
 
-    public FfmpegBuilder addFilterGraph(final List<FilterChain> filterGraph) {
-//        args.add(Arg.paired("-filter_complex", filterGraph));
+    /**
+     * "-filter_complex" option
+     *
+     * @return this
+     */
+    public FfmpegBuilder addFilterGraph(final FilterGraph filterGraph) {
+        addArg(ComplexFilterArg.of(filterGraph));
         return this;
     }
 
-//    public FfmpegBuilder addFilterChain(final FilterChain filterChain) {
-//        return this;
-//    }
+    public FfmpegBuilder workingDirectory(final File pwd) {
+        if (!pwd.isDirectory())
+            throw new IllegalArgumentException("pwd should be a valid directory path but was not: " + pwd);
+        this.pwDir = pwd;
+        return this;
+    }
 
     public CliCommand build() {
         inputs.forEach(i -> args.addAll(i.asArgs()));

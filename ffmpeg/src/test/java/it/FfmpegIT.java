@@ -69,7 +69,7 @@ class FfmpegIT {
             .logLevel(LogLevelArg.LogLevel.WARNING)
             .addInput(InputSource.builder(video).build())
             .addOutput(OutputSink.builder(tmpDir.resolve("tmp.%05d.png"))
-                .limitOutputFrames(StreamSpecifier.of(MediaStreamType.VIDEO), 10)
+                .outputFrames(StreamSpecifier.of(MediaStreamType.VIDEO), 10)
                 .frameRate(FrameRate.of(2))
                 .mediaFormat(MediaFormat.image2())
                 .build())
