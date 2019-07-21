@@ -8,30 +8,31 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO add brief description here
+ * See <a href="http://ffmpeg.org/ffmpeg-formats.html#gif-1">gif demuxer</a>
+ * and <a href="http://ffmpeg.org/ffmpeg-formats.html#gif-2">gif muxer</a> for details.
  *
  * @author Elvis Wang
  */
 @AutoValue
-abstract class RawHevcFormat implements MediaFormat {
+abstract class GifFormat implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new RawHevcMuxer());
+        return Optional.of(new GifMuxer());
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new RawHevcDemuxer());
+        return Optional.of(new GifDemuxer());
     }
 
-    static RawHevcFormat of() {
-        return new AutoValue_RawHevcFormat();
+    static GifFormat of() {
+        return new AutoValue_GifFormat();
     }
 
-    private static class RawHevcMuxer implements MediaMuxer {
+    private static class GifMuxer implements MediaMuxer {
         @Override
         public String muxerName() {
-            return "hevc";
+            return "gif";
         }
 
         @Override
@@ -41,10 +42,10 @@ abstract class RawHevcFormat implements MediaFormat {
         }
     }
 
-    private static class RawHevcDemuxer implements MediaDemuxer {
+    private static class GifDemuxer implements MediaDemuxer {
         @Override
         public String demuxerName() {
-            return "hevc";
+            return "gif";
         }
 
         @Override
