@@ -1,7 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FrameRateArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.InputUriArg;
@@ -15,11 +13,12 @@ import im.wangbo.bj58.ffmpeg.codec.MediaCodec;
 import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * TODO add brief description here
@@ -27,7 +26,7 @@ import java.util.List;
  * @author Elvis Wang
  */
 public interface InputSource {
-    List<InputArg> asArgs();
+    ImmutableList<InputArg> asArgs();
 
     static Builder builder(final URI uri) {
         return new Builder(uri);
@@ -40,9 +39,9 @@ public interface InputSource {
     class Builder {
         private final InputUriArg inputUri;
 
-        private final List<InputArg> args = Lists.newArrayList();
+        private final MutableList<InputArg> args = Lists.mutable.empty();
 
-        private List<InputArg> seekingArgs = Collections.emptyList();
+        private ImmutableList<InputArg> seekingArgs = Lists.immutable.empty();
 
         private Builder(final URI uri) {
             this.inputUri = InputUriArg.of(uri);
@@ -100,7 +99,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg, final SeekingEndArg end) {
-            seekingArgs = ImmutableList.of(beg, end);
+            seekingArgs = Lists.immutable.of(beg, end);
             return this;
         }
 
@@ -112,7 +111,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg, final SeekingDurationArg duration) {
-            seekingArgs = ImmutableList.of(beg, duration);
+            seekingArgs = Lists.immutable.of(beg, duration);
             return this;
         }
 
@@ -123,7 +122,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingOffsetArg beg) {
-            seekingArgs = ImmutableList.of(beg);
+            seekingArgs = Lists.immutable.of(beg);
             return this;
         }
 
@@ -134,7 +133,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingEndArg end) {
-            seekingArgs = ImmutableList.of(end);
+            seekingArgs = Lists.immutable.of(end);
             return this;
         }
 
@@ -145,7 +144,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingDurationArg duration) {
-            seekingArgs = ImmutableList.of(duration);
+            seekingArgs = Lists.immutable.of(duration);
             return this;
         }
 
@@ -157,7 +156,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingBackOffsetArg beg, final SeekingEndArg end) {
-            seekingArgs = ImmutableList.of(beg, end);
+            seekingArgs = Lists.immutable.of(beg, end);
             return this;
         }
 
@@ -169,7 +168,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingBackOffsetArg beg, final SeekingDurationArg duration) {
-            seekingArgs = ImmutableList.of(beg, duration);
+            seekingArgs = Lists.immutable.of(beg, duration);
             return this;
         }
 
@@ -180,7 +179,7 @@ public interface InputSource {
          * @return this
          */
         public Builder seeking(final SeekingBackOffsetArg beg) {
-            seekingArgs = ImmutableList.of(beg);
+            seekingArgs = Lists.immutable.of(beg);
             return this;
         }
 
@@ -209,12 +208,11 @@ public interface InputSource {
          * @return a new {@link InputSource} instance
          */
         public InputSource build() {
-            final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
-                .addAll(args)
-                .addAll(seekingArgs)
-                .add(inputUri)
-                .build();
-            return () -> inputArgs;
+            final MutableList<InputArg> inputArgs = Lists.mutable.<InputArg>empty()
+                .withAll(args)
+                .withAll(seekingArgs)
+                .with(inputUri);
+            return inputArgs::toImmutable;
         }
     }
 }

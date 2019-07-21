@@ -1,6 +1,5 @@
 package im.wangbo.bj58.ffmpeg.cli.ffprobe;
 
-import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliPidGeneratingStrategy;
 import im.wangbo.bj58.ffmpeg.cli.exec.StdoutCollector;
@@ -12,12 +11,13 @@ import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.SectionSpecifierArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.arg.WriterFormatArg;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.section.SectionSpecifier;
 import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,7 +29,7 @@ import static im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy.unlimi
  * @author Elvis Wang
  */
 public class FfprobeBuilder {
-    private final List<FfArg> ffArgs = Lists.newArrayList();
+    private final MutableList<FfArg> ffArgs = Lists.mutable.empty();
 
     private final String pathToExe;
 

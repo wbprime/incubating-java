@@ -1,7 +1,6 @@
 package im.wangbo.bj58.ffmpeg.cli.exec;
 
-import com.google.common.collect.ImmutableList;
-
+import org.eclipse.collections.api.factory.Lists;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +16,9 @@ public class NativeProcessTest {
     @Test
     void test() throws Exception {
         Process p = new ProcessBuilder(
-                ImmutableList.of(
-                        "echo", "a", "b", "c"
-                )
+            Lists.immutable.of(
+                "echo", "a", "b", "c"
+            ).castToList()
         ).start();
 
         final InputStream stdin = p.getInputStream();
@@ -36,7 +35,7 @@ public class NativeProcessTest {
 
             Thread.sleep(10000L);
 
-            n --;
+            n--;
         }
     }
 }
