@@ -15,11 +15,6 @@ import java.util.Optional;
 @AutoValue
 abstract class FlvFormat implements MediaFormat {
     @Override
-    public final String name() {
-        return "FLV (Flash Video)";
-    }
-
-    @Override
     public final Optional<MediaMuxer> muxer() {
         return Optional.of(new FlvMuxer());
     }

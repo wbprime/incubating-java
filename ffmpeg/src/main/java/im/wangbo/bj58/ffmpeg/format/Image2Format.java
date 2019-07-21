@@ -13,25 +13,25 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 @AutoValue
-abstract class RawH264Format implements MediaFormat {
+abstract class Image2Format implements MediaFormat {
     @Override
     public final Optional<MediaMuxer> muxer() {
-        return Optional.of(new RawH264Muxer());
+        return Optional.of(new Image2Muxer());
     }
 
     @Override
     public final Optional<MediaDemuxer> demuxer() {
-        return Optional.of(new RawH264Demuxer());
+        return Optional.of(new Image2Demuxer());
     }
 
-    static RawH264Format of() {
-        return new AutoValue_RawH264Format();
+    static Image2Format of() {
+        return new AutoValue_Image2Format();
     }
 
-    private static class RawH264Muxer implements MediaMuxer {
+    private static class Image2Muxer implements MediaMuxer {
         @Override
         public String muxerName() {
-            return "h264";
+            return "image2";
         }
 
         @Override
@@ -41,10 +41,10 @@ abstract class RawH264Format implements MediaFormat {
         }
     }
 
-    private static class RawH264Demuxer implements MediaDemuxer {
+    private static class Image2Demuxer implements MediaDemuxer {
         @Override
         public String demuxerName() {
-            return "h264";
+            return "image2";
         }
 
         @Override

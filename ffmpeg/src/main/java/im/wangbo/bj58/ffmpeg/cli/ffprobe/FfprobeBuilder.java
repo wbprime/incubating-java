@@ -16,6 +16,7 @@ import im.wangbo.bj58.ffmpeg.cli.ffprobe.writer.WriterFormat;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,9 +68,9 @@ public class FfprobeBuilder {
         return this;
     }
 
-    public CliCommand build(final URI uri) {
+    private CliCommand build(final InputUriArg inputUriArg) {
         ffArgs.add(WriterFormatArg.of(writerFormat));
-        ffArgs.add(InputUriArg.of(uri));
+        ffArgs.add(inputUriArg);
         return CliCommand.builder()
             .command(pathToExe)
             .addArgs(ffArgs)
@@ -77,13 +78,33 @@ public class FfprobeBuilder {
             .build();
     }
 
-    public CompletionStage<MediaMetaInfo> buildAndExecute(final URI uri,
-                                                          final ScheduledExecutorService executor) {
-        final CliCommand cli = build(uri);
+    public CliCommand build(final URI uri) {
+        return build(InputUriArg.of(uri));
+    }
+
+    public CliCommand build(final Path path) {
+        return build(InputUriArg.of(path));
+    }
+
+    private CompletionStage<MediaMetaInfo> buildExecuted(
+        final CliCommand cli,
+        final ScheduledExecutorService executor) {
 
         final StdoutCollector stdout = StdoutCollector.of();
         return cli.start(executor, CliPidGeneratingStrategy.seqBased("ffprobe_"))
             .thenCompose(process -> process.awaitTerminated(executor, unlimited(), stdout, 0))
             .thenApply(process -> writerFormat.meta().parser().parse(stdout.collect()));
+    }
+
+    public CompletionStage<MediaMetaInfo> buildExecuted(
+        final URI uri,
+        final ScheduledExecutorService executor) {
+        return buildExecuted(build(uri), executor);
+    }
+
+    public CompletionStage<MediaMetaInfo> buildExecuted(
+        final Path path,
+        final ScheduledExecutorService executor) {
+        return buildExecuted(build(path), executor);
     }
 }

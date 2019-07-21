@@ -8,9 +8,19 @@ import java.util.Optional;
  * @author Elvis Wang
  */
 public interface MediaFormat {
-    String name();
-
     Optional<MediaMuxer> muxer();
 
     Optional<MediaDemuxer> demuxer();
+
+    static MediaFormat flv() {
+        return FlvFormat.of();
+    }
+
+    static MediaFormat hls() {
+        return FlvFormat.of();
+    }
+
+    static MediaFormat image2() {
+        return Image2Format.of();
+    }
 }

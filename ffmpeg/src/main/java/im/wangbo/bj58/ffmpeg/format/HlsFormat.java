@@ -15,11 +15,6 @@ import java.util.Optional;
 @AutoValue
 abstract class HlsFormat implements MediaFormat {
     @Override
-    public final String name() {
-        return "Apple HTTP Live Streaming";
-    }
-
-    @Override
     public final Optional<MediaMuxer> muxer() {
         return Optional.of(new HlsMuxer());
     }

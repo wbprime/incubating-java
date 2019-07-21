@@ -73,7 +73,7 @@ class FfprobeIT {
             .logLevel(LogLevelArg.LogLevel.WARNING)
             .showSection(SectionSpecifier.FORMAT)
             .showSection(SectionSpecifier.STREAMS)
-            .buildAndExecute(video.toUri(), threadPool)
+            .buildExecuted(video.toUri(), threadPool)
             .whenComplete(
                 (result, ex) -> {
                     if (result != null) {

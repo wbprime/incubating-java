@@ -125,9 +125,7 @@ public final class CliRunningProcess implements AutoCloseable {
         final ScheduledExecutorService executor,
         final int... expectedCodes
     ) {
-        return awaitTerminated(executor,
-            unlimited(),
-            expectedCodes);
+        return awaitTerminated(executor, unlimited(), expectedCodes);
     }
 
     public CompletionStage<CliTerminatedProcess> awaitTerminated(
@@ -135,9 +133,7 @@ public final class CliRunningProcess implements AutoCloseable {
         final CliProcessTimeoutingStrategy timeouting,
         final int... expectedCodes
     ) {
-        return awaitTerminated(executor,
-            timeouting,
-            null, expectedCodes);
+        return awaitTerminated(executor, timeouting, null, expectedCodes);
     }
 
     public CompletionStage<CliTerminatedProcess> awaitTerminated(

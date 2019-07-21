@@ -15,11 +15,6 @@ import java.util.Optional;
 @AutoValue
 abstract class RawHevcFormat implements MediaFormat {
     @Override
-    public final String name() {
-        return "Raw H.265/HEVC video";
-    }
-
-    @Override
     public final Optional<MediaMuxer> muxer() {
         return Optional.of(new RawHevcMuxer());
     }

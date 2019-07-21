@@ -210,6 +210,7 @@ public final class CliCommand {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append(' ');
         collectMultiLineString(sb);
         return sb.toString();
     }

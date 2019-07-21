@@ -2,14 +2,20 @@ package im.wangbo.bj58.ffmpeg.cli.ffmpeg;
 
 import com.google.common.collect.Lists;
 import im.wangbo.bj58.ffmpeg.cli.exec.CliCommand;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliPidGeneratingStrategy;
+import im.wangbo.bj58.ffmpeg.cli.exec.CliProcessTimeoutingStrategy;
 import im.wangbo.bj58.ffmpeg.cli.ff.arg.FfArg;
-import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.FfmpegArg;
+import im.wangbo.bj58.ffmpeg.cli.ff.arg.HideBannerArg;
+import im.wangbo.bj58.ffmpeg.cli.ff.arg.LogLevelArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.arg.ShowProgressStatsArg;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterChain;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * TODO add brief description here
@@ -36,34 +42,27 @@ public class FfmpegBuilder {
         return new FfmpegBuilder(path);
     }
 
-//    public FfmpegBuilder hideBanner() {
-//        return addArg(HideBannerArg.of());
-//    }
-//
+    public FfmpegBuilder hideBanner() {
+        return addArg(HideBannerArg.of());
+    }
+
+    //
     public FfmpegBuilder showProgressStats(final boolean on) {
         return addArg(on ? ShowProgressStatsArg.on() : ShowProgressStatsArg.off());
     }
 
-//    public FfmpegBuilder logLevel(final LogLevelArg arg) {
-//        return addArg(arg);
-//    }
-
-    public FfmpegBuilder addArg(final FfmpegArg arg) {
-        args.add(arg);
-        return this;
+    public FfmpegBuilder logLevel(final LogLevelArg.LogLevel logLevel) {
+        return addArg(LogLevelArg.of(logLevel));
     }
 
-    public FfmpegBuilder addInput(final InputSource.Builder builder) {
-        return addInput(builder.build());
+    public FfmpegBuilder addArg(final FfArg arg) {
+        args.add(arg);
+        return this;
     }
 
     public FfmpegBuilder addInput(final InputSource input) {
         inputs.add(input);
         return this;
-    }
-
-    public FfmpegBuilder addOutput(final OutputSink.Builder builder) {
-        return addOutput(builder.build());
     }
 
     public FfmpegBuilder addOutput(final OutputSink output) {
@@ -88,5 +87,28 @@ public class FfmpegBuilder {
             .addArgs(args)
             .workingDirectory(pwDir)
             .build();
+    }
+
+    public CompletionStage<Duration> buildExecuted(
+        final ScheduledExecutorService executor,
+        final CliProcessTimeoutingStrategy timeoutingStrategy) {
+
+        final CliCommand cli = build();
+
+        return cli.start(executor, CliPidGeneratingStrategy.seqBased("ffmpeg_"))
+            .thenCompose(process -> process.awaitTerminated(executor, timeoutingStrategy, 0))
+            .thenApply(process -> Duration.between(process.startedTime(), process.terminatedTime()));
+    }
+
+    public CompletionStage<Duration> buildExecuted(
+        final ScheduledExecutorService executor, final Duration timeout) {
+
+        return buildExecuted(executor, CliProcessTimeoutingStrategy.limited(timeout));
+    }
+
+    public CompletionStage<Duration> buildExecuted(
+        final ScheduledExecutorService executor) {
+
+        return buildExecuted(executor, CliProcessTimeoutingStrategy.unlimited());
     }
 }

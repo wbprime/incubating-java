@@ -8,6 +8,7 @@ import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.StreamSpecifier;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,19 +20,27 @@ import java.util.List;
 public interface InputSource {
     List<InputArg> asArgs();
 
-    static Builder builder(final String path) {
+    static Builder builder(final URI uri) {
+        return new Builder(uri);
+    }
+
+    static Builder builder(final Path path) {
         return new Builder(path);
     }
 
     class Builder {
-        private final String pathToInput;
+        private final InputUriArg inputUri;
 
         private final List<InputArg> args = Lists.newArrayList();
 
         private List<InputArg> seekingArgs = Collections.emptyList();
 
-        private Builder(final String path) {
-            this.pathToInput = path;
+        private Builder(final URI uri) {
+            this.inputUri = InputUriArg.of(uri);
+        }
+
+        private Builder(final Path path) {
+            this.inputUri = InputUriArg.of(path);
         }
 
         public Builder addArg(final InputArg arg) {
@@ -151,7 +160,7 @@ public interface InputSource {
             final ImmutableList<InputArg> inputArgs = ImmutableList.<InputArg>builder()
                 .addAll(args)
                 .addAll(seekingArgs)
-                .add(InputUriArg.of(URI.create(pathToInput)))
+                .add(inputUri)
                 .build();
             return () -> inputArgs;
         }
