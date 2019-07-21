@@ -23,6 +23,7 @@ public final class FilterGraphBuilder {
     }
 
     public FilterGraphBuilder then(final Filter filter) {
+        curChain.add(filter);
         return this;
     }
 

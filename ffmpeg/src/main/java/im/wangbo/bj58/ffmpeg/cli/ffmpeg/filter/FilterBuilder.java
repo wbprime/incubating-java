@@ -49,23 +49,9 @@ public abstract class FilterBuilder<BUILDER extends FilterBuilder<BUILDER>> {
     protected abstract ImmutableList<FilterArg> filterArgs();
 
     /**
-     * @return min incomings required, inclusively
-     */
-    protected int minIncomings() {
-        return 0;
-    }
-
-    /**
      * @return max incomings required exclusively or {@link OptionalInt#empty()} if no limit
      */
     protected abstract OptionalInt maxIncomings();
-
-    /**
-     * @return min incomings required, inclusively
-     */
-    protected int minOutgoings() {
-        return 0;
-    }
 
     /**
      * @return max outgoings required exclusively or {@link OptionalInt#empty()} if no limit
@@ -76,10 +62,6 @@ public abstract class FilterBuilder<BUILDER extends FilterBuilder<BUILDER>> {
         final ImmutableList<String> immutableIn = in.toImmutable();
         {
             final int cnt = immutableIn.size();
-            if (cnt < minIncomings()) {
-                throw new IllegalStateException("Incomings number should ge " +
-                    minIncomings() + " but was" + cnt);
-            }
             if (maxIncomings().isPresent() && cnt >= maxIncomings().getAsInt()) {
                 throw new IllegalStateException("Incomings number should lt " +
                     maxIncomings().getAsInt() + " but was" + cnt);
@@ -88,10 +70,6 @@ public abstract class FilterBuilder<BUILDER extends FilterBuilder<BUILDER>> {
         final ImmutableList<String> immutableOut = out.toImmutable();
         {
             final int cnt = immutableOut.size();
-            if (cnt < minOutgoings()) {
-                throw new IllegalStateException("Outgoings number should ge " +
-                    minIncomings() + " but was" + cnt);
-            }
             if (maxOutgoings().isPresent() && cnt >= maxOutgoings().getAsInt()) {
                 throw new IllegalStateException("Outgoings number should lt " +
                     maxOutgoings().getAsInt() + " but was" + cnt);

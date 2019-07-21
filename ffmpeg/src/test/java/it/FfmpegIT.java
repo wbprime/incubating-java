@@ -6,6 +6,8 @@ import im.wangbo.bj58.ffmpeg.cli.ffmpeg.FfmpegBuilder;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.InputSource;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.OutputSink;
 import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FilterGraphBuilder;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.FpsFilterBuilder;
+import im.wangbo.bj58.ffmpeg.cli.ffmpeg.filter.ScaleFilterBuilder;
 import im.wangbo.bj58.ffmpeg.common.FrameRate;
 import im.wangbo.bj58.ffmpeg.format.MediaFormat;
 import im.wangbo.bj58.ffmpeg.streamspecifier.MediaStreamType;
@@ -14,7 +16,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,7 +78,13 @@ class FfmpegIT {
                 .mediaFormat(MediaFormat.image2())
                 .filter(
                     FilterGraphBuilder.of()
-                    .next().next().next().build()
+                        .next()
+                        .then(ScaleFilterBuilder.of().width(10).height(20).build())
+                        .next()
+                        .next()
+                        .then(FpsFilterBuilder.of().fps(FrameRate.of(24))
+                            .firstIncoming("ina").firstOutgoing("outm").build())
+                        .build()
                 )
                 .build())
             .build();
