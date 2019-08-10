@@ -1,25 +1,25 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.client;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 
 import java.time.Duration;
 import java.util.Map;
 
 /**
  * TODO add brief description here
+ * <p>
  *
- * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
- *
- * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
+ * @author Elvis Wang
  */
 @AutoValue
 public abstract class ServerInfo {
     public abstract ServerDesc server();
 
-    public abstract ImmutableMap<String, PluginDesc> plugins();
-    public abstract ImmutableMap<String, EvHandlerDesc> eventHandlers();
-    public abstract ImmutableMap<String, TransportDesc> transports();
+    public abstract Map<String, PluginDesc> plugins();
+
+    public abstract Map<String, EvHandlerDesc> eventHandlers();
+
+    public abstract Map<String, TransportDesc> transports();
 
     public static Builder builder() {
         return new AutoValue_ServerInfo.Builder();
@@ -28,9 +28,13 @@ public abstract class ServerInfo {
     @AutoValue
     public abstract static class ServerDesc {
         public abstract String name();
+
         public abstract String author();
+
         public abstract Integer versionNumber();
+
         public abstract String versionString();
+
         public abstract Duration sessionTimeout();
 
         public static Builder builder() {
@@ -56,9 +60,13 @@ public abstract class ServerInfo {
     @AutoValue
     public abstract static class PluginDesc {
         public abstract String name();
+
         public abstract String author();
+
         public abstract Integer versionNumber();
+
         public abstract String versionString();
+
         public abstract String description();
 
         public static Builder builder() {
@@ -84,9 +92,13 @@ public abstract class ServerInfo {
     @AutoValue
     public abstract static class TransportDesc {
         public abstract String name();
+
         public abstract String author();
+
         public abstract Integer versionNumber();
+
         public abstract String versionString();
+
         public abstract String description();
 
         public static Builder builder() {
@@ -112,9 +124,13 @@ public abstract class ServerInfo {
     @AutoValue
     public abstract static class EvHandlerDesc {
         public abstract String name();
+
         public abstract String author();
+
         public abstract Integer versionNumber();
+
         public abstract String versionString();
+
         public abstract String description();
 
         public static Builder builder() {

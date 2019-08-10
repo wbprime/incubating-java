@@ -9,10 +9,10 @@ import com.google.auto.value.AutoValue;
  * @author Elvis Wang
  */
 @AutoValue
-public abstract class SessionId {
+public abstract class PluginId {
     public abstract long id();
 
-    public static SessionId of(final long id) {
-        return new AutoValue_SessionId(id);
+    public static PluginId of(final long id) {
+        return new AutoValue_PluginId(id);
     }
 }

@@ -22,8 +22,8 @@ public abstract class SessionCreated implements JsonableEvent {
     @Override
     public final JsonObject eventBody() {
         return Json.createObjectBuilder()
-                .add(MoreEvents.KEY_SESSION_ID, sessionId())
-                .build();
+            .add(MoreEvents.KEY_SESSION_ID, sessionId())
+            .build();
     }
 
     public static SessionCreated of(long sessionId) {

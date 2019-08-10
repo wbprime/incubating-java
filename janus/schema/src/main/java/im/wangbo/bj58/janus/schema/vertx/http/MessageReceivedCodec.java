@@ -1,15 +1,14 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import im.wangbo.bj58.janus.schema.event.MessageReceived;
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.MessageCodec;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-
-import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
-import im.wangbo.bj58.janus.schema.event.MessageReceived;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.MessageCodec;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TODO add brief description here

@@ -24,9 +24,9 @@ public abstract class PluginDetached implements JsonableEvent {
     @Override
     public final JsonObject eventBody() {
         return Json.createObjectBuilder()
-                .add(MoreEvents.KEY_SESSION_ID, sessionId())
-                .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())
-                .build();
+            .add(MoreEvents.KEY_SESSION_ID, sessionId())
+            .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())
+            .build();
     }
 
     public static PluginDetached create(final long sessionId, final long pluginHandleId) {

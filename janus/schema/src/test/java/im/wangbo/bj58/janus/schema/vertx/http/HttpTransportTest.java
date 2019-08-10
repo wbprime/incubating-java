@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
+import im.wangbo.bj58.janus.schema.transport.Request;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,9 +12,7 @@ import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 
 /**
  * TODO add brief description here
@@ -50,8 +49,8 @@ public class HttpTransportTest {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(TransportRequest.builder()
-                        .request(RequestMethod.of("random" + System.currentTimeMillis()))
+                .send(Request.builder()
+                        .request(Request.Type.of("random" + System.currentTimeMillis()))
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
                 );
@@ -66,7 +65,7 @@ public class HttpTransportTest {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(TransportRequest.serverInfoMessageBuilder()
+                .send(Request.serverInfoMessageBuilder()
                         .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                         .build()
                 );
@@ -81,7 +80,7 @@ public class HttpTransportTest {
         {
              transport.handler(handler)
                     .exceptionHandler(exHandler)
-                    .send(TransportRequest.createSessionMessageBuilder()
+                    .send(Request.createSessionMessageBuilder()
                             .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
                             .build()
                     ).get(1L, TimeUnit.MINUTES);

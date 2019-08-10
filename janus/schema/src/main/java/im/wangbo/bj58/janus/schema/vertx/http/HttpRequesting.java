@@ -1,14 +1,14 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
+import im.wangbo.bj58.janus.schema.event.MessageReceived;
+import im.wangbo.bj58.janus.schema.event.MessageSent;
+import im.wangbo.bj58.janus.schema.event.SessionCreated;
+import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.transport.Request;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -16,15 +16,12 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
-
-import im.wangbo.bj58.janus.schema.event.MessageReceived;
-import im.wangbo.bj58.janus.schema.event.MessageSent;
-import im.wangbo.bj58.janus.schema.event.SessionCreated;
-import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClientRequest;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 /**
  * TODO add brief description here
@@ -43,30 +40,30 @@ abstract class HttpRequesting {
     }
 
     static HttpRequesting create(
-            final TransportRequest msg,
-            final HttpTransportHelper httpHelper,
-            final EventBusHelper eventBusHelper
+        final Request msg,
+        final HttpTransportHelper httpHelper,
+        final EventBusHelper eventBusHelper
     ) {
         final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
         final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
 
         switch (msg.request().method()) {
-            case RequestMethod.SERVER_INFO:
+            case Request.Type.SERVER_INFO:
                 return new ServerInfoHttpRequesting(httpHelper, eventBusHelper);
-            case RequestMethod.CREATE_SESSION:
+            case Request.Type.CREATE_SESSION:
                 return new CreateSessionHttpRequesting(httpHelper, eventBusHelper);
-            case RequestMethod.DESTROY_SESSION: // fall through
-            case RequestMethod.ATTACH_PLUGIN: {
+            case Request.Type.DESTROY_SESSION: // fall through
+            case Request.Type.ATTACH_PLUGIN: {
                 if (sessionId.isPresent()) {
                     return new SessionBasedPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong());
                 } else {
                     throw new IllegalArgumentException("Missing [sessionId] in " + msg);
                 }
             }
-            case RequestMethod.DETACH_PLUGIN: // fall through
-            case RequestMethod.HANGUP_PLUGIN: // fall through
-            case RequestMethod.SEND_MESSAGE: // fall through
-            case RequestMethod.TRICKLE: {
+            case Request.Type.DETACH_PLUGIN: // fall through
+            case Request.Type.HANGUP_PLUGIN: // fall through
+            case Request.Type.SEND_MESSAGE: // fall through
+            case Request.Type.TRICKLE: {
                 if (sessionId.isPresent() && pluginId.isPresent()) {
                     return new PluginPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong(), pluginId.getAsLong());
                 } else {
@@ -99,7 +96,7 @@ abstract class HttpRequesting {
     }
 
     private void handleResponseAsJson(
-            final Buffer buf, final BiConsumer<JsonObject, Throwable> handler
+        final Buffer buf, final BiConsumer<JsonObject, Throwable> handler
     ) {
         final String res = buf.toString(StandardCharsets.UTF_8);
 
@@ -114,16 +111,16 @@ abstract class HttpRequesting {
         switch (json.getValueType()) {
             case ARRAY:
                 ((JsonArray) json).forEach(
-                        v -> {
-                            if (v.getValueType() == JsonValue.ValueType.OBJECT) {
-                                final JsonObject o = (JsonObject) v;
-                                notifyResponseRecv(o);
-                                handler.accept(o, null);
-                            } else {
-                                handler.accept(null, new IllegalArgumentException(
-                                        "Expected only JSON object in top level array but not: " + res));
-                            }
+                    v -> {
+                        if (v.getValueType() == JsonValue.ValueType.OBJECT) {
+                            final JsonObject o = (JsonObject) v;
+                            notifyResponseRecv(o);
+                            handler.accept(o, null);
+                        } else {
+                            handler.accept(null, new IllegalArgumentException(
+                                "Expected only JSON object in top level array but not: " + res));
                         }
+                    }
                 );
                 break;
             case OBJECT: {
@@ -144,17 +141,17 @@ abstract class HttpRequesting {
     }
 
     final CompletableFuture<Void> sendRequest(
-            final TransportRequest msg, final BiConsumer<JsonObject, Throwable> responseHandler
+        final Request msg, final BiConsumer<JsonObject, Throwable> responseHandler
     ) {
         // Response
         final CompletableFuture<Void> requestFuture = new CompletableFuture<>();
 
         final HttpClientRequest request = buildHttpRequest()
-                .endHandler(ignored -> requestFuture.complete(null))
-                .exceptionHandler(requestFuture::completeExceptionally)
-                .handler(res -> res.exceptionHandler(ex -> responseHandler.accept(null, ex))
-                        .bodyHandler(buf -> handleResponseAsJson(buf, responseHandler))
-                );
+            .endHandler(ignored -> requestFuture.complete(null))
+            .exceptionHandler(requestFuture::completeExceptionally)
+            .handler(res -> res.exceptionHandler(ex -> responseHandler.accept(null, ex))
+                .bodyHandler(buf -> handleResponseAsJson(buf, responseHandler))
+            );
 
         final Optional<JsonObject> body = requestBody(msg);
         if (body.isPresent()) request.end(body.get().toString());
@@ -179,7 +176,7 @@ abstract class HttpRequesting {
     abstract HttpClientRequest buildHttpRequest();
 
     // Visible for inheriting
-    abstract Optional<JsonObject> requestBody(final TransportRequest msg);
+    abstract Optional<JsonObject> requestBody(final Request msg);
 
     static abstract class GetHttpRequesting extends HttpRequesting {
         GetHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
@@ -192,7 +189,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        final Optional<JsonObject> requestBody(final TransportRequest body) {
+        final Optional<JsonObject> requestBody(final Request body) {
             return Optional.empty();
         }
 
@@ -236,7 +233,7 @@ abstract class HttpRequesting {
         }
 
         @Override
-        final Optional<JsonObject> requestBody(final TransportRequest body) {
+        final Optional<JsonObject> requestBody(final Request body) {
             final JsonObjectBuilder builder = Json.createObjectBuilder(body.root());
             builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().method());
             builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction().id());
@@ -269,7 +266,7 @@ abstract class HttpRequesting {
             // TODO check success in data
             final OptionalLong sessionId = Constants.sessionId(data);
             sessionId.ifPresent(
-                    id -> eventBus().sendEvent(SessionCreated.of(id), SessionCreated.class)
+                id -> eventBus().sendEvent(SessionCreated.of(id), SessionCreated.class)
             );
         }
     }
@@ -307,10 +304,10 @@ abstract class HttpRequesting {
         private final long hid;
 
         PluginPostHttpRequesting(
-                final HttpTransportHelper helper,
-                final EventBusHelper eventBusHelper,
-                final long sessionId,
-                final long pluginId
+            final HttpTransportHelper helper,
+            final EventBusHelper eventBusHelper,
+            final long sessionId,
+            final long pluginId
         ) {
             super(helper, eventBusHelper);
             this.sid = sessionId;

@@ -70,7 +70,7 @@ final class WebSocketTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final TransportRequest msg) {
+    public CompletableFuture<Void> send(final Request msg) {
         try {
             websocket.send(msg.toString());
             return Futures.completed();

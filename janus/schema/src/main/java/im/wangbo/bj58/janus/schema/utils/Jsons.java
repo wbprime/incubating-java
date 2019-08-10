@@ -1,12 +1,11 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.utils;
 
 import com.google.common.primitives.Longs;
-
-import java.util.OptionalLong;
 
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import java.util.OptionalLong;
 
 /**
  * TODO add brief description here
@@ -27,7 +26,7 @@ public class Jsons {
                 case NUMBER:
                     final JsonNumber decimal = JsonNumber.class.cast(value);
                     return decimal.isIntegral() ?
-                            OptionalLong.of(decimal.longValue()) : OptionalLong.empty();
+                        OptionalLong.of(decimal.longValue()) : OptionalLong.empty();
                 default:
 //                case ARRAY:
 //                case OBJECT:

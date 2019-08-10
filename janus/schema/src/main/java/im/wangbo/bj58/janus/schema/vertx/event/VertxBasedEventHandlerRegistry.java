@@ -3,15 +3,13 @@ package im.wangbo.bj58.janus.schema.vertx.event;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-
-import java.util.Set;
-import java.util.function.Consumer;
-
-import im.wangbo.bj58.janus.schema.event.EventHandlerRegistry;
 import im.wangbo.bj58.janus.schema.event.JsonableEvent;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
+
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * TODO add brief description here
@@ -28,18 +26,18 @@ public class VertxBasedEventHandlerRegistry implements EventHandlerRegistry {
 
         for (final String key : mappedHandlers.keySet()) {
             vertx.eventBus().consumer(
-                    key,
-                    (Handler<Message<JsonableEvent>>) event -> {
-                        for (final Consumer<JsonableEvent> handler : mappedHandlers.get(key)) {
-                            try {
-                                handler.accept(event.body());
-                            } catch (Exception ex) {
-                                for (Consumer<Exception> exHandler : exHandlers) {
-                                    exHandler.accept(ex);
-                                }
+                key,
+                (Handler<Message<JsonableEvent>>) event -> {
+                    for (final Consumer<JsonableEvent> handler : mappedHandlers.get(key)) {
+                        try {
+                            handler.accept(event.body());
+                        } catch (Exception ex) {
+                            for (Consumer<Exception> exHandler : exHandlers) {
+                                exHandler.accept(ex);
                             }
                         }
                     }
+                }
             );
         }
 

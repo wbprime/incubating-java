@@ -2,10 +2,22 @@ package im.wangbo.bj58.janus.schema.vertx.http;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-
+import im.wangbo.bj58.janus.schema.event.MessageReceived;
+import im.wangbo.bj58.janus.schema.event.MessageSent;
+import im.wangbo.bj58.janus.schema.event.SessionCreated;
+import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
+import im.wangbo.bj58.janus.schema.transport.Request;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
+import im.wangbo.bj58.janus.schema.transport.Transport;
+import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import javax.json.JsonObject;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -13,22 +25,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-import javax.json.JsonObject;
-
-import im.wangbo.bj58.janus.schema.event.MessageReceived;
-import im.wangbo.bj58.janus.schema.event.MessageSent;
-import im.wangbo.bj58.janus.schema.event.SessionCreated;
-import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
-import im.wangbo.bj58.janus.schema.transport.TransactionId;
-import im.wangbo.bj58.janus.schema.transport.Transport;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
-import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 
 /**
  * TODO add brief description here
@@ -75,7 +71,7 @@ public final class HttpTransport implements Transport {
         final String schema = uri.getScheme();
 
         final HttpClientOptions options = new HttpClientOptions()
-                .setDefaultHost(uri.getHost());
+            .setDefaultHost(uri.getHost());
         if ("http".equalsIgnoreCase(schema)) {
             options.setSsl(false).setDefaultPort(uri.getPort() == -1 ? DEFAULT_HTTP_PORT : uri.getPort());
         } else if ("https".equalsIgnoreCase(schema)) {
@@ -89,17 +85,17 @@ public final class HttpTransport implements Transport {
         updateBackend(vertx, httpClient, uri);
 
         vertx.eventBus().<SessionCreated>consumer(
-                AbstractEventTypeMeta.create(SessionCreated.class).address(),
-                msg -> onSessionCreated(msg.body()));
+            AbstractEventTypeMeta.create(SessionCreated.class).address(),
+            msg -> onSessionCreated(msg.body()));
         vertx.eventBus().<SessionDestroyed>consumer(
-                AbstractEventTypeMeta.create(SessionDestroyed.class).address(),
-                msg -> onSessionDestroyed(msg.body()));
+            AbstractEventTypeMeta.create(SessionDestroyed.class).address(),
+            msg -> onSessionDestroyed(msg.body()));
         vertx.eventBus().<MessageSent>consumer(
-                AbstractEventTypeMeta.create(MessageSent.class).address(),
-                msg -> onRequestSent(msg.body()));
+            AbstractEventTypeMeta.create(MessageSent.class).address(),
+            msg -> onRequestSent(msg.body()));
         vertx.eventBus().<MessageReceived>consumer(
-                AbstractEventTypeMeta.create(MessageReceived.class).address(),
-                msg -> onResponseRecv(msg.body()));
+            AbstractEventTypeMeta.create(MessageReceived.class).address(),
+            msg -> onResponseRecv(msg.body()));
 
         return Futures.completed();
     }
@@ -115,7 +111,7 @@ public final class HttpTransport implements Transport {
     }
 
     @Override
-    public CompletableFuture<Void> send(final TransportRequest msg) {
+    public CompletableFuture<Void> send(final Request msg) {
         try {
             final HttpRequesting requesting = HttpRequesting.create(msg, http, eventBus);
             return requesting.sendRequest(msg, this::onResponse);
@@ -127,9 +123,9 @@ public final class HttpTransport implements Transport {
     @Override
     public synchronized Transport handler(final Consumer<JsonObject> handler) {
         handlers = ImmutableList.<Consumer<JsonObject>>builder()
-                .addAll(handlers)
-                .add(exceptionSafe(handler))
-                .build();
+            .addAll(handlers)
+            .add(exceptionSafe(handler))
+            .build();
         return this;
     }
 
@@ -169,11 +165,11 @@ public final class HttpTransport implements Transport {
         final long timerId = vertx.setPeriodic(pollIntervalInMillis, ignored -> {
             final HttpRequesting requesting = new HttpRequesting.LongPollHttpRequesting(http, eventBus, msg.sessionId());
             requesting.sendRequest(
-                    TransportRequest.builder()
-                            .request(RequestMethod.of("Not needed"))
-                            .transaction(TransactionId.of("Not needed"))
-                            .build(),
-                    this::onResponse);
+                Request.builder()
+                    .request(Request.Type.of("Not needed"))
+                    .transaction(TransactionId.of("Not needed"))
+                    .build(),
+                this::onResponse);
         });
 
         final Long existedTimerId = sessionIdMappedPollings.putIfAbsent(msg.sessionId(), timerId);

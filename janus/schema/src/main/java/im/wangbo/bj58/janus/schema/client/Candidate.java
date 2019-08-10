@@ -1,14 +1,12 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.client;
 
 import com.google.auto.value.AutoValue;
-import java.io.InputStream;
 
 /**
  * TODO add brief description here
+ * <p>
  *
- * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
- *
- * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
+ * @author Elvis Wang
  */
 @AutoValue
 public abstract class Candidate {
@@ -27,7 +25,7 @@ public abstract class Candidate {
     }
 
     private static Candidate create(
-            final String sdpMid, final Integer sdpMlineIndex, final String candidate
+        final String sdpMid, final Integer sdpMlineIndex, final String candidate
     ) {
         return new AutoValue_Candidate(sdpMid, sdpMlineIndex, candidate);
     }

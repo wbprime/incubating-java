@@ -1,11 +1,10 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO add brief description here

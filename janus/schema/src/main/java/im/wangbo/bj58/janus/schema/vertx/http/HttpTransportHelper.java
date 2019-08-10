@@ -1,12 +1,11 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
-import java.util.function.BiConsumer;
-
-import javax.json.JsonObject;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
+
+import javax.json.JsonObject;
+import java.util.function.BiConsumer;
 
 /**
  * TODO add brief description here
@@ -39,8 +38,8 @@ interface HttpTransportHelper {
     }
 
     static StdHelper std(
-            final Vertx vertx, final HttpClient client, final String rootPath,
-            final BiConsumer<JsonObject, Throwable> handler
+        final Vertx vertx, final HttpClient client, final String rootPath,
+        final BiConsumer<JsonObject, Throwable> handler
     ) {
         return new StdHelper(vertx, client, rootPath, handler);
     }
@@ -62,8 +61,8 @@ interface HttpTransportHelper {
         private final BiConsumer<JsonObject, Throwable> handler;
 
         StdHelper(
-                final Vertx vertx, final HttpClient client, final String root,
-                final BiConsumer<JsonObject, Throwable> handler
+            final Vertx vertx, final HttpClient client, final String root,
+            final BiConsumer<JsonObject, Throwable> handler
         ) {
             this.vertx = vertx;
             this.http = client;
@@ -78,7 +77,7 @@ interface HttpTransportHelper {
 
         private String concatPath(final String subPath) {
             return subPath.isEmpty() ? rootPath :
-                    (subPath.startsWith("/") ? rootPath + subPath : rootPath + "/" + subPath);
+                (subPath.startsWith("/") ? rootPath + subPath : rootPath + "/" + subPath);
         }
 
         @Override

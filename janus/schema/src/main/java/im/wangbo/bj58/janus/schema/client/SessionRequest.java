@@ -1,26 +1,22 @@
-package im.wangbo.bj58.janus.schema;
+package im.wangbo.bj58.janus.schema.client;
 
 import com.google.auto.value.AutoValue;
-
-import java.util.Optional;
+import im.wangbo.bj58.janus.schema.transport.Request;
+import im.wangbo.bj58.janus.schema.transport.SessionId;
+import im.wangbo.bj58.janus.schema.transport.TransactionId;
 
 import javax.annotation.Nullable;
 import javax.json.JsonObject;
-
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
-import im.wangbo.bj58.janus.schema.transport.SessionId;
-import im.wangbo.bj58.janus.schema.transport.TransactionId;
+import java.util.Optional;
 
 /**
  * TODO add brief description here
  *
- * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
- *
- * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
+ * @author Elvis Wang
  */
 @AutoValue
 public abstract class SessionRequest {
-    public abstract RequestMethod request();
+    public abstract Request.Type request();
 
     public abstract SessionId session();
 
@@ -34,13 +30,14 @@ public abstract class SessionRequest {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder request(RequestMethod request);
+        public abstract Builder request(Request.Type request);
 
         public abstract Builder session(SessionId session);
 
         public abstract Builder transaction(TransactionId transaction);
 
         abstract Builder message(Optional<JsonObject> message);
+
         public final Builder message(@Nullable final JsonObject message) {
             return message(Optional.ofNullable(message));
         }

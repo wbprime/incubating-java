@@ -7,9 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * TODO add brief description here
  *
- * Copyright © 2016 58ganji Beijing spat team. All rights reserved.
- *
- * @author Elvis Wang [wangbo12 -AT- 58ganji -DOT- com]
+ * @author Elvis Wang
+ * @author Elvis Wang
  */
 @AutoValue
 public abstract class TransactionId {
@@ -17,12 +16,12 @@ public abstract class TransactionId {
 
     public static TransactionId random() {
         return of(
-                String.format(
-                        "T%XP%xN%X",
-                        System.currentTimeMillis(),
-                        ThreadLocalRandom.current().nextLong(Long.MAX_VALUE),
-                        Thread.currentThread().getId()
-                )
+            String.format(
+                "T%XP%xN%X",
+                System.currentTimeMillis(),
+                ThreadLocalRandom.current().nextLong(Long.MAX_VALUE),
+                Thread.currentThread().getId()
+            )
         );
     }
 

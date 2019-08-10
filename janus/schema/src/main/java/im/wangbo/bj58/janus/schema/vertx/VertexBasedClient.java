@@ -1,22 +1,21 @@
 package im.wangbo.bj58.janus.schema.vertx;
 
-import java.net.URI;
-import java.util.concurrent.CompletableFuture;
-
-import im.wangbo.bj58.janus.schema.GlobalRequest;
-import im.wangbo.bj58.janus.schema.PluginHandleRequest;
-import im.wangbo.bj58.janus.schema.ServerInfo;
-import im.wangbo.bj58.janus.schema.SessionRequest;
 import im.wangbo.bj58.janus.schema.client.Client;
-import im.wangbo.bj58.janus.schema.event.EventHandlerRegistry;
-import im.wangbo.bj58.janus.schema.transport.PluginHandleId;
+import im.wangbo.bj58.janus.schema.client.GlobalRequest;
+import im.wangbo.bj58.janus.schema.client.PluginRequest;
+import im.wangbo.bj58.janus.schema.client.ServerInfo;
+import im.wangbo.bj58.janus.schema.client.SessionRequest;
+import im.wangbo.bj58.janus.schema.transport.PluginId;
+import im.wangbo.bj58.janus.schema.transport.Request;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 import im.wangbo.bj58.janus.schema.vertx.http.HttpTransport;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
+
+import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * TODO add brief description here
@@ -36,7 +35,8 @@ public class VertexBasedClient implements Client {
 
     @Override
     public EventHandlerRegistry eventHandlerRegistry() {
-        return new EventHandlerRegistry() { };
+        return new EventHandlerRegistry() {
+        };
     }
 
     @Override
@@ -52,9 +52,9 @@ public class VertexBasedClient implements Client {
     @Override
     public CompletableFuture<ServerInfo> info() {
         final CompletableFuture<Void> sent = transport.send(
-                TransportRequest.serverInfoMessageBuilder()
-                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
-                        .build()
+            Request.serverInfoMessageBuilder()
+                .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
+                .build()
         );
 
         final CompletableFuture<ServerInfo> future = new CompletableFuture<>();
@@ -78,12 +78,12 @@ public class VertexBasedClient implements Client {
     }
 
     @Override
-    public CompletableFuture<PluginHandleId> attachPlugin(SessionId session, String plugin) {
+    public CompletableFuture<PluginId> attachPlugin(SessionId session, String plugin) {
         return null;
     }
 
     @Override
-    public CompletableFuture<Void> detachPlugin(final SessionId session, PluginHandleId handle) {
+    public CompletableFuture<Void> detachPlugin(final SessionId session, PluginId handle) {
         return null;
     }
 
@@ -98,7 +98,7 @@ public class VertexBasedClient implements Client {
     }
 
     @Override
-    public CompletableFuture<Void> request(PluginHandleRequest request) {
+    public CompletableFuture<Void> request(PluginRequest request) {
         return null;
     }
 }
