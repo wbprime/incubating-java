@@ -6,9 +6,9 @@ import im.wangbo.bj58.janus.schema.event.SessionCreated;
 import im.wangbo.bj58.janus.schema.event.SessionDestroyed;
 import im.wangbo.bj58.janus.schema.transport.Request;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -29,33 +29,47 @@ import java.util.function.BiConsumer;
  * @author Elvis Wang
  */
 abstract class HttpRequesting {
-    private static final Logger LOG = LoggerFactory.getLogger(HttpRequesting.class);
+    private final HttpClient httpClient;
+    private final EventBus eventBus;
 
-    private final HttpTransportHelper http;
-    private final EventBusHelper eventBus;
+    private final String rootPath;
 
-    HttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
-        this.http = helper;
-        this.eventBus = eventBusHelper;
+    HttpRequesting(final HttpClient http, final EventBus eventBus, final String path) {
+        this.httpClient = http;
+        this.eventBus = eventBus;
+
+        String str = path;
+        while (str.endsWith("/")) str = str.substring(0, str.length() - 1);
+
+        this.rootPath = str + "/";
     }
 
     static HttpRequesting create(
-        final Request msg,
-        final HttpTransportHelper httpHelper,
-        final EventBusHelper eventBusHelper
-    ) {
-        final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
-        final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
+        final Optional<HttpClient> httpClientOpt, final Optional<EventBus> eventBusOpt,
+        final String rootPath, final Request msg) {
+
+        if (!(httpClientOpt.isPresent() && eventBusOpt.isPresent())) {
+            return new NoopHttpRequesting();
+        }
+
+        final HttpClient httpClient = httpClientOpt.get();
+        final EventBus eventBus = eventBusOpt.get();
+
+        final OptionalLong sessionId = msg.sessionId()
+            .map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
+        final OptionalLong pluginId = msg.pluginId()
+            .map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
 
         switch (msg.type()) {
             case SERVER_INFO:
-                return new ServerInfoHttpRequesting(httpHelper, eventBusHelper);
+                return new ServerInfoHttpRequesting(httpClient, eventBus, rootPath);
             case CREATE_SESSION:
-                return new CreateSessionHttpRequesting(httpHelper, eventBusHelper);
+                return new CreateSessionHttpRequesting(httpClient, eventBus, rootPath);
             case DESTROY_SESSION: // fall through
             case ATTACH_PLUGIN: {
                 if (sessionId.isPresent()) {
-                    return new SessionBasedPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong());
+                    return new SessionBasedPostHttpRequesting(httpClient, eventBus,
+                        rootPath, sessionId.getAsLong());
                 } else {
                     throw new IllegalArgumentException("Missing [sessionId] in " + msg);
                 }
@@ -65,7 +79,8 @@ abstract class HttpRequesting {
             case SEND_MESSAGE: // fall through
             case TRICKLE: {
                 if (sessionId.isPresent() && pluginId.isPresent()) {
-                    return new PluginPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong(), pluginId.getAsLong());
+                    return new PluginPostHttpRequesting(httpClient, eventBus,
+                        rootPath, sessionId.getAsLong(), pluginId.getAsLong());
                 } else {
                     final StringBuilder sb = new StringBuilder("Missing [");
                     if (!sessionId.isPresent()) sb.append("sessionId ");
@@ -77,21 +92,23 @@ abstract class HttpRequesting {
             default:
                 if (sessionId.isPresent()) {
                     if (pluginId.isPresent()) {
-                        return new PluginPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong(), pluginId.getAsLong());
+                        return new PluginPostHttpRequesting(httpClient, eventBus,
+                            rootPath, sessionId.getAsLong(), pluginId.getAsLong());
                     } else {
-                        return new SessionBasedPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong());
+                        return new SessionBasedPostHttpRequesting(httpClient, eventBus,
+                            rootPath, sessionId.getAsLong());
                     }
                 } else {
-                    return new GlobalBasedHttpRequesting(httpHelper, eventBusHelper);
+                    return new GlobalBasedHttpRequesting(httpClient, eventBus, rootPath);
                 }
         }
     }
 
-    final HttpTransportHelper httpHelper() {
-        return http;
+    final HttpClient httpClient() {
+        return httpClient;
     }
 
-    final EventBusHelper eventBus() {
+    final EventBus eventBus() {
         return eventBus;
     }
 
@@ -109,7 +126,7 @@ abstract class HttpRequesting {
         }
 
         switch (json.getValueType()) {
-            case ARRAY:
+            case ARRAY: {
                 ((JsonArray) json).forEach(
                     v -> {
                         if (v.getValueType() == JsonValue.ValueType.OBJECT) {
@@ -122,7 +139,8 @@ abstract class HttpRequesting {
                         }
                     }
                 );
-                break;
+            }
+            break;
             case OBJECT: {
                 final JsonObject o = (JsonObject) json;
                 notifyResponseRecv(o);
@@ -140,13 +158,13 @@ abstract class HttpRequesting {
         }
     }
 
-    final CompletableFuture<Void> sendRequest(
+    CompletableFuture<Void> sendRequest(
         final Request msg, final BiConsumer<JsonObject, Throwable> responseHandler
     ) {
         // Response
         final CompletableFuture<Void> requestFuture = new CompletableFuture<>();
 
-        final HttpClientRequest request = buildHttpRequest()
+        final HttpClientRequest request = buildHttpRequest(rootPath)
             .endHandler(ignored -> requestFuture.complete(null))
             .exceptionHandler(requestFuture::completeExceptionally)
             .handler(res -> res.exceptionHandler(ex -> responseHandler.accept(null, ex))
@@ -157,35 +175,58 @@ abstract class HttpRequesting {
         if (body.isPresent()) request.end(body.get().toString());
         else request.end();
 
-        notifyRequestSent(request.method().name(), request.absoluteURI(), body.orElse(JsonObject.EMPTY_JSON_OBJECT));
+        notifyRequestSent(request.method().name(), request.absoluteURI(),
+            body.orElse(JsonObject.EMPTY_JSON_OBJECT));
 
         return requestFuture;
     }
 
     // Visible for inheriting
     void notifyRequestSent(final String httpMethod, final String uri, final JsonObject data) {
-        eventBus().sendEvent(MessageSent.of(data), MessageSent.class);
+        Events.sendEvent(eventBus(), MessageSent.of(data), MessageSent.class);
     }
 
     // Visible for inheriting
     void notifyResponseRecv(final JsonObject data) {
-        eventBus().sendEvent(MessageReceived.of(data), MessageReceived.class);
+        Events.sendEvent(eventBus(), MessageReceived.of(data), MessageReceived.class);
     }
 
     // Visible for inheriting
-    abstract HttpClientRequest buildHttpRequest();
+    abstract HttpClientRequest buildHttpRequest(final String rootPath);
 
     // Visible for inheriting
     abstract Optional<JsonObject> requestBody(final Request msg);
 
-    static abstract class GetHttpRequesting extends HttpRequesting {
-        GetHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
-            super(helper, eventBusHelper);
+    static final class NoopHttpRequesting extends HttpRequesting {
+        NoopHttpRequesting() {
+            super(null, null, null);
         }
 
         @Override
-        final HttpClientRequest buildHttpRequest() {
-            return httpHelper().getRequest(subPath());
+        final CompletableFuture<Void> sendRequest(
+            final Request msg, final BiConsumer<JsonObject, Throwable> responseHandler) {
+            return Futures.illegalState("HTTP requesting illegal state without initialized");
+        }
+
+        @Override
+        final HttpClientRequest buildHttpRequest(final String rootPath) {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        @Override
+        final Optional<JsonObject> requestBody(final Request msg) {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+    }
+
+    static abstract class GetHttpRequesting extends HttpRequesting {
+        GetHttpRequesting(final HttpClient http, final EventBus eventBus, final String path) {
+            super(http, eventBus, path);
+        }
+
+        @Override
+        final HttpClientRequest buildHttpRequest(final String rootPath) {
+            return httpClient().get(rootPath + subPath());
         }
 
         @Override
@@ -197,8 +238,8 @@ abstract class HttpRequesting {
     }
 
     static class ServerInfoHttpRequesting extends GetHttpRequesting {
-        ServerInfoHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
-            super(helper, eventBusHelper);
+        ServerInfoHttpRequesting(final HttpClient http, final EventBus eventBus, final String path) {
+            super(http, eventBus, path);
         }
 
         @Override
@@ -211,9 +252,11 @@ abstract class HttpRequesting {
         private final long sid;
         private final int maxEvents = 10;
 
-        LongPollHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper, final long sessionId) {
-            super(helper, eventBusHelper);
-            this.sid = sessionId;
+        LongPollHttpRequesting(
+            final HttpClient http, final EventBus eventBus,
+            final String path, final long sid) {
+            super(http, eventBus, path);
+            this.sid = sid;
         }
 
         @Override
@@ -223,19 +266,19 @@ abstract class HttpRequesting {
     }
 
     static abstract class PostHttpRequesting extends HttpRequesting {
-        PostHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper) {
-            super(helper, eventBusHelper);
+        PostHttpRequesting(final HttpClient http, final EventBus eventBus, final String path) {
+            super(http, eventBus, path);
         }
 
         @Override
-        final HttpClientRequest buildHttpRequest() {
-            return httpHelper().postRequest(subPath());
+        final HttpClientRequest buildHttpRequest(final String rootPath) {
+            return httpClient().post(rootPath + subPath());
         }
 
         @Override
         final Optional<JsonObject> requestBody(final Request body) {
             final JsonObjectBuilder builder = Json.createObjectBuilder(body.root());
-            builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.request().method());
+            builder.add(Constants.REQ_FIELD_REQUEST_TYPE, body.type().type());
             builder.add(Constants.REQ_FIELD_TRANSACTION, body.transaction().id());
             return Optional.of(builder.build());
         }
@@ -244,8 +287,9 @@ abstract class HttpRequesting {
     }
 
     static class GlobalBasedHttpRequesting extends PostHttpRequesting {
-        GlobalBasedHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper) {
-            super(helper, eventBusHelper);
+        GlobalBasedHttpRequesting(
+            final HttpClient http, final EventBus eventBus, final String path) {
+            super(http, eventBus, path);
         }
 
         @Override
@@ -255,8 +299,9 @@ abstract class HttpRequesting {
     }
 
     static class CreateSessionHttpRequesting extends GlobalBasedHttpRequesting {
-        CreateSessionHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper) {
-            super(helper, eventBusHelper);
+        CreateSessionHttpRequesting(
+            final HttpClient http, final EventBus eventBus, final String path) {
+            super(http, eventBus, path);
         }
 
         @Override
@@ -266,17 +311,22 @@ abstract class HttpRequesting {
             // TODO check success in data
             final OptionalLong sessionId = Constants.sessionId(data);
             sessionId.ifPresent(
-                id -> eventBus().sendEvent(SessionCreated.of(id), SessionCreated.class)
+                id -> Events.sendEvent(eventBus(), SessionCreated.of(id), SessionCreated.class)
             );
         }
     }
 
     static class SessionBasedPostHttpRequesting extends PostHttpRequesting {
-        final long sid;
+        private final long sid;
 
-        SessionBasedPostHttpRequesting(final HttpTransportHelper helper, final EventBusHelper eventBusHelper, final long sessionId) {
-            super(helper, eventBusHelper);
-            this.sid = sessionId;
+        SessionBasedPostHttpRequesting(
+            final HttpClient http, final EventBus eventBus, final String path, final long sid) {
+            super(http, eventBus, path);
+            this.sid = sid;
+        }
+
+        final long sessionId() {
+            return sid;
         }
 
         @Override
@@ -286,8 +336,9 @@ abstract class HttpRequesting {
     }
 
     static class DestroySessionHttpRequesting extends SessionBasedPostHttpRequesting {
-        DestroySessionHttpRequesting(HttpTransportHelper helper, EventBusHelper eventBusHelper, final long sessionId) {
-            super(helper, eventBusHelper, sessionId);
+        DestroySessionHttpRequesting(
+            final HttpClient http, final EventBus eventBus, final String path, final long sid) {
+            super(http, eventBus, path, sid);
         }
 
         @Override
@@ -295,7 +346,8 @@ abstract class HttpRequesting {
             super.notifyResponseRecv(data);
 
             // TODO check success in data
-            eventBus().sendEvent(SessionDestroyed.of(sid), SessionDestroyed.class);
+            Events.sendEvent(
+                eventBus(), SessionDestroyed.of(sessionId()), SessionDestroyed.class);
         }
     }
 
@@ -304,12 +356,11 @@ abstract class HttpRequesting {
         private final long hid;
 
         PluginPostHttpRequesting(
-            final HttpTransportHelper helper,
-            final EventBusHelper eventBusHelper,
-            final long sessionId,
-            final long pluginId
-        ) {
-            super(helper, eventBusHelper);
+            final HttpClient http, final EventBus eventBus, final String path,
+            final long sessionId, final long pluginId) {
+
+            super(http, eventBus, path);
+
             this.sid = sessionId;
             this.hid = pluginId;
         }
@@ -319,4 +370,18 @@ abstract class HttpRequesting {
             return sid + "/" + hid;
         }
     }
+
+    static HttpRequesting longPolling(
+        final Optional<HttpClient> httpClient,
+        final Optional<EventBus> eventBus,
+        final String path,
+        final long sessionId) {
+
+        if (httpClient.isPresent() && eventBus.isPresent()) {
+            return new LongPollHttpRequesting(httpClient.get(), eventBus.get(), path, sessionId);
+        } else {
+            return new NoopHttpRequesting();
+        }
+    }
+
 }

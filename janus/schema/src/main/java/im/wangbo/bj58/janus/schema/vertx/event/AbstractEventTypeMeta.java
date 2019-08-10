@@ -36,9 +36,4 @@ public abstract class AbstractEventTypeMeta<T> {
     public final String codecName() {
         return "codec/" + clz.getName();
     }
-
-    public final String type() {
-        final Class<?> tmp = clz.getEnclosingClass();
-        return null != tmp ? tmp.getSimpleName() : clz.getSimpleName();
-    }
 }

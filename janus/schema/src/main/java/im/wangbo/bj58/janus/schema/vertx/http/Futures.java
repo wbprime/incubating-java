@@ -12,12 +12,16 @@ final class Futures {
         throw new UnsupportedOperationException("Construction forbidden");
     }
 
+    static <T> CompletableFuture<T> illegalState(final String msg) {
+        return failed(new IllegalStateException(msg));
+    }
+
     static <T> CompletableFuture<T> illegalArgument(final String msg) {
         return failed(new IllegalArgumentException(msg));
     }
 
-    static <T> CompletableFuture<T> illegalArgument(final String tmpl, final Object... args) {
-        return failed(new IllegalArgumentException(String.format(tmpl, args)));
+    static <T> CompletableFuture<T> illegalArgument(final String template, final Object... args) {
+        return failed(new IllegalArgumentException(String.format(template, args)));
     }
 
     static <T> CompletableFuture<T> failed(final Throwable ex) {
