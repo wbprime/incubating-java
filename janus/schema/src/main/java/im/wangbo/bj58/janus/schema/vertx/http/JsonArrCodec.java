@@ -1,6 +1,5 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
-import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
@@ -39,8 +38,7 @@ class JsonArrCodec implements MessageCodec<JsonArray, JsonArray> {
 
     @Override
     public String name() {
-        return new AbstractEventTypeMeta<JsonArray>() {
-        }.codecName();
+        Events.codecName(JsonArray.class);
     }
 
     @Override

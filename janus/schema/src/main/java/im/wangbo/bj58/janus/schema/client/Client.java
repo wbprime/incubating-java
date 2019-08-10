@@ -13,7 +13,9 @@ import java.util.concurrent.CompletableFuture;
  * @author Elvis Wang
  */
 public interface Client {
-    CompletableFuture<Void> connect(final URI uri, final Transport transport);
+    static CompletableFuture<Client> connect(final URI uri, final Transport transport) {
+        return transport.connect(uri).thenApply(ignored -> new StdClient(transport));
+    }
 
     CompletableFuture<Void> close();
 

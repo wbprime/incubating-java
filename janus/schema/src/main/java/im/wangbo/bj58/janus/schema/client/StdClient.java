@@ -1,20 +1,11 @@
-package im.wangbo.bj58.janus.schema.vertx;
+package im.wangbo.bj58.janus.schema.client;
 
-import im.wangbo.bj58.janus.schema.client.Client;
-import im.wangbo.bj58.janus.schema.client.GlobalRequest;
-import im.wangbo.bj58.janus.schema.client.PluginRequest;
-import im.wangbo.bj58.janus.schema.client.ServerInfo;
-import im.wangbo.bj58.janus.schema.client.SessionRequest;
 import im.wangbo.bj58.janus.schema.transport.PluginId;
 import im.wangbo.bj58.janus.schema.transport.Request;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
 import im.wangbo.bj58.janus.schema.transport.Transport;
-import im.wangbo.bj58.janus.schema.vertx.http.HttpTransport;
-import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.EventBus;
 
-import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -22,20 +13,11 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Elvis Wang
  */
-public class VertexBasedClient implements Client {
-    private final EventBus eventBus;
+class StdClient implements Client {
     private final Transport transport;
 
-    VertexBasedClient() {
-        final Vertx vertx = Vertx.vertx();
-
-        this.eventBus = vertx.eventBus();
-        this.transport = HttpTransport.create(vertx);
-    }
-
-    @Override
-    public CompletableFuture<Void> connect(final URI uri, final Transport transport) {
-        return transport.connect(uri).whenComplete((re, ex) -> {/* TODO handler event handlers */});
+    StdClient(final Transport transport) {
+        this.transport = transport;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
 import im.wangbo.bj58.janus.schema.event.MessageReceived;
-import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
@@ -44,8 +43,7 @@ class MessageReceivedCodec implements MessageCodec<MessageReceived, MessageRecei
 
     @Override
     public String name() {
-        return new AbstractEventTypeMeta<MessageReceived>() {
-        }.codecName();
+        return Events.codecName(MessageReceived.class);
     }
 
     @Override

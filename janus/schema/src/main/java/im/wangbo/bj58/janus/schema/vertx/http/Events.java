@@ -35,7 +35,7 @@ final class Events {
         return "e/" + clz.getName();
     }
 
-    private static String codecName(final Class<?> clz) {
+    tatic String codecName(final Class<?> clz) {
         return "c/" + clz.getName();
     }
 }
