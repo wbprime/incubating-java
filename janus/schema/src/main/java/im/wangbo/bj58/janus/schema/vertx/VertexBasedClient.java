@@ -34,12 +34,6 @@ public class VertexBasedClient implements Client {
     }
 
     @Override
-    public EventHandlerRegistry eventHandlerRegistry() {
-        return new EventHandlerRegistry() {
-        };
-    }
-
-    @Override
     public CompletableFuture<Void> connect(final URI uri, final Transport transport) {
         return transport.connect(uri).whenComplete((re, ex) -> {/* TODO handler event handlers */});
     }
@@ -50,7 +44,7 @@ public class VertexBasedClient implements Client {
     }
 
     @Override
-    public CompletableFuture<ServerInfo> info() {
+    public CompletableFuture<ServerInfo> serverInfo() {
         final CompletableFuture<Void> sent = transport.send(
             Request.serverInfoMessageBuilder()
                 .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))

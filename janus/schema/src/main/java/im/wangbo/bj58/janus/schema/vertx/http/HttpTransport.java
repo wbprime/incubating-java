@@ -166,7 +166,7 @@ public final class HttpTransport implements Transport {
             final HttpRequesting requesting = new HttpRequesting.LongPollHttpRequesting(http, eventBus, msg.sessionId());
             requesting.sendRequest(
                 Request.builder()
-                    .request(Request.Type.of("Not needed"))
+                    .type(Request.Type.NOT_PRESENT)
                     .transaction(TransactionId.of("Not needed"))
                     .build(),
                 this::onResponse);

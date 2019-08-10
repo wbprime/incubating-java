@@ -66,7 +66,8 @@ public abstract class Request {
         HANGUP_PLUGIN("hangup"),
         SEND_MESSAGE("message"),
         TRICKLE("trickle"),
-        SERVER_INFO("info");
+        SERVER_INFO("info"),
+        NOT_PRESENT("not_present");
 
         private final String m;
 

@@ -47,23 +47,23 @@ abstract class HttpRequesting {
         final OptionalLong sessionId = msg.sessionId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
         final OptionalLong pluginId = msg.pluginId().map(id -> OptionalLong.of(id.id())).orElse(OptionalLong.empty());
 
-        switch (msg.request().method()) {
-            case Request.Type.SERVER_INFO:
+        switch (msg.type()) {
+            case SERVER_INFO:
                 return new ServerInfoHttpRequesting(httpHelper, eventBusHelper);
-            case Request.Type.CREATE_SESSION:
+            case CREATE_SESSION:
                 return new CreateSessionHttpRequesting(httpHelper, eventBusHelper);
-            case Request.Type.DESTROY_SESSION: // fall through
-            case Request.Type.ATTACH_PLUGIN: {
+            case DESTROY_SESSION: // fall through
+            case ATTACH_PLUGIN: {
                 if (sessionId.isPresent()) {
                     return new SessionBasedPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong());
                 } else {
                     throw new IllegalArgumentException("Missing [sessionId] in " + msg);
                 }
             }
-            case Request.Type.DETACH_PLUGIN: // fall through
-            case Request.Type.HANGUP_PLUGIN: // fall through
-            case Request.Type.SEND_MESSAGE: // fall through
-            case Request.Type.TRICKLE: {
+            case DETACH_PLUGIN: // fall through
+            case HANGUP_PLUGIN: // fall through
+            case SEND_MESSAGE: // fall through
+            case TRICKLE: {
                 if (sessionId.isPresent() && pluginId.isPresent()) {
                     return new PluginPostHttpRequesting(httpHelper, eventBusHelper, sessionId.getAsLong(), pluginId.getAsLong());
                 } else {

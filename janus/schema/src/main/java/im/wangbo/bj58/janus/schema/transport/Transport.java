@@ -11,13 +11,11 @@ import java.util.function.Consumer;
  * @author Elvis Wang
  */
 public interface Transport {
-    default String name() {
-        return "Transport";
-    }
-
     default boolean accepts(final URI uri) {
         return false;
     }
+
+    String name();
 
     CompletableFuture<Void> connect(final URI uri);
 
