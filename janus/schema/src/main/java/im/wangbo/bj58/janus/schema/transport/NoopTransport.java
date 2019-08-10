@@ -1,7 +1,4 @@
-package im.wangbo.bj58.janus.schema.vertx.http;
-
-import im.wangbo.bj58.janus.schema.transport.Request;
-import im.wangbo.bj58.janus.schema.transport.Transport;
+package im.wangbo.bj58.janus.schema.transport;
 
 import javax.json.JsonObject;
 import java.net.URI;
@@ -21,22 +18,32 @@ final class NoopTransport implements Transport {
     }
 
     @Override
+    public String name() {
+        return "noop";
+    }
+
+    @Override
+    public boolean accepts(final URI uri) {
+        return true;
+    }
+
+    @Override
     public CompletableFuture<Void> connect(final URI uri) {
-        return Futures.completed();
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
     public CompletableFuture<Void> close() {
-        return Futures.completed();
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
     public CompletableFuture<Void> send(final Request msg) {
-        return Futures.completed();
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public synchronized Transport handler(final Consumer<JsonObject> handler) {
+    public Transport handler(final Consumer<JsonObject> handler) {
         return this;
     }
 
