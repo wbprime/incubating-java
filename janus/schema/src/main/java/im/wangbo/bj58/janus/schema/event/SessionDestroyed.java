@@ -15,12 +15,12 @@ public abstract class SessionDestroyed implements JsonableEvent {
     public abstract long sessionId();
 
     @Override
-    public final String eventType() {
+    public final String type() {
         return MoreEvents.TYPE_SESSION_DESTROYED;
     }
 
     @Override
-    public final JsonObject eventBody() {
+    public final JsonObject body() {
         return Json.createObjectBuilder()
             .add(MoreEvents.KEY_SESSION_ID, sessionId())
             .build();

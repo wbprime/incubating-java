@@ -13,7 +13,7 @@ public abstract class Error {
 
     public abstract String errorMessage();
 
-    public static Error create(final int errorCode, final String errorMessage) {
+    public static Error of(final int errorCode, final String errorMessage) {
         return new AutoValue_Error(errorCode, errorMessage);
     }
 }

@@ -17,19 +17,19 @@ public abstract class PluginAttached implements JsonableEvent {
     public abstract long handleId();
 
     @Override
-    public final String eventType() {
+    public final String type() {
         return MoreEvents.TYPE_PLUGIN_HANDLE_ATTACHED;
     }
 
     @Override
-    public final JsonObject eventBody() {
+    public final JsonObject body() {
         return Json.createObjectBuilder()
             .add(MoreEvents.KEY_SESSION_ID, sessionId())
-            .add(MoreEvents.KEY_PLUGIN_HANDLE_ID, handleId())
+            .add(MoreEvents.KEY_PLUGINHANDLE_ID, handleId())
             .build();
     }
 
-    public static PluginAttached create(final long sessionId, final long pluginHandleId) {
+    public static PluginAttached of(final long sessionId, final long pluginHandleId) {
         return new AutoValue_PluginAttached(sessionId, pluginHandleId);
     }
 }

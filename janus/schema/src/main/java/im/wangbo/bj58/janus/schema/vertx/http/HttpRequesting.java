@@ -183,12 +183,12 @@ abstract class HttpRequesting {
 
     // Visible for inheriting
     void notifyRequestSent(final String httpMethod, final String uri, final JsonObject data) {
-        Events.sendEvent(eventBus(), MessageSent.of(data), MessageSent.class);
+        EventBusHelper.sendEvent(eventBus(), MessageSent.of(data), MessageSent.class);
     }
 
     // Visible for inheriting
     void notifyResponseRecv(final JsonObject data) {
-        Events.sendEvent(eventBus(), MessageReceived.of(data), MessageReceived.class);
+        EventBusHelper.sendEvent(eventBus(), MessageReceived.of(data), MessageReceived.class);
     }
 
     // Visible for inheriting
@@ -311,7 +311,7 @@ abstract class HttpRequesting {
             // TODO check success in data
             final OptionalLong sessionId = Constants.sessionId(data);
             sessionId.ifPresent(
-                id -> Events.sendEvent(eventBus(), SessionCreated.of(id), SessionCreated.class)
+                id -> EventBusHelper.sendEvent(eventBus(), SessionCreated.of(id), SessionCreated.class)
             );
         }
     }
@@ -346,7 +346,7 @@ abstract class HttpRequesting {
             super.notifyResponseRecv(data);
 
             // TODO check success in data
-            Events.sendEvent(
+            EventBusHelper.sendEvent(
                 eventBus(), SessionDestroyed.of(sessionId()), SessionDestroyed.class);
         }
     }

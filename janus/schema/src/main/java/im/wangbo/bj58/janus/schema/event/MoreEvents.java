@@ -17,7 +17,9 @@ public final class MoreEvents {
     public static final String TYPE_PLUGIN_HANDLE_ATTACHED = "event.handle.attached";
     public static final String TYPE_PLUGIN_HANDLE_DETACHED = "event.handle.detached";
 
+    public static final String KEY_TRANSACTION_ID = "transaction_id";
+    public static final String KEY_TRACE_ID = "trace_id";
     public static final String KEY_SESSION_ID = "session_id";
-
-    public static final String KEY_PLUGIN_HANDLE_ID = "handle_id";
+    public static final String KEY_PLUGINHANDLE_ID = "handle_id";
+    public static final String KEY_DATA = "data";
 }

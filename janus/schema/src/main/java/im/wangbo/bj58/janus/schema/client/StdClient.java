@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.client;
 
+import com.google.common.collect.Iterables;
 import im.wangbo.bj58.janus.schema.transport.PluginId;
 import im.wangbo.bj58.janus.schema.transport.Request;
 import im.wangbo.bj58.janus.schema.transport.SessionId;
@@ -17,7 +18,11 @@ class StdClient implements Client {
     private final Transport transport;
 
     StdClient(final Transport transport) {
-        this.transport = transport;
+        this.transport = transport.handler(
+            StdEventHandler.of(
+                Iterables.concat(EventHandler.builtinEventHandlers(),
+                    EventHandler.spiBasedEventHandlers())
+            ));
     }
 
     @Override

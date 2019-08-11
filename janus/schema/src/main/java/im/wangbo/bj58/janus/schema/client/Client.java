@@ -13,8 +13,14 @@ import java.util.concurrent.CompletableFuture;
  * @author Elvis Wang
  */
 public interface Client {
-    static CompletableFuture<Client> connect(final URI uri, final Transport transport) {
-        return transport.connect(uri).thenApply(ignored -> new StdClient(transport));
+    static CompletableFuture<Client> connect(
+        final URI uri, final Transport transport) {
+
+        return CompletableFuture.supplyAsync(() -> new StdClient(transport))
+            .thenApply(c -> {
+                transport.connect(uri);
+                return c;
+            });
     }
 
     CompletableFuture<Void> close();
