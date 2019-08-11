@@ -1,14 +1,13 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import im.wangbo.bj58.janus.schema.utils.Events;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.MessageCodec;
 
 import javax.json.Json;
 import javax.json.JsonArray;
-
-import im.wangbo.bj58.janus.schema.vertx.event.AbstractEventTypeMeta;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.MessageCodec;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TODO add brief description here
@@ -28,7 +27,7 @@ class JsonArrCodec implements MessageCodec<JsonArray, JsonArray> {
         final int length = buffer.getInt(pos);
         final int beg = pos + 4;
         return Json.createReader(new StringReader(
-                buffer.getString(beg, beg + length, StandardCharsets.UTF_8.name()))
+            buffer.getString(beg, beg + length, StandardCharsets.UTF_8.name()))
         ).readArray();
     }
 
@@ -40,8 +39,7 @@ class JsonArrCodec implements MessageCodec<JsonArray, JsonArray> {
 
     @Override
     public String name() {
-        return new AbstractEventTypeMeta<JsonArray>() {
-        }.codecName();
+        return Events.codecName(JsonArray.class);
     }
 
     @Override

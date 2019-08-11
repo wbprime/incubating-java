@@ -1,5 +1,6 @@
 package im.wangbo.bj58.janus.schema.vertx.http;
 
+import im.wangbo.bj58.janus.schema.transport.Request;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -11,9 +12,7 @@ import java.util.function.Consumer;
 
 import javax.json.JsonObject;
 
-import im.wangbo.bj58.janus.schema.transport.RequestMethod;
 import im.wangbo.bj58.janus.schema.transport.TransactionId;
-import im.wangbo.bj58.janus.schema.transport.TransportRequest;
 
 /**
  * TODO add brief description here
@@ -46,45 +45,29 @@ public class HttpTransportTest {
     }
 
     @Test
-    public void test_unsupportedMethod() throws Exception {
-        final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
-
-        final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(TransportRequest.builder()
-                        .request(RequestMethod.of("random" + System.currentTimeMillis()))
-                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
-                        .build()
-                );
-
-        request.thenCompose(ignored -> finished)
-                .whenComplete(this::log)
-                .get(1L, TimeUnit.MINUTES);
-    }
-
-    @Test
     public void test_serverInfo() throws Exception {
         final CompletableFuture<JsonObject> finished = new CompletableFuture<>();
 
         final CompletableFuture<Void> request = transport.handler(finished::complete)
-                .send(TransportRequest.serverInfoMessageBuilder()
-                        .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
-                        .build()
-                );
+            .send(Request.serverInfoMessageBuilder()
+                .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
+                .build()
+            );
 
         request.thenCompose(ignored -> finished)
-                .whenComplete(this::log)
-                .get(1L, TimeUnit.MINUTES);
+            .whenComplete(this::log)
+            .get(1L, TimeUnit.MINUTES);
     }
 
     @Test
     public void test_createSession() throws Exception {
         {
-             transport.handler(handler)
-                    .exceptionHandler(exHandler)
-                    .send(TransportRequest.createSessionMessageBuilder()
-                            .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
-                            .build()
-                    ).get(1L, TimeUnit.MINUTES);
+            transport.handler(handler)
+                .exceptionHandler(exHandler)
+                .send(Request.createSessionMessageBuilder()
+                    .transaction(TransactionId.of("wbprime" + System.currentTimeMillis()))
+                    .build()
+                ).get(1L, TimeUnit.MINUTES);
         }
 
         Thread.sleep(TimeUnit.MINUTES.toMillis(1L));

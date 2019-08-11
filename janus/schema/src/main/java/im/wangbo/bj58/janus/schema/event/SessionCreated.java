@@ -15,15 +15,15 @@ public abstract class SessionCreated implements JsonableEvent {
     public abstract long sessionId();
 
     @Override
-    public final String eventType() {
+    public final String type() {
         return MoreEvents.TYPE_SESSION_CREATED;
     }
 
     @Override
-    public final JsonObject eventBody() {
+    public final JsonObject body() {
         return Json.createObjectBuilder()
-                .add(MoreEvents.KEY_SESSION_ID, sessionId())
-                .build();
+            .add(MoreEvents.KEY_SESSION_ID, sessionId())
+            .build();
     }
 
     public static SessionCreated of(long sessionId) {

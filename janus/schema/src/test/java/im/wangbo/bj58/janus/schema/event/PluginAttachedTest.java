@@ -15,7 +15,7 @@ import javax.json.bind.JsonbBuilder;
 public class PluginAttachedTest {
     @Test
     public void testToJson() throws Exception {
-        final PluginAttached pluginAttached = PluginAttached.create(100L, 1000L);
+        final PluginAttached pluginAttached = PluginAttached.of(100L, 1000L);
 
         final Jsonb jsonb = JsonbBuilder.create();
 
