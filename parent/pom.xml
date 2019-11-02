@@ -59,7 +59,7 @@
 
         <eclipse_collections_version>10.0.0</eclipse_collections_version>
 
-        <netty_version>4.1.22.Final</netty_version>
+        <netty_version>4.1.42.Final</netty_version>
         <vertx_core_version>3.5.4</vertx_core_version>
         <vertx_rxjava2_version>3.5.4</vertx_rxjava2_version>
         <vertx_web_version>3.5.4</vertx_web_version>
