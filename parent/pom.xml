@@ -62,7 +62,7 @@
         <netty_version>4.1.22.Final</netty_version>
         <vertx_core_version>3.5.4</vertx_core_version>
         <vertx_rxjava2_version>3.5.4</vertx_rxjava2_version>
-        <vertx_web_version>3.5.4</vertx_web_version>
+        <vertx_web_version>3.9.4</vertx_web_version>
         <vertx_web_client_version>3.5.4</vertx_web_client_version>
         <vertx_auth_version>3.5.4</vertx_auth_version>
         <vertx_config_version>3.5.4</vertx_config_version>
